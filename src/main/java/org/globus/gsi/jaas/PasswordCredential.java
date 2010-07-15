@@ -16,45 +16,32 @@
 package org.globus.gsi.jaas;
 
 import java.io.Serializable;
-import java.security.Principal;
 
-/**
- * Simple string-based principal.
- */
-public class SimplePrincipal
-        implements Principal, Serializable {
+public class PasswordCredential implements Serializable {
 
-    private String name;
+    private char[] password;
 
-    public SimplePrincipal() {
+    public PasswordCredential(String password) {
+        this.password = password.toCharArray();
     }
 
-    public SimplePrincipal(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int hashCode() {
-        return (this.name == null) ? 0 : this.name.hashCode();
+    public String getPassword() {
+        return new String(this.password);
     }
 
     public boolean equals(Object another) {
-        if (!(another instanceof Principal)) {
+        if (!(another instanceof PasswordCredential)) {
             return false;
         }
-        String anotherName = ((Principal) another).getName();
-        if (this.name == null) {
-            return (null == this.name);
+        String pass = ((PasswordCredential) another).getPassword();
+        if (this.password == null) {
+            return (pass == null);
         } else {
-            return this.name.equals(anotherName);
+            return (new String(this.password)).equals(pass);
         }
     }
 
     public String toString() {
-        return getName();
+        return getPassword();
     }
-
 }

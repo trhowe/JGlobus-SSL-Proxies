@@ -10,7 +10,70 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ssl-proxies</artifactId>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>org/globus/gsi/jaas/UserNamePrincipal.class</exclude>
+                            <exclude>org/globus/gsi/jaas/SimplePrincipal.class</exclude>
+                            <exclude>org/globus/gsi/jaas/PasswordCredential.class</exclude>
+                            <exclude>org/globus/gsi/jaas/GlobusPrincipal.class</exclude>
+                            <exclude>org/globus/gsi/jaas/JaasErrors_en_US.class</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <branchRate>85</branchRate>
+                        <lineRate>85</lineRate>
+                        <haltOnFailure>false</haltOnFailure>
+                        <totalBranchRate>85</totalBranchRate>
+                        <totalLineRate>85</totalLineRate>
+                        <packageLineRate>85</packageLineRate>
+                        <packageBranchRate>85</packageBranchRate>
+                    </check>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>clover</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${clover.version}</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/globus/gsi/jaas/UserNamePrincipal.java</exclude>
+                                <exclude>org/globus/gsi/jaas/SimplePrincipal.java</exclude>
+                                <exclude>org/globus/gsi/jaas/PasswordCredential.java</exclude>
+                                <exclude>org/globus/gsi/jaas/GlobusPrincipal.java</exclude>
+                                <exclude>org/globus/gsi/jaas/JaasErrors_en_US.java</exclude>
+                            </excludes>
+                            <includesTestSourceRoots>false</includesTestSourceRoots>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>globus-releases</id>
