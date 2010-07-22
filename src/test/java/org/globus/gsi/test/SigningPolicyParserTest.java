@@ -21,9 +21,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Vector;
 import java.util.regex.Pattern;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.SigningPolicy;
@@ -41,18 +39,6 @@ public class SigningPolicyParserTest extends TestCase {
 
     private String[] TAB_TEST_FILE = new String[] { "afe55e66.signing_policy", "cf4ba8c8.signing_policy",
             "49f18420.signing_policy" };
-
-    public SigningPolicyParserTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(SigningPolicyParserTest.class);
-    }
 
     public void testPatternMatching() throws Exception {
 

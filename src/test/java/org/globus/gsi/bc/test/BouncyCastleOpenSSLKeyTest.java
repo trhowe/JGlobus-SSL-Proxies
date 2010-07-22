@@ -19,9 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.CertUtil;
@@ -33,18 +31,6 @@ public class BouncyCastleOpenSSLKeyTest extends TestCase {
     private Log logger = LogFactory.getLog(BouncyCastleOpenSSLKeyTest.class);
 
     private static final String pwd = "testpwd";
-
-    public BouncyCastleOpenSSLKeyTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(BouncyCastleOpenSSLKeyTest.class);
-    }
 
     private KeyPair getKeyPair() throws Exception {
         CertUtil.init();

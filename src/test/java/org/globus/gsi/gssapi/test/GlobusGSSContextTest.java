@@ -24,9 +24,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.GSIConstants;
@@ -51,18 +49,6 @@ public class GlobusGSSContextTest extends TestCase {
 
     GSSContext clientContext;
     GSSContext serverContext;
-
-    public GlobusGSSContextTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(GlobusGSSContextTest.class);
-    }
 
     protected void setUp() throws Exception {
 

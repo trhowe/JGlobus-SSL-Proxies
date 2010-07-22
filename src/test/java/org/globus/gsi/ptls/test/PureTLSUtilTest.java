@@ -17,9 +17,7 @@ package org.globus.gsi.ptls.test;
 
 import COM.claymoresystems.cert.X509Name;
 import java.util.Vector;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.ptls.PureTLSUtil;
@@ -27,18 +25,6 @@ import org.globus.gsi.ptls.PureTLSUtil;
 public class PureTLSUtilTest extends TestCase {
 
     private Log logger = LogFactory.getLog(PureTLSUtilTest.class);
-
-    public PureTLSUtilTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(PureTLSUtilTest.class);
-    }
 
     public void testSimple() throws Exception {
 

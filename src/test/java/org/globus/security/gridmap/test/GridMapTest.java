@@ -17,9 +17,7 @@ package org.globus.security.gridmap.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.security.gridmap.GridMap;
@@ -48,18 +46,6 @@ public class GridMapTest extends TestCase {
     private static final String GRIDMAP_3 = "\"/O=myCA/CN=\\\"Foo Bar\\\"\" account\r\n";
 
     private static final String GRIDMAP_4 = "/C=DE/ST=Baden-Württemberg/O=University of Stuttgart/OU=HLRS/CN=Oliver Mangold/E=o.mangold@gmx.de test1";
-
-    public GridMapTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(GridMapTest.class);
-    }
 
     public void test1() {
 

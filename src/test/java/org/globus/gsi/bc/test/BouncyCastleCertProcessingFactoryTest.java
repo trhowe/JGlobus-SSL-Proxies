@@ -17,9 +17,7 @@ package org.globus.gsi.bc.test;
 
 import java.security.cert.X509Certificate;
 import java.util.Set;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -39,18 +37,6 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
     public Log logger = LogFactory.getLog(BouncyCastleCertProcessingFactoryTest.class);
 
     public static BouncyCastleCertProcessingFactory factory = BouncyCastleCertProcessingFactory.getDefault();
-
-    public BouncyCastleCertProcessingFactoryTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(BouncyCastleCertProcessingFactoryTest.class);
-    }
 
     public void testResctrictedNoProxyCertInfoExt() throws Exception {
 

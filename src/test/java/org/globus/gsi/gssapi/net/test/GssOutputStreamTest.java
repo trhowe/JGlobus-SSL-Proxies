@@ -15,146 +15,117 @@
  */
 package org.globus.gsi.gssapi.net.test;
 
-import java.io.OutputStream;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-
-import org.globus.gsi.gssapi.net.GssOutputStream;
-
-import org.ietf.jgss.GSSContext;
-
+import java.io.IOException;
+import java.io.OutputStream;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import org.globus.gsi.gssapi.net.GssOutputStream;
 
 public class GssOutputStreamTest extends TestCase {
 
-    public GssOutputStreamTest(String name) {
-	super(name);
-    }
-    
-    public static void main (String[] args) {
-	junit.textui.TestRunner.run (suite());
-    }
-
-    public static Test suite() {
-	return new TestSuite(GssOutputStreamTest.class);
-    }
-    
     public void test1() throws Exception {
-	ByteArrayOutputStream out
-	    = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	TestGssOutputStream t = new TestGssOutputStream(out, 5);
+        TestGssOutputStream t = new TestGssOutputStream(out, 5);
 
-	t.write('A');
-	t.write('B');
-	
-	assertEquals(2, t.getIndex());
+        t.write('A');
+        t.write('B');
 
-	t.write('C');
-	t.write('D');
-	t.write('E');
+        assertEquals(2, t.getIndex());
 
-	assertEquals(5, t.getIndex());
+        t.write('C');
+        t.write('D');
+        t.write('E');
 
-	t.write('F');
+        assertEquals(5, t.getIndex());
 
-	assertEquals(1, t.getIndex());
+        t.write('F');
 
-	assertEquals("ABCDE", new String(out.toByteArray()));
+        assertEquals(1, t.getIndex());
+
+        assertEquals("ABCDE", new String(out.toByteArray()));
     }
-
 
     public void test2() throws Exception {
-	ByteArrayOutputStream out
-	    = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	TestGssOutputStream t = new TestGssOutputStream(out, 5);
+        TestGssOutputStream t = new TestGssOutputStream(out, 5);
 
-	byte [] m1 = new byte[] {'A', 'B'};
-	t.write(m1);
-	
-	assertEquals(2, t.getIndex());
+        byte[] m1 = new byte[] { 'A', 'B' };
+        t.write(m1);
 
-	byte [] m2 = new byte[] {'C', 'D', 'E'};
-	t.write(m2);
+        assertEquals(2, t.getIndex());
 
-	assertEquals(5, t.getIndex());
+        byte[] m2 = new byte[] { 'C', 'D', 'E' };
+        t.write(m2);
 
-	t.write('F');
+        assertEquals(5, t.getIndex());
 
-	assertEquals(1, t.getIndex());
+        t.write('F');
 
-	assertEquals("ABCDE", new String(out.toByteArray()));
+        assertEquals(1, t.getIndex());
+
+        assertEquals("ABCDE", new String(out.toByteArray()));
     }
-    
+
     public void test3() throws Exception {
-	ByteArrayOutputStream out
-	    = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	TestGssOutputStream t = new TestGssOutputStream(out, 5);
+        TestGssOutputStream t = new TestGssOutputStream(out, 5);
 
-	byte [] m1 = new byte[] {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-	t.write(m1);
-	
-	assertEquals(2, t.getIndex());
+        byte[] m1 = new byte[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
+        t.write(m1);
 
-	assertEquals("ABCDE", new String(out.toByteArray()));
+        assertEquals(2, t.getIndex());
+
+        assertEquals("ABCDE", new String(out.toByteArray()));
     }
 
     public void test4() throws Exception {
-	ByteArrayOutputStream out
-	    = new ByteArrayOutputStream();
-	
-	TestGssOutputStream t = new TestGssOutputStream(out, 5);
-	
-	byte [] m1 = new byte[] {'A', 'B', 'C', 'D', 'E', 
-				 'F', 'G', 'H', 'I', 'J',
-				 'K', 'L', 'M'};
-	t.write(m1);
-	
-	assertEquals(3, t.getIndex());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	assertEquals("ABCDEFGHIJ", new String(out.toByteArray()));
+        TestGssOutputStream t = new TestGssOutputStream(out, 5);
+
+        byte[] m1 = new byte[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
+        t.write(m1);
+
+        assertEquals(3, t.getIndex());
+
+        assertEquals("ABCDEFGHIJ", new String(out.toByteArray()));
     }
 
     public void test5() throws Exception {
-	ByteArrayOutputStream out
-	    = new ByteArrayOutputStream();
-	
-	TestGssOutputStream t = new TestGssOutputStream(out, 5);
-	
-	byte [] m1 = new byte[] {'A', 'B', 'C', 'D', 'E', 
-				 'F', 'G', 'H', 'I', 'J',
-				 'K', 'L', 'M', 'N', 'O'};
-	t.write(m1);
-	
-	assertEquals(5, t.getIndex());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	assertEquals("ABCDEFGHIJ", new String(out.toByteArray()));
+        TestGssOutputStream t = new TestGssOutputStream(out, 5);
 
-	t.write('B');
-	
-	assertEquals(1, t.getIndex());
-	assertEquals("ABCDEFGHIJKLMNO", new String(out.toByteArray()));
+        byte[] m1 = new byte[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' };
+        t.write(m1);
+
+        assertEquals(5, t.getIndex());
+
+        assertEquals("ABCDEFGHIJ", new String(out.toByteArray()));
+
+        t.write('B');
+
+        assertEquals(1, t.getIndex());
+        assertEquals("ABCDEFGHIJKLMNO", new String(out.toByteArray()));
     }
 
     class TestGssOutputStream extends GssOutputStream {
 
-	public TestGssOutputStream(OutputStream out, int size) {
-	    super(out, null, size);
-	}
+        public TestGssOutputStream(OutputStream out, int size) {
+            super(out, null, size);
+        }
 
-	public int getIndex() {
-	    return index;
-	}
+        public int getIndex() {
+            return index;
+        }
 
-	public void flush()
-	    throws IOException {
-	    out.write(buff, 0, index);
-	    index = 0;
-	}
+        public void flush() throws IOException {
+            out.write(buff, 0, index);
+            index = 0;
+        }
 
     }
 

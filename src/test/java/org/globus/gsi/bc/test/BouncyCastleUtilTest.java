@@ -19,9 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.globus.gsi.CertUtil;
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;
@@ -31,18 +29,6 @@ import org.globus.gsi.proxy.test.ProxyPathValidatorTest;
 public class BouncyCastleUtilTest extends TestCase {
 
     static String[] badCerts = ProxyPathValidatorTest.badCerts;
-
-    public BouncyCastleUtilTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(BouncyCastleUtilTest.class);
-    }
 
     private X509Certificate getCertificate(int i) throws Exception {
         ClassLoader loader = ProxyPathValidatorTest.class.getClassLoader();

@@ -20,9 +20,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.CertUtil;
@@ -180,18 +178,6 @@ public class ProxyPathValidatorTest extends TestCase {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load certs: " + e.getMessage());
         }
-    }
-
-    public ProxyPathValidatorTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(ProxyPathValidatorTest.class);
     }
 
     public static X509Certificate[] initCerts() throws Exception {

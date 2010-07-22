@@ -17,9 +17,7 @@ package org.globus.gsi.gssapi.test;
 
 import java.io.File;
 import java.security.cert.X509Certificate;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.gsi.gssapi.GSSConstants;
@@ -35,18 +33,6 @@ public class GlobusGSSCredentialTest extends TestCase {
 
     private Log logger = LogFactory.getLog(GlobusGSSCredentialTest.class);
     ExtendedGSSManager manager;
-
-    public GlobusGSSCredentialTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(GlobusGSSCredentialTest.class);
-    }
 
     protected void setUp() throws Exception {
         manager = new GlobusGSSManagerImpl();

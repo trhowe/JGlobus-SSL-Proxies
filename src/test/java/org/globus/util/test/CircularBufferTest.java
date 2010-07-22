@@ -15,69 +15,54 @@
  */
 package org.globus.util.test;
 
-import org.globus.util.CircularBuffer;
-
 import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.globus.util.CircularBuffer;
 
 public class CircularBufferTest extends TestCase {
 
     private CircularBuffer buffer;
 
-    public  CircularBufferTest(String name) {
-	super(name);
-    }
-
-    public static void main (String[] args) {
-	junit.textui.TestRunner.run (suite());
-    }
-
-    public static Test suite() {
-	return new TestSuite(CircularBufferTest.class);
-    }
-
     protected void setUp() throws Exception {
-	buffer = new CircularBuffer(5);
+        buffer = new CircularBuffer(5);
     }
 
     public void testInterruptBoth() throws Exception {
 
-	assertTrue(buffer.put("a"));
-	assertTrue(buffer.put("b"));
-	buffer.interruptBoth();
-	assertTrue(!buffer.put("c"));
-	assertTrue(!buffer.put("d"));
+        assertTrue(buffer.put("a"));
+        assertTrue(buffer.put("b"));
+        buffer.interruptBoth();
+        assertTrue(!buffer.put("c"));
+        assertTrue(!buffer.put("d"));
 
-	assertEquals(null, buffer.get());
-	assertEquals(null, buffer.get());
+        assertEquals(null, buffer.get());
+        assertEquals(null, buffer.get());
     }
 
     public void testPutFull() throws Exception {
 
-	assertTrue(buffer.put("a"));
-	assertTrue(buffer.put("b"));
-	assertTrue(buffer.put("c"));
-	assertTrue(buffer.put("d"));
-	assertTrue(buffer.put("e"));
+        assertTrue(buffer.put("a"));
+        assertTrue(buffer.put("b"));
+        assertTrue(buffer.put("c"));
+        assertTrue(buffer.put("d"));
+        assertTrue(buffer.put("e"));
 
-	Thread t = (new Thread() {
-		public void run() {
-		    buffer.closePut();
-		    buffer.interruptPut();
-		}
-	    });
-	t.start();
+        Thread t = (new Thread() {
+            public void run() {
+                buffer.closePut();
+                buffer.interruptPut();
+            }
+        });
+        t.start();
 
-	assertTrue(!buffer.put("f"));
-	assertTrue(!buffer.put("g"));
+        assertTrue(!buffer.put("f"));
+        assertTrue(!buffer.put("g"));
 
-	assertEquals("a", buffer.get());
-	assertEquals("b", buffer.get());
-	assertEquals("c", buffer.get());
-	assertEquals("d", buffer.get());
-	assertEquals("e", buffer.get());
-	assertEquals(null, buffer.get());
+        assertEquals("a", buffer.get());
+        assertEquals("b", buffer.get());
+        assertEquals("c", buffer.get());
+        assertEquals("d", buffer.get());
+        assertEquals("e", buffer.get());
+        assertEquals(null, buffer.get());
     }
 
 }

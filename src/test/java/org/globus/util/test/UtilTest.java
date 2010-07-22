@@ -15,9 +15,7 @@
  */
 package org.globus.util.test;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.globus.util.Util;
@@ -34,18 +32,6 @@ public class UtilTest extends TestCase {
 
     private static final String uStr3 = "(exe = \"mis\"\\test)";
     private static final String qStr3 = "\"(exe = \\\"mis\\\"\\\\test)\"";
-
-    public UtilTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static Test suite() {
-        return new TestSuite(UtilTest.class);
-    }
 
     public void testQuote1() {
         String tStr1 = Util.quote(uStr1);
