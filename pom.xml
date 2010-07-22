@@ -1,26 +1,70 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.jglobus</groupId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>ssl-proxies</artifactId>
-    
-    <repositories>
-        <repository>
-            <id>globus-releases</id>
-            <name>Globus Release Repository</name>
-            <url>http://repo.globus.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>globus-snapshots</id>
-            <name>Globus Snapshot Repository</name>
-            <url>http://repo.globus.org/content/groups/public-snapshots/</url>
-        </repository>
-    </repositories>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jglobus</groupId>
+  <artifactId>JGlobus-SSL-Proxies</artifactId>
+  <version>1.0.0</version>
+    <dependencies>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.15</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.claymoresystems</groupId>
+        <artifactId>puretls</artifactId>
+        <version>1.0-unreleased</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.cryptix</groupId>
+        <artifactId>cryptix</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.cryptix</groupId>
+        <artifactId>cryptix-asn1</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.cryptix</groupId>
+        <artifactId>cryptix32</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+      	<groupId>org.jce</groupId>
+      	<artifactId>jce</artifactId>
+      	<version>1.3.1</version>
+      	<type>jar</type>
+      	<scope>compile</scope>
+      </dependency>
+      <dependency>
+      	<groupId>junit</groupId>
+      	<artifactId>junit</artifactId>
+      	<version>3.8.1</version>
+      	<type>jar</type>
+      	<scope>test</scope>
+      </dependency>
+    </dependencies>
+  <repositories>
+      <repository>
+      <id>birn</id>
+      <name>BIRN Maven2 repository</name>
+      <url>http://rls2.nbirn.org:8081/nexus/content/repositories/cogjglobus</url>
+    </repository>
+  </repositories>
 </project>
