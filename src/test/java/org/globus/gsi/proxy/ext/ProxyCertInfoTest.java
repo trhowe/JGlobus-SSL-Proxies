@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.gsi.proxy.ext.test;
+package org.globus.gsi.proxy.ext;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;

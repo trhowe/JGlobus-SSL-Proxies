@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.gsi.bc.test;
+package org.globus.gsi.bc;
 
 import java.util.Set;
 import java.security.cert.X509Certificate;

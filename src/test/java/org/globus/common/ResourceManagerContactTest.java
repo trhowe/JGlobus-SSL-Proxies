@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.common.test;
+package org.globus.common;
 
 import junit.framework.TestCase;
 import org.globus.common.ResourceManagerContact;

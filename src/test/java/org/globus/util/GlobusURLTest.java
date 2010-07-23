@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.util.test;
+package org.globus.util;
 
 import junit.framework.TestCase;
 import org.globus.util.GlobusURL;

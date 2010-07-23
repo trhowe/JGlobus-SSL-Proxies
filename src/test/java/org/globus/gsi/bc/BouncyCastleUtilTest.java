@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.gsi.bc.test;
+package org.globus.gsi.bc;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.bc.BouncyCastleUtil;
 
 // to load the certs from
-import org.globus.gsi.proxy.test.ProxyPathValidatorTest;
+import org.globus.gsi.proxy.ProxyPathValidatorTest;
 
 import junit.framework.TestCase;
 

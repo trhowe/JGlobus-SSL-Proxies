@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.security.gridmap.test;
+package org.globus.security.gridmap;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

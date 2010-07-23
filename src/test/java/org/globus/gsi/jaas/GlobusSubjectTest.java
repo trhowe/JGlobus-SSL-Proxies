@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.globus.gsi.jaas.test;
+package org.globus.gsi.jaas;
 
 import org.globus.gsi.jaas.JaasSubject;
 
