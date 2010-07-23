@@ -152,62 +152,6 @@ public class PureTLSUtil {
     }
 
     /**
-     * Returns the base name of a proxy. Strips all
-     * "cn=proxy" or "cn=limited proxy" components.
-     *
-     * @deprecated Only works with Globus legacy proxies.
-     */
-    public static X509Name getBase(DistinguishedName name) {
-	X509Name nm = dupName(name);
-	Vector dn = nm.getName();
-	int len = dn.size();
-	for (int i=len-1;i>=0;i--) {
-	    Vector rdn = (Vector)dn.elementAt(i);
-	    // checks only first ava entry
-	    String [] ava = (String[])rdn.elementAt(0);
-	    if (ava[0].equalsIgnoreCase("CN") &&
-		(ava[1].equalsIgnoreCase("proxy") || 
-		 ava[1].equalsIgnoreCase("limited proxy"))) {
-		dn.removeElementAt(i);
-	    } else {
-		break;
-	    }
-	}
-	return new X509Name(dn);
-    }
-
-    /**
-     * Returns proxy name. 
-     *
-     * @deprecated Only works for Globus legacy proxies.
-     */
-    public static int checkProxyName(X509Cert cert) {
-	int rs = -1;
-	DistinguishedName subject = dupName(cert.getSubjectName());
-	Vector subjectDN = subject.getName();
-	Vector lastAva = (Vector)subjectDN.elementAt(subjectDN.size()-1);
-	String [] ava = (String[])lastAva.elementAt(0);
-	
-	if (ava[0].equalsIgnoreCase("CN")) {
-	    if (ava[1].equalsIgnoreCase("proxy")) {
-		rs = GSIConstants.GSI_2_PROXY;
-	    } else if (ava[1].equalsIgnoreCase("limited proxy")) {
-		rs = GSIConstants.GSI_2_LIMITED_PROXY;
-	    }
-		
-	    if (rs != -1) {
-		Vector nameDN = dupName(cert.getIssuerName()).getName();
-		nameDN.addElement(lastAva);
-		X509Name newName = new X509Name(nameDN);
-
-		return (Arrays.equals(subject.getNameDER(), newName.getNameDER())) ? rs : -1;
-	    }
-	}
-
-	return rs;
-    }
-
-    /**
      * Replicates a X509Name object.
      * 
      * @param name X509Name object to replicate.
@@ -281,23 +225,6 @@ public class PureTLSUtil {
 	certPolicy.requireKeyUsage(false);
 
 	return certPolicy;
-    }
-
-    /**
-     * Returns the Globus formatted representation of the
-     * subject DN of the specified certificate.
-     *
-     * @param cert the encoded certificate
-     * @return the Globus formatted representation of the 
-     *         subject DN.
-     * @exception Exception if something goes wrong.
-     * @deprecated Only works with Globus legacy proxies.
-     */
-    public static String getGlobusId(byte[] cert) 
-	throws Exception {
-	X509Cert crt = new X509Cert(cert);
-	DistinguishedName subject = PureTLSUtil.getBase(crt.getSubjectName());
-	return toGlobusID(subject);
     }
 
     /**

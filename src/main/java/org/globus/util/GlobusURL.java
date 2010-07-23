@@ -228,33 +228,7 @@ public class GlobusURL {
     public String getPath() {
 	return urlPath;
     }
-    
-    /**
-     * Returns the url path part of an url.
-     *
-     * @return the url path part of the url.
-     *         Returns null if the url path is
-     *         not specified.
-     * @deprecated
-     */
-    public String getFile() {
-	return getUrlPath();
-    }
-    
-    /**
-     * Returns the url path part of an url.
-     *
-     * @return the url path part of the url.
-     *         Returns null if the url path is 
-     *         not specified.
-     * @deprecated Though this class does not extend java.net.URL,
-     *		   it should be similar where possible to be intuitive
-     *		   to the user used to URL.
-     */
-    public String getUrlPath() {
-	return urlPath;
-    }
-    
+        
     /**
      * Returns the user name of an url.
      *
@@ -303,7 +277,7 @@ public class GlobusURL {
 	if (getPort() != cUrl.getPort()) return false;
 	if (!compare(getProtocol(), cUrl.getProtocol(), false)) return false;
 	if (!compare(getHost(), cUrl.getHost(), false)) return false;
-	if (!compare(getUrlPath(), cUrl.getUrlPath(), false)) return false;
+	if (!compare(urlPath, cUrl.urlPath, false)) return false;
 	if (!compare(getUser(), cUrl.getUser(), false)) return false;
 	if (!compare(getPwd(), cUrl.getPwd(), false)) return false;
 	

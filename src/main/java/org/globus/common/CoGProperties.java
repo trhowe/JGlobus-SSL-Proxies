@@ -312,29 +312,7 @@ public class CoGProperties extends Properties {
     public void setIPAddress(String ipAddress) {
 	put("ip", ipAddress);
     }
-    
-    /**
-     * @deprecated Use getCaCertLocations() instead.
-     *
-     * @see #getCaCertLocations() getCaCertLocations
-     *
-     * @return <code>String</code> the locations of the CA certificates
-     */
-    public String getCaCertFile() {
-	return getCaCertLocations();
-    }
-    
-    /**
-     * @deprecated Use getCaCertLocations() instead.
-     *
-     * @see #getCaCertLocations() getCaCertLocations
-     *
-     * @return <code>String</code> the locations of the CA certificates
-     */
-    public String getCaCerts() {
-	return getCaCertLocations();
-    }
-    
+            
     /**
      * Retrieves the location of the CA certificate files.  
      * It first checks the X509_CERT_DIR system property. If the property
@@ -649,37 +627,7 @@ public class CoGProperties extends Properties {
     public void setProxyLifeTime(int lifeTimeInHours) {
 	put("proxy.lifetime", String.valueOf(lifeTimeInHours));
     }
-    
-    // --------------------------------------------------------
-
-    // --- Most of these functions are deprecated ---
-
-    public String getRootMDSHost() {
-	return getProperty("mds.root.host", MDSHOST);
-    }
-    
-    public String getRootMDSPort() {
-	return getProperty("mds.root.port", MDSPORT);
-    }
-    
-    public String getRootMDSBaseDN() {
-	return getProperty("mds.root.basedn", BASEDN);
-    }
-    
-    public String getOrgMDSHost() {
-	return getProperty("mds.org.host", MDSHOST);
-    }
-    
-    public String getOrgMDSPort() {
-	return getProperty("mds.org.port", MDSPORT);
-    }
-    
-    public String getOrgMDSBaseDN() {
-	return getProperty("mds.org.basedn", BASEDN);
-    }
-    
-    // ----------------------------------------------------
-    
+        
     protected boolean getAsBoolean(String key, boolean defaultValue) {
 	String tmp = getProperty(key);
 	if (tmp == null) {
