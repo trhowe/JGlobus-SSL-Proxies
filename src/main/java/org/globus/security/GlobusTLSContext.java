@@ -15,6 +15,8 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.security.auth.Subject;
 
+import org.apache.commons.codec.binary.Hex;
+
 public class GlobusTLSContext {
 	private static ThreadLocal<Subject> containerSubjectHolder = new ThreadLocal<Subject>();
 	private Subject containerSubject;
@@ -49,9 +51,8 @@ public class GlobusTLSContext {
 
 		creationTime = new Date(sslSession.getCreationTime());
 		try {
-			sessionId = org.globus.util.StringUtils.getHexString(sslSession
-					.getId());
-		} catch (UnsupportedEncodingException e) {
+			sessionId = Hex.encodeHexString(sslSession.getId());
+		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
 		cipherSuite = sslSession.getCipherSuite();
