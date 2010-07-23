@@ -105,7 +105,7 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
         String expectedValue1 = "foo";
         boolean critical1 = false;
 
-        String oid2 = "5.6.7.8";
+        String oid2 = "1.2.3.5";
         String expectedValue2 = "bar";
         boolean critical2 = true;
 
