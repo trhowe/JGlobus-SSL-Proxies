@@ -36,7 +36,7 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.TBSCertificateStructure;
 import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.X509ProxyCertPathParameters;
 import org.globus.security.X509ProxyCertPathValidatorResult;
 import org.globus.security.provider.SigningPolicyStore;
@@ -150,11 +150,11 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
 
         X509Certificate cert;
         TBSCertificateStructure tbsCert;
-        Constants.CertificateType certType;
+        GSIConstants.CertificateType certType;
 
         X509Certificate issuerCert;
         TBSCertificateStructure issuerTbsCert;
-        Constants.CertificateType issuerCertType;
+        GSIConstants.CertificateType issuerCertType;
 
         int proxyDepth = 0;
 
@@ -206,8 +206,8 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
 
     }
 
-    private Constants.CertificateType getCertificateType(TBSCertificateStructure issuerTbsCert) throws CertPathValidatorException {
-        Constants.CertificateType issuerCertType;
+    private GSIConstants.CertificateType getCertificateType(TBSCertificateStructure issuerTbsCert) throws CertPathValidatorException {
+        GSIConstants.CertificateType issuerCertType;
         try {
 
             issuerCertType = CertificateUtil.getCertificateType(issuerTbsCert);
@@ -233,10 +233,10 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
         return issuerTbsCert;
     }
 
-    private int validateCert(X509Certificate cert, Constants.CertificateType certType, X509Certificate issuerCert,
-                             TBSCertificateStructure issuerTbsCert, Constants.CertificateType issuerCertType,
+    private int validateCert(X509Certificate cert, GSIConstants.CertificateType certType, X509Certificate issuerCert,
+                             TBSCertificateStructure issuerTbsCert, GSIConstants.CertificateType issuerCertType,
                              int proxyDepth, int i, boolean certIsProxy) throws CertPathValidatorException {
-        if (issuerCertType == Constants.CertificateType.CA) {
+        if (issuerCertType == GSIConstants.CertificateType.CA) {
             validateCACert(cert, issuerCert, issuerTbsCert, proxyDepth, i, certIsProxy);
         } else if (ProxyCertificateUtil.isGsi3Proxy(issuerCertType)
                 || ProxyCertificateUtil.isGsi4Proxy(issuerCertType)) {
@@ -244,7 +244,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
                     issuerCertType, proxyDepth);
         } else if (ProxyCertificateUtil.isGsi2Proxy(issuerCertType)) {
             return validateGsi2ProxyCert(cert, certType, issuerCert, proxyDepth);
-        } else if (issuerCertType == Constants.CertificateType.EEC) {
+        } else if (issuerCertType == GSIConstants.CertificateType.EEC) {
             validateEECCert(cert, certType, issuerCert);
         } else {
             // this should never happen?
@@ -255,7 +255,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
     }
 
     private void checkProxyConstraints(CertPath certPath, X509Certificate cert,
-                                       TBSCertificateStructure tbsCert, Constants.CertificateType certType,
+                                       TBSCertificateStructure tbsCert, GSIConstants.CertificateType certType,
                                        TBSCertificateStructure issuerTbsCert, int i)
             throws CertPathValidatorException {
 
@@ -267,8 +267,8 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
             } catch (IOException e) {
                 throw new CertPathValidatorException("Proxy constraint check failed on " + cert.getSubjectDN(), e);
             }
-            if ((certType == Constants.CertificateType.GSI_3_RESTRICTED_PROXY)
-                    || (certType == Constants.CertificateType.GSI_4_RESTRICTED_PROXY)) {
+            if ((certType == GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY)
+                    || (certType == GSIConstants.CertificateType.GSI_4_RESTRICTED_PROXY)) {
                 try {
                     checkRestrictedProxy(tbsCert, certPath, i);
                 } catch (IOException e) {
@@ -278,7 +278,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
         }
     }
 
-    private void validateEECCert(X509Certificate cert, Constants.CertificateType certType,
+    private void validateEECCert(X509Certificate cert, GSIConstants.CertificateType certType,
                                  X509Certificate issuerCert) throws CertPathValidatorException {
         if (!ProxyCertificateUtil.isProxy(certType)) {
             throw new CertPathValidatorException("EEC can only sign another proxy certificate. Violated by "
@@ -287,7 +287,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
     }
 
 
-    private int validateGsi2ProxyCert(X509Certificate cert, Constants.CertificateType certType,
+    private int validateGsi2ProxyCert(X509Certificate cert, GSIConstants.CertificateType certType,
                                       X509Certificate issuerCert, int proxyDepth) throws CertPathValidatorException {
         // PC can sign EEC or another PC only
         if (!ProxyCertificateUtil.isGsi2Proxy(certType)) {
@@ -298,9 +298,9 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
         return proxyDepth + 1;
     }
 
-    private int validateGsiProxyCert(X509Certificate cert, Constants.CertificateType certType,
+    private int validateGsiProxyCert(X509Certificate cert, GSIConstants.CertificateType certType,
                                      X509Certificate issuerCert, TBSCertificateStructure issuerTbsCert,
-                                     Constants.CertificateType issuerCertType, int proxyDepth)
+                                     GSIConstants.CertificateType issuerCertType, int proxyDepth)
             throws CertPathValidatorException {
         if (ProxyCertificateUtil.isGsi3Proxy(issuerCertType)) {
             if (!ProxyCertificateUtil.isGsi3Proxy(certType)) {
@@ -448,7 +448,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
      *
      */
 
-    private void checkCertificate(X509Certificate cert, Constants.CertificateType certType)
+    private void checkCertificate(X509Certificate cert, GSIConstants.CertificateType certType)
             throws CertPathValidatorException {
         for (CertificateChecker checker : getCertificateCheckers()) {
             checker.invoke(cert, certType);

@@ -36,7 +36,7 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.util.KeyStoreUtil;
 
 /**
@@ -72,7 +72,7 @@ public class CRLChecker implements CertificateChecker {
      *                                    loaded from store, CRL is not valid or
      *                                    expired, certificate is revoked.
      */
-    public void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException {
+    public void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException {
         X500Principal certIssuer = cert.getIssuerX500Principal();
 
         X509CRLSelector crlSelector = new X509CRLSelector();

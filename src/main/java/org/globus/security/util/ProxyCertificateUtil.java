@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.bouncycastle.asn1.x509.TBSCertificateStructure;
 import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.proxyExtension.ProxyCertInfo;
 
 /**
@@ -41,7 +41,7 @@ public final class ProxyCertificateUtil {
      * @return true if certType is a GSI-2 or GSI-3 or GSI-4 proxy, false
      *         otherwise.
      */
-    public static boolean isProxy(Constants.CertificateType certType) {
+    public static boolean isProxy(GSIConstants.CertificateType certType) {
         return isGsi2Proxy(certType) || isGsi3Proxy(certType) || isGsi4Proxy(certType);
     }
 
@@ -52,11 +52,11 @@ public final class ProxyCertificateUtil {
      * @param certType the certificate type to check.
      * @return true if certType is a GSI-4 proxy, false otherwise.
      */
-    public static boolean isGsi4Proxy(Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_4_IMPERSONATION_PROXY
-                || certType == Constants.CertificateType.GSI_4_INDEPENDENT_PROXY
-                || certType == Constants.CertificateType.GSI_4_RESTRICTED_PROXY
-                || certType == Constants.CertificateType.GSI_4_LIMITED_PROXY;
+    public static boolean isGsi4Proxy(GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_4_IMPERSONATION_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_RESTRICTED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_LIMITED_PROXY;
     }
 
     /**
@@ -66,11 +66,11 @@ public final class ProxyCertificateUtil {
      * @param certType the certificate type to check.
      * @return true if certType is a GSI-3 proxy, false otherwise.
      */
-    public static boolean isGsi3Proxy(Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_3_IMPERSONATION_PROXY
-                || certType == Constants.CertificateType.GSI_3_INDEPENDENT_PROXY
-                || certType == Constants.CertificateType.GSI_3_RESTRICTED_PROXY
-                || certType == Constants.CertificateType.GSI_3_LIMITED_PROXY;
+    public static boolean isGsi3Proxy(GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY
+                || certType == GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY
+                || certType == GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_3_LIMITED_PROXY;
     }
 
     /**
@@ -80,9 +80,9 @@ public final class ProxyCertificateUtil {
      * @param certType the certificate type to check.
      * @return true if certType is a GSI-2 proxy, false otherwise.
      */
-    public static boolean isGsi2Proxy(Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_2_PROXY
-                || certType == Constants.CertificateType.GSI_2_LIMITED_PROXY;
+    public static boolean isGsi2Proxy(GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_2_PROXY
+                || certType == GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
     }
 
     /**
@@ -93,10 +93,10 @@ public final class ProxyCertificateUtil {
      * @return true if certType is a GSI-2 or GSI-3 or GSI-4 limited proxy,
      *         false otherwise.
      */
-    public static boolean isLimitedProxy(Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_3_LIMITED_PROXY
-                || certType == Constants.CertificateType.GSI_2_LIMITED_PROXY
-                || certType == Constants.CertificateType.GSI_4_LIMITED_PROXY;
+    public static boolean isLimitedProxy(GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_3_LIMITED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_2_LIMITED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_LIMITED_PROXY;
     }
 
     /**
@@ -108,9 +108,9 @@ public final class ProxyCertificateUtil {
      *         otherwise.
      */
     public static boolean isIndependentProxy(
-            Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_3_INDEPENDENT_PROXY
-                || certType == Constants.CertificateType.GSI_4_INDEPENDENT_PROXY;
+            GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY;
     }
 
     /**
@@ -121,13 +121,13 @@ public final class ProxyCertificateUtil {
      * @return true if certType is a GSI-2 or GSI-3 or GSI-4 impersonation
      *         proxy, false otherwise.
      */
-    public static boolean isImpersonationProxy(Constants.CertificateType certType) {
-        return certType == Constants.CertificateType.GSI_3_IMPERSONATION_PROXY
-                || certType == Constants.CertificateType.GSI_3_LIMITED_PROXY
-                || certType == Constants.CertificateType.GSI_4_IMPERSONATION_PROXY
-                || certType == Constants.CertificateType.GSI_4_LIMITED_PROXY
-                || certType == Constants.CertificateType.GSI_2_LIMITED_PROXY
-                || certType == Constants.CertificateType.GSI_2_PROXY;
+    public static boolean isImpersonationProxy(GSIConstants.CertificateType certType) {
+        return certType == GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY
+                || certType == GSIConstants.CertificateType.GSI_3_LIMITED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_IMPERSONATION_PROXY
+                || certType == GSIConstants.CertificateType.GSI_4_LIMITED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_2_LIMITED_PROXY
+                || certType == GSIConstants.CertificateType.GSI_2_PROXY;
 
     }
 
@@ -146,9 +146,9 @@ public final class ProxyCertificateUtil {
             return null;
         }
         X509Extension ext =
-                extensions.getExtension(Constants.PROXY_OID);
+                extensions.getExtension(GSIConstants.PROXY_OID);
         if (ext == null) {
-            ext = extensions.getExtension(Constants.PROXY_OLD_OID);
+            ext = extensions.getExtension(GSIConstants.PROXY_OLD_OID);
         }
         return (ext != null) ? getProxyCertInfo(ext) : null;
     }

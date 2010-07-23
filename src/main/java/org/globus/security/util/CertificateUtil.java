@@ -37,7 +37,7 @@ import org.bouncycastle.asn1.x509.TBSCertificateStructure;
 import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509Name;
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.proxyExtension.ProxyCertInfo;
 import org.globus.security.proxyExtension.ProxyPolicy;
 
@@ -94,13 +94,13 @@ public final class CertificateUtil {
 
     /**
      * Returns certificate type of the given TBS certificate. <BR> The
-     * certificate type is {@link org.globus.security.Constants.CertificateType#CA
+     * certificate type is {@link org.globus.gsi.GSIGSIConstants.CertificateType#CA
      * CertificateType.CA} <B>only</B> if the certificate contains a
      * BasicConstraints extension and it is marked as CA.<BR> A certificate is a
      * GSI-2 proxy when the subject DN of the certificate ends with
-     * <I>"CN=proxy"</I> (certificate type {@link org.globus.security.Constants.CertificateType#GSI_2_PROXY
+     * <I>"CN=proxy"</I> (certificate type {@link org.globus.gsi.GSIGSIConstants.CertificateType#GSI_2_PROXY
      * CertificateType.GSI_2_PROXY}) or <I>"CN=limited proxy"</I> (certificate
-     * type {@link org.globus.security.Constants.CertificateType#GSI_2_LIMITED_PROXY
+     * type {@link org.globus.gsi.GSIGSIConstants.CertificateType#GSI_2_LIMITED_PROXY
      * CertificateType.LIMITED_PROXY}) component and the issuer DN of the
      * certificate matches the subject DN without the last proxy <I>CN</I>
      * component.<BR> A certificate is a GSI-3 proxy when the subject DN of the
@@ -108,26 +108,26 @@ public final class CertificateUtil {
      * certificate matches the subject DN without the last <I>CN</I> component
      * and the certificate contains {@link org.globus.security.proxyExtension.ProxyCertInfo
      * ProxyCertInfo} critical extension. The certificate type is {@link
-     * org.globus.security.Constants.CertificateType#GSI_3_IMPERSONATION_PROXY
+     * org.globus.gsi.GSIGSIConstants.CertificateType#GSI_3_IMPERSONATION_PROXY
      * CertificateType.GSI_3_IMPERSONATION_PROXY} if the policy language of the
      * {@link org.globus.security.proxyExtension.ProxyCertInfo ProxyCertInfo}
      * extension is set to {@link org.globus.security.proxyExtension.ProxyPolicy#IMPERSONATION
      * ProxyPolicy.IMPERSONATION} OID. The certificate type is {@link
-     * org.globus.security.Constants.CertificateType#GSI_3_LIMITED_PROXY
+     * org.globus.gsi.GSIGSIConstants.CertificateType#GSI_3_LIMITED_PROXY
      * CertificateType.GSI_3_LIMITED_PROXY} if the policy language of the {@link
      * org.globus.security.proxyExtension.ProxyCertInfo ProxyCertInfo} extension
      * is set to {@link org.globus.security.proxyExtension.ProxyPolicy#LIMITED
      * ProxyPolicy.LIMITED} OID. The certificate type is {@link
-     * org.globus.security.Constants.CertificateType#GSI_3_INDEPENDENT_PROXY
+     * org.globus.gsi.GSIGSIConstants.CertificateType#GSI_3_INDEPENDENT_PROXY
      * CertificateType.GSI_3_INDEPENDENT_PROXY} if the policy language of the
      * {@link org.globus.security.proxyExtension.ProxyCertInfo ProxyCertInfo}
      * extension is set to {@link org.globus.security.proxyExtension.ProxyPolicy#INDEPENDENT
      * ProxyPolicy.INDEPENDENT} OID. The certificate type is {@link
-     * org.globus.security.Constants.CertificateType#GSI_3_RESTRICTED_PROXY
+     * org.globus.gsi.GSIGSIConstants.CertificateType#GSI_3_RESTRICTED_PROXY
      * CertificateType.GSI_3_RESTRICTED_PROXY} if the policy language of the
      * {@link org.globus.security.proxyExtension.ProxyCertInfo ProxyCertInfo}
      * extension is set to any other OID then the above.<BR> The certificate
-     * type is {@link org.globus.security.Constants.CertificateType#EEC
+     * type is {@link org.globus.gsi.GSIGSIConstants.CertificateType#EEC
      * CertificateType.EEC} if the certificate is not a CA certificate or a
      * GSI-2 or GSI-3 proxy.
      *
@@ -143,7 +143,7 @@ public final class CertificateUtil {
      *                             <code>ProxyCertInfo</code> extension is not
      *                             marked as critical.
      */
-    public static Constants.CertificateType getCertificateType(
+    public static GSIConstants.CertificateType getCertificateType(
             TBSCertificateStructure crt)
             throws CertificateException, IOException {
 
@@ -155,12 +155,12 @@ public final class CertificateUtil {
             if (ext != null) {
                 BasicConstraints basicExt = getBasicConstraints(ext);
                 if (basicExt.isCA()) {
-                    return Constants.CertificateType.CA;
+                    return GSIConstants.CertificateType.CA;
                 }
             }
         }
 
-        Constants.CertificateType type = Constants.CertificateType.EEC;
+        GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
 
         // does not handle multiple AVAs
         X509Name subject = crt.getSubject();
@@ -174,22 +174,22 @@ public final class CertificateUtil {
         return type;
     }
 
-    private static Constants.CertificateType processCN(
-            X509Extensions extensions, Constants.CertificateType type, ASN1Sequence ava) throws CertificateException {
+    private static GSIConstants.CertificateType processCN(
+            X509Extensions extensions, GSIConstants.CertificateType type, ASN1Sequence ava) throws CertificateException {
         X509Extension ext;
         String value = ((DERString) ava.getObjectAt(1)).getString();
-        Constants.CertificateType certType = type;
+        GSIConstants.CertificateType certType = type;
         if (value.equalsIgnoreCase("proxy")) {
-            certType = Constants.CertificateType.GSI_2_PROXY;
+            certType = GSIConstants.CertificateType.GSI_2_PROXY;
         } else if (value.equalsIgnoreCase("limited proxy")) {
-            certType = Constants.CertificateType.GSI_2_LIMITED_PROXY;
+            certType = GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
         } else if (extensions != null) {
             boolean gsi4 = true;
             // GSI_4
-            ext = extensions.getExtension(Constants.PROXY_OID);
+            ext = extensions.getExtension(GSIConstants.PROXY_OID);
             if (ext == null) {
                 // GSI_3
-                ext = extensions.getExtension(Constants.PROXY_OLD_OID);
+                ext = extensions.getExtension(GSIConstants.PROXY_OLD_OID);
                 gsi4 = false;
             }
             if (ext != null) {
@@ -216,8 +216,8 @@ public final class CertificateUtil {
         return certType;
     }
 
-    private static Constants.CertificateType processCriticalExtension(X509Extension ext, boolean gsi4) {
-        Constants.CertificateType type;
+    private static GSIConstants.CertificateType processCriticalExtension(X509Extension ext, boolean gsi4) {
+        GSIConstants.CertificateType type;
         ProxyCertInfo proxyCertExt =
                 ProxyCertificateUtil.getProxyCertInfo(ext);
         ProxyPolicy proxyPolicy =
@@ -227,34 +227,34 @@ public final class CertificateUtil {
         if (ProxyPolicy.IMPERSONATION.equals(oid)) {
             if (gsi4) {
                 type =
-                        Constants.CertificateType.GSI_4_IMPERSONATION_PROXY;
+                        GSIConstants.CertificateType.GSI_4_IMPERSONATION_PROXY;
             } else {
                 type =
-                        Constants.CertificateType.GSI_3_IMPERSONATION_PROXY;
+                        GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY;
             }
         } else if (ProxyPolicy.INDEPENDENT.equals(oid)) {
             if (gsi4) {
                 type =
-                        Constants.CertificateType.GSI_4_INDEPENDENT_PROXY;
+                        GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY;
             } else {
                 type =
-                        Constants.CertificateType.GSI_3_INDEPENDENT_PROXY;
+                        GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY;
             }
         } else if (ProxyPolicy.LIMITED.equals(oid)) {
             if (gsi4) {
                 type =
-                        Constants.CertificateType.GSI_4_LIMITED_PROXY;
+                        GSIConstants.CertificateType.GSI_4_LIMITED_PROXY;
             } else {
                 type =
-                        Constants.CertificateType.GSI_3_LIMITED_PROXY;
+                        GSIConstants.CertificateType.GSI_3_LIMITED_PROXY;
             }
         } else {
             if (gsi4) {
                 type =
-                        Constants.CertificateType.GSI_4_RESTRICTED_PROXY;
+                        GSIConstants.CertificateType.GSI_4_RESTRICTED_PROXY;
             } else {
                 type =
-                        Constants.CertificateType.GSI_3_RESTRICTED_PROXY;
+                        GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY;
             }
         }
         return type;

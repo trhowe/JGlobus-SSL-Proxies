@@ -20,7 +20,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 
 /**
  * Checks if the certificate has expried or is not yet valid.
@@ -36,7 +36,7 @@ public class DateValidityChecker implements CertificateChecker {
      * @throws CertPathValidatorException If certificate has expired or is not yet valid.
      */
 
-    public void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException {
+    public void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException {
         try {
             cert.checkValidity();
         } catch (CertificateExpiredException e) {

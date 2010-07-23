@@ -18,7 +18,7 @@ package org.globus.security.trustmanager;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.X509Certificate;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.util.ProxyCertificateUtil;
 
 /**
@@ -41,7 +41,7 @@ public class IdentityChecker implements CertificateChecker {
      *                                    and the chain has a limited proxy.
      */
 
-    public void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException {
+    public void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException {
         if (proxyCertValidator.getIdentityCertificate() == null) {
             // check if limited
             if (ProxyCertificateUtil.isLimitedProxy(certType)) {

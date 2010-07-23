@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.SigningPolicy;
 import org.globus.security.provider.SigningPolicyStore;
 import org.globus.security.util.ProxyCertificateUtil;
@@ -43,7 +43,7 @@ public class SigningPolicyChecker implements CertificateChecker {
      * @param certType The type of certificate to check.
      * @throws CertPathValidatorException if the certificate is invalid according to the signing policy.
      */
-    public void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException {
+    public void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException {
         if (!requireSigningPolicyCheck(certType)) {
             return;
         }
@@ -73,8 +73,8 @@ public class SigningPolicyChecker implements CertificateChecker {
      * @param certType The type of Certificate being queried.
      * @return True if the CertificateType requires a Signing Policy check.
      */
-    private boolean requireSigningPolicyCheck(Constants.CertificateType certType) {
+    private boolean requireSigningPolicyCheck(GSIConstants.CertificateType certType) {
 
-        return !ProxyCertificateUtil.isProxy(certType) && certType != Constants.CertificateType.CA;
+        return !ProxyCertificateUtil.isProxy(certType) && certType != GSIConstants.CertificateType.CA;
     }
 }

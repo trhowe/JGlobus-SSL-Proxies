@@ -69,73 +69,73 @@ public class TestProxyPathValidator {
     };
 
     public static String[] certs = {
-            // 0, Constants.CertificateType.CA), TestCA.pem
+            // 0, GSIConstants.CertificateType.CA), TestCA.pem
             "TestCA1.pem",
-            // 1, Constants.CertificateType.EEC,
+            // 1, GSIConstants.CertificateType.EEC,
             "eecFromTestCA1.pem",
-            // 2, Constants.CertificateType.GSI_2_PROXY), gsi2fullproxy.pem
+            // 2, GSIConstants.CertificateType.GSI_2_PROXY), gsi2fullproxy.pem
             "gsi2fullproxy.pem",
-            // 3, Constants.CertificateType.GSI_2_LIMITED_PROXY), gsi2limitedproxy.pem
+            // 3, GSIConstants.CertificateType.GSI_2_LIMITED_PROXY), gsi2limitedproxy.pem
             "gsi2limitedproxy.pem",
-            // 4, double Constants.CertificateType.GSI_2_LIMITED_PROXY), gsi2limited2xproxy.pem (issued by 3)
+            // 4, double GSIConstants.CertificateType.GSI_2_LIMITED_PROXY), gsi2limited2xproxy.pem (issued by 3)
             "gsi2limited2xproxy.pem",
-            // 5, Constants.CertificateType.GSI_3_IMPERSONATION_PROXY),  gsi3impersonationproxy.pem
+            // 5, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY),  gsi3impersonationproxy.pem
             "gsi3impersonationproxy.pem",
-            // 6, Constants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi3independentproxy.pem
+            // 6, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi3independentproxy.pem
             "gsi3independentproxy.pem",
-            // 7, Constants.CertificateType.GSI_3_LIMITED_PROXY), gsi3limitedproxy.pem
+            // 7, GSIConstants.CertificateType.GSI_3_LIMITED_PROXY), gsi3limitedproxy.pem
             "gsi3limitedproxy.pem",
-            // 8, Constants.CertificateType.GSI_3_RESTRICTED_PROXY),   gsi3restrictedproxy.pem
+            // 8, GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY),   gsi3restrictedproxy.pem
             "gsi3restrictedproxy.pem",
             // double
-            // 9, Constants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonation2xproxy.pem
+            // 9, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonation2xproxy.pem
             "gsi3impersonation2xproxy.pem",
-            // 10, Constants.CertificateType.GSI_3_INDEPENDENT_PROXY),  gsi3independent2xproxy.pem
+            // 10, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY),  gsi3independent2xproxy.pem
             "gsi3independent2xproxy.pem",
             // pathLen = 0
-            // 11, Constants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonationp0proxy.pem
+            // 11, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonationp0proxy.pem
             "gsi3impersonationp0proxy.pem",
             // pathLen = 1
-            // 12, Constants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi2independentp1proxy.pem
+            // 12, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi2independentp1proxy.pem
             "gsi3independentp1proxy.pem",
             // pathLen = 2
-            // 13, Constants.CertificateType.CA),
+            // 13, GSIConstants.CertificateType.CA),
             "testca.pem",
-            // 14, Constants.CertificateType.EEC)
+            // 14, GSIConstants.CertificateType.EEC)
             "testeec1.pem",
-            // 15, Constants.CertificateType.EEC)
+            // 15, GSIConstants.CertificateType.EEC)
             "testeec2.pem",
             // pathLen = 1
-            // 16, Constants.CertificateType.CA)
+            // 16, GSIConstants.CertificateType.CA)
             "testca2.pem",      // crl for this, 16
-            // 17, Constants.CertificateType.GSI_3_IMPERSONATION_PROXY),
+            // 17, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY),
             "testgsi3proxy.pem",
             // for CRL test
-            // 18, Constants.CertificateType.CA),
+            // 18, GSIConstants.CertificateType.CA),
             "testca3.pem",
-            // 19, Constants.CertificateType.EEC),
+            // 19, GSIConstants.CertificateType.EEC),
             "crl_usercert.pem",
-            // 20, Constants.CertificateType.GSI_2_PROXY),
+            // 20, GSIConstants.CertificateType.GSI_2_PROXY),
             "crl_proxy.pem",
             // 21 (all good)
-            // Constants.CertificateType.CA)
+            // GSIConstants.CertificateType.CA)
             "ca1cert.pem",
-            // 22, Constants.CertificateType.EEC
+            // 22, GSIConstants.CertificateType.EEC
             "user1ca1.pem",
-            // 23, Constants.CertificateType.EEC)
+            // 23, GSIConstants.CertificateType.EEC)
             "user2ca1.pem",
-            // 24, Constants.CertificateType.EEC)
+            // 24, GSIConstants.CertificateType.EEC)
             "user3ca1.pem",
             // 25
-            // Constants.CertificateType.CA)
+            // GSIConstants.CertificateType.CA)
             "ca2cert.pem",   // crl 25
             // must be revoked (in ca2crl.r0)
-            // 26, Constants.CertificateType.EEC)
+            // 26, GSIConstants.CertificateType.EEC)
             "user1ca2.pem",
             // must be revoked (in ca2crl.r0)
-            // 27, Constants.CertificateType.EEC),
+            // 27, GSIConstants.CertificateType.EEC),
             "user2ca2.pem",
-            // 28, Constants.CertificateType.EEC)
+            // 28, GSIConstants.CertificateType.EEC)
             "user3ca2.pem",
             // 29
             // gsi3 limited impersonation signs a gsi3 independent

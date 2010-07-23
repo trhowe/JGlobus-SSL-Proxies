@@ -18,7 +18,7 @@ package org.globus.security.trustmanager;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.X509Certificate;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 
 /**
  * Implementations of this interface will provide some validation logic of certificates.
@@ -34,5 +34,5 @@ public interface CertificateChecker {
      * @param certType The type of certificate to validate.
      * @throws CertPathValidatorException If validation fails.
      */
-    void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException;
+    void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException;
 }

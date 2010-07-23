@@ -19,7 +19,7 @@ import java.security.cert.CertPathValidatorException;
 import java.security.cert.X509Certificate;
 import java.util.Set;
 
-import org.globus.security.Constants;
+import org.globus.gsi.GSIConstants;
 import org.globus.security.util.ProxyCertificateUtil;
 
 /**
@@ -38,7 +38,7 @@ public class UnsupportedCriticalExtensionChecker implements CertificateChecker {
      * @throws CertPathValidatorException If any critical extension that is not supported is in the certificate.
      *                                    Anything other than those listed above will trigger the exception.
      */
-    public void invoke(X509Certificate cert, Constants.CertificateType certType) throws CertPathValidatorException {
+    public void invoke(X509Certificate cert, GSIConstants.CertificateType certType) throws CertPathValidatorException {
         Set<String> criticalExtensionOids =
                 cert.getCriticalExtensionOIDs();
         if (criticalExtensionOids == null) {
@@ -49,15 +49,15 @@ public class UnsupportedCriticalExtensionChecker implements CertificateChecker {
         }
     }
 
-    private void isUnsupported(Constants.CertificateType certType, String criticalExtensionOid)
+    private void isUnsupported(GSIConstants.CertificateType certType, String criticalExtensionOid)
             throws CertPathValidatorException {
         boolean unsupportedCritExtention = criticalExtensionOid.equals(X509ProxyCertPathValidator.BASIC_CONSTRAINT_OID);
         unsupportedCritExtention = unsupportedCritExtention || criticalExtensionOid.equals(X509ProxyCertPathValidator.KEY_USAGE_OID);
         unsupportedCritExtention = unsupportedCritExtention
-                || (criticalExtensionOid.equals(Constants.PROXY_OID.toString())
+                || (criticalExtensionOid.equals(GSIConstants.PROXY_OID.toString())
                 && ProxyCertificateUtil.isGsi4Proxy(certType));
         unsupportedCritExtention = unsupportedCritExtention
-                || (criticalExtensionOid.equals(Constants.PROXY_OLD_OID.toString())
+                || (criticalExtensionOid.equals(GSIConstants.PROXY_OLD_OID.toString())
                 && ProxyCertificateUtil.isGsi3Proxy(certType));
 
         if (unsupportedCritExtention) {
