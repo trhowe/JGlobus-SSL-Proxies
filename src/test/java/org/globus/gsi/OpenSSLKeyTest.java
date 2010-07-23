@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.globus.security;
+package org.globus.gsi;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
+import org.globus.security.SecurityTest;
+
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 
 import org.globus.security.FileSetupUtil;
-import org.globus.security.bc.BouncyCastleOpenSSLKey;
+import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

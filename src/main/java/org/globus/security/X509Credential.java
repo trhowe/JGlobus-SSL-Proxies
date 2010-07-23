@@ -34,9 +34,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bouncycastle.util.encoders.Base64;
-import org.globus.security.bc.BouncyCastleOpenSSLKey;
 import org.globus.security.util.CertificateIOUtil;
 import org.globus.security.util.CertificateLoadUtil;
+
+import org.globus.gsi.OpenSSLKey;
+import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 
 /**
  * FILL ME
