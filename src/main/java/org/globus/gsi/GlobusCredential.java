@@ -18,7 +18,6 @@ package org.globus.gsi;
 import java.security.PrivateKey;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
@@ -41,7 +40,6 @@ import java.util.Date;
 import org.globus.common.ChainedIOException;
 import org.globus.common.CoGProperties;
 
-import org.globus.util.Base64;
 import org.globus.util.I18n;
 
 import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
@@ -54,6 +52,8 @@ import org.globus.gsi.CertificateRevocationLists;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.bouncycastle.util.encoders.Base64;
 
 /** 
  * Provides a Java object representation of Globus credential 

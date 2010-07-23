@@ -35,7 +35,6 @@ import java.util.StringTokenizer;
 import java.util.ArrayList;
 
 import org.globus.util.I18n;
-import org.globus.util.Base64;
 import org.globus.util.PEMUtils;
 import org.globus.common.CoGProperties;
 import org.globus.gsi.bc.X509NameHelper;
@@ -45,6 +44,8 @@ import org.apache.commons.logging.LogFactory;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.util.encoders.Base64;
+
 
 /** 
  * Contains various security-related utility methods.

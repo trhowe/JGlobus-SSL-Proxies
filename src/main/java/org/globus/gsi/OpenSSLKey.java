@@ -39,10 +39,11 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
-import org.globus.util.Base64;
 import org.globus.util.PEMUtils;
 import org.globus.util.Util;
 import org.globus.util.I18n;
+
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  * Represents a OpenSSL-style PEM-formatted private key. It supports encryption
