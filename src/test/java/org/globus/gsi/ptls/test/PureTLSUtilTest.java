@@ -15,85 +15,92 @@
  */
 package org.globus.gsi.ptls.test;
 
+
 import COM.claymoresystems.cert.X509Name;
-import java.util.Vector;
-import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.globus.gsi.ptls.PureTLSUtil;
 
+import java.util.Vector;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class PureTLSUtilTest extends TestCase {
-
+    
     private Log logger = LogFactory.getLog(PureTLSUtilTest.class);
-
+    
     public void testSimple() throws Exception {
 
-        X509Name name;
-        Vector dn;
-        Vector rdn;
+	X509Name name;
+	Vector dn;
+	Vector rdn;
 
-        name = PureTLSUtil.getX509Name("/C=US");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(1, dn.size());
+	name = PureTLSUtil.getX509Name("/C=US");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(1, dn.size());
 
-        name = PureTLSUtil.getX509Name("/C=US/O=ANL");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(2, dn.size());
+	name = PureTLSUtil.getX509Name("/C=US/O=ANL");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(2, dn.size());
 
-        name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=gawor/CN=proxy");
-        assertEquals("C=US,O=Globus,O=ANL,OU=MCS,CN=gawor,CN=proxy", name.getNameString());
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(6, dn.size());
+	name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=gawor/CN=proxy");
+	assertEquals("C=US,O=Globus,O=ANL,OU=MCS,CN=gawor,CN=proxy", 
+		     name.getNameString());
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(6, dn.size());
 
-        name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=gawor/CN=host/pitcairn.mcs.anl.gov");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(6, dn.size());
-        rdn = (Vector) dn.elementAt(dn.size() - 1);
-        assertEquals(1, rdn.size());
-        assertEquals("CN", ((String[]) rdn.elementAt(0))[0]);
-        assertEquals("host/pitcairn.mcs.anl.gov", ((String[]) rdn.elementAt(0))[1]);
+	name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=gawor/CN=host/pitcairn.mcs.anl.gov");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(6, dn.size());
+	rdn = (Vector)dn.elementAt(dn.size()-1);
+	assertEquals(1, rdn.size());
+	assertEquals("CN", ((String[])rdn.elementAt(0))[0]);
+	assertEquals("host/pitcairn.mcs.anl.gov", ((String[])rdn.elementAt(0))[1]);
+	
+	name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=host/pitcairn.mcs.anl.gov/CN=gawor");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(6, dn.size());
+	rdn = (Vector)dn.elementAt(dn.size()-2);
+	assertEquals(1, rdn.size());
+	assertEquals("CN", ((String[])rdn.elementAt(0))[0]);
+	assertEquals("host/pitcairn.mcs.anl.gov", ((String[])rdn.elementAt(0))[1]);
 
-        name = PureTLSUtil.getX509Name("/C=US/O=Globus/O=ANL/OU=MCS/CN=host/pitcairn.mcs.anl.gov/CN=gawor");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(6, dn.size());
-        rdn = (Vector) dn.elementAt(dn.size() - 2);
-        assertEquals(1, rdn.size());
-        assertEquals("CN", ((String[]) rdn.elementAt(0))[0]);
-        assertEquals("host/pitcairn.mcs.anl.gov", ((String[]) rdn.elementAt(0))[1]);
+	name = PureTLSUtil.getX509Name("/C=US/CN=host/pitcairn.mcs.anl.gov/CN=gawor+OU=ANL");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(3, dn.size());
+	rdn = (Vector)dn.elementAt(dn.size()-1);
+	assertEquals(2, rdn.size());
+	assertEquals("CN", ((String[])rdn.elementAt(0))[0]);
+	assertEquals("gawor", ((String[])rdn.elementAt(0))[1]);
+	assertEquals("OU", ((String[])rdn.elementAt(1))[0]);
+	assertEquals("ANL", ((String[])rdn.elementAt(1))[1]);
 
-        name = PureTLSUtil.getX509Name("/C=US/CN=host/pitcairn.mcs.anl.gov/CN=gawor+OU=ANL");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(3, dn.size());
-        rdn = (Vector) dn.elementAt(dn.size() - 1);
-        assertEquals(2, rdn.size());
-        assertEquals("CN", ((String[]) rdn.elementAt(0))[0]);
-        assertEquals("gawor", ((String[]) rdn.elementAt(0))[1]);
-        assertEquals("OU", ((String[]) rdn.elementAt(1))[0]);
-        assertEquals("ANL", ((String[]) rdn.elementAt(1))[1]);
-
-        name = PureTLSUtil.getX509Name("/C=US/CN=gawor+EmailAddress=gawor@anl.gov/CN=host/pitcairn.mcs.anl.gov");
-        logger.debug(name.getNameString());
-        dn = name.getName();
-        assertEquals(3, dn.size());
-        rdn = (Vector) dn.elementAt(dn.size() - 2);
-        assertEquals(2, rdn.size());
-        assertEquals("CN", ((String[]) rdn.elementAt(0))[0]);
-        assertEquals("gawor", ((String[]) rdn.elementAt(0))[1]);
-        assertEquals("EMAILADDRESS", ((String[]) rdn.elementAt(1))[0]);
-        assertEquals("gawor@anl.gov", ((String[]) rdn.elementAt(1))[1]);
+	name = PureTLSUtil.getX509Name("/C=US/CN=gawor+EmailAddress=gawor@anl.gov/CN=host/pitcairn.mcs.anl.gov");
+	logger.debug(name.getNameString());
+	dn = name.getName();
+	assertEquals(3, dn.size());
+	rdn = (Vector)dn.elementAt(dn.size()-2);
+	assertEquals(2, rdn.size());
+	assertEquals("CN", ((String[])rdn.elementAt(0))[0]);
+	assertEquals("gawor", ((String[])rdn.elementAt(0))[1]);
+	assertEquals("EMAILADDRESS", ((String[])rdn.elementAt(1))[0]);
+	assertEquals("gawor@anl.gov", ((String[])rdn.elementAt(1))[1]);
     }
+
 
     public void testMalformed() throws Exception {
 
-        X509Name name;
-        Vector dn;
-        Vector rdn;
+	X509Name name;
+	Vector dn;
+	Vector rdn;
 
         try {
             name = PureTLSUtil.getX509Name("DC=US");

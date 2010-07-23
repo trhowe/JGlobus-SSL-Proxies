@@ -14,21 +14,22 @@
  */
 package org.globus.security.filestore;
 
-import java.io.File;
-import java.security.cert.X509CRL;
-import org.globus.security.FileSetupUtil;
-import org.globus.security.stores.ResourceCRL;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.security.cert.X509CRL;
+
+import org.globus.security.FileSetupUtil;
+import org.globus.security.stores.ResourceCRL;
+import org.springframework.core.io.FileSystemResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * FILL ME
- * 
+ *
  * @author ranantha@mcs.anl.gov
  */
 public class TestFileBasedCRL {
@@ -41,6 +42,7 @@ public class TestFileBasedCRL {
         this.testCrl1 = new FileSetupUtil("certificateUtilTest/validCrl.r0");
     }
 
+
     @Test
     public void testGetCrl() throws Exception {
 
@@ -50,7 +52,7 @@ public class TestFileBasedCRL {
 
         ResourceCRL fileCrl = new ResourceCRL(new FileSystemResource(new File(tempFileName)));
 
-        // assert (fileCrl != null);
+//        assert (fileCrl != null);
 
         X509CRL crl = fileCrl.getCrl();
 
@@ -73,36 +75,36 @@ public class TestFileBasedCRL {
         assertTrue(fileCrl.hasChanged());
     }
 
-    // @Test
-    // public void testGetCrlFilter() {
-    //
-    // FilenameFilter filter = FileBasedCRL.getCrlFilter();
-    //
-    // // Null checks
-    // boolean worked = false;
-    // try {
-    // filter.accept(null, null);
-    // } catch (IllegalArgumentException e) {
-    // worked = true;
-    // }
-    // assert worked;
-    //
-    // // null dir name
-    // assert (filter.accept(null, "foo.r1"));
-    //
-    // // dir name ignored
-    // assert (filter.accept(new File("bar"), "foo.r9"));
-    //
-    // // only single digit at end
-    // assertFalse(filter.accept(null, "foo.r10"));
-    //
-    // // only single digit at end
-    // assertFalse(filter.accept(null, "foo.rbar"));
-    //
-    // // the most common usage. *.0
-    // assertTrue(filter.accept(null, "foo.r0"));
-    //
-    // }
+//    @Test
+//    public void testGetCrlFilter() {
+//
+//        FilenameFilter filter = FileBasedCRL.getCrlFilter();
+//
+//        // Null checks
+//        boolean worked = false;
+//        try {
+//            filter.accept(null, null);
+//        } catch (IllegalArgumentException e) {
+//            worked = true;
+//        }
+//        assert worked;
+//
+//        // null dir name
+//        assert (filter.accept(null, "foo.r1"));
+//
+//        // dir name ignored
+//        assert (filter.accept(new File("bar"), "foo.r9"));
+//
+//        // only single digit at end
+//        assertFalse(filter.accept(null, "foo.r10"));
+//
+//        // only single digit at end
+//        assertFalse(filter.accept(null, "foo.rbar"));
+//
+//        // the most common usage. *.0
+//        assertTrue(filter.accept(null, "foo.r0"));
+//
+//    }
 
     @After
     public void tearDown() throws Exception {

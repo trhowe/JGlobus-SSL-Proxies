@@ -18,105 +18,128 @@ package org.globus.util;
 import java.io.InputStream;
 
 /**
- * Various classloader utils. Extends the standard ways of loading classes
- * or resources with a fallback mechanism to the thread context classloader.
+ * Various classloader utils. Extends the standard ways of loading classes or
+ * resources with a fallback mechanism to the thread context classloader.
  */
 public class ClassLoaderUtils {
-    
-    private static DummySecurityManager MANAGER = new DummySecurityManager();
 
-    private static class DummySecurityManager extends SecurityManager {
-        public Class[] getClassContext() {
-            return super.getClassContext();
-        }
-    }
+	private static DummySecurityManager MANAGER = new DummySecurityManager();
 
-    /**
-     * Returns the current execution stack as an array of classes. 
-     * <p>
-     * The length of the array is the number of methods on the execution 
-     * stack. The element at index <code>0</code> is the class of the 
-     * currently executing method, the element at index <code>1</code> is 
-     * the class of that method's caller, and so on. 
-     *
-     * @return  the execution stack.
-     */
-    public static Class[] getClassContext() {
-        return MANAGER.getClassContext();
-    }
+	private static class DummySecurityManager extends SecurityManager {
+		public Class[] getClassContext() {
+			return super.getClassContext();
+		}
+	}
 
-    /**
-     * Returns a class at specified depth of the current execution stack.
-     *
-     * @return the class at the specified depth of the current execution 
-     *         stack. Migth return null if depth is out of range.
-     */
-    public static Class getClassContextAt(int i) {
-        Class[] classes = MANAGER.getClassContext();
-        if (classes != null && classes.length > i) {
-            return classes[i];
-        }
-        return null;
-    }
-    
-    /**
-     * Returns a classloader at specified depth of the current execution stack.
-     *
-     * @return the classloader at the specified depth of the current execution 
-     *         stack. Migth return null if depth is out of range.
-     */
-    public static ClassLoader getClassLoaderContextAt(int i) {
-        Class[] classes = MANAGER.getClassContext();
-        if (classes != null && classes.length > i) {
-            return classes[i].getClassLoader();
-        }
-        return null;
-    }
+	/**
+	 * Returns the current execution stack as an array of classes.
+	 * <p>
+	 * The length of the array is the number of methods on the execution stack.
+	 * The element at index <code>0</code> is the class of the currently
+	 * executing method, the element at index <code>1</code> is the class of
+	 * that method's caller, and so on.
+	 * 
+	 * @return the execution stack.
+	 */
+	public static Class[] getClassContext() {
+		return MANAGER.getClassContext();
+	}
 
-    /**
-     * Gets an InputStream to a resource of a specified name.
-     * First, the caller's classloader is used to load the resource
-     * and if it fails the thread's context classloader is used 
-     * to load the resource.
-     */
-    public static InputStream getResourceAsStream(String name) {
-        // try with caller classloader
-        ClassLoader loader = getClassLoaderContextAt(3);
-        InputStream in = (loader == null) 
-            ? null : loader.getResourceAsStream(name);
-        if (in == null) {
-            // try with context classloader if set & different
-            ClassLoader contextLoader = 
-                Thread.currentThread().getContextClassLoader();
-            if (contextLoader != null && contextLoader != loader) {
-                in = contextLoader.getResourceAsStream(name);
-            }
-        }
-        return in;
-    }
-    
-    /**
-     * Loads a specified class.
-     * First, the caller's classloader is used to load the class
-     * and if it fails the thread's context classloader is used 
-     * to load the specified class.
-     */
-    public static Class forName(String name) 
-        throws ClassNotFoundException {
-        // try with caller classloader
-        ClassLoader loader = getClassLoaderContextAt(3);
-        try {
-            return Class.forName(name, true, loader);
-        } catch (ClassNotFoundException e) {
-            // try with context classloader if set & different
-            ClassLoader contextLoader = 
-                Thread.currentThread().getContextClassLoader();
-            if (contextLoader == null || contextLoader == loader) {
-                throw e;
-            } else {
-                return Class.forName(name, true, contextLoader);
-            }
-        }
-    }
-    
+	/**
+	 * Returns a class at specified depth of the current execution stack.
+	 * 
+	 * @return the class at the specified depth of the current execution stack.
+	 *         Migth return null if depth is out of range.
+	 */
+	public static Class getClassContextAt(int i) {
+		Class[] classes = MANAGER.getClassContext();
+		if (classes != null && classes.length > i) {
+			return classes[i];
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a classloader at specified depth of the current execution stack.
+	 * 
+	 * @return the classloader at the specified depth of the current execution
+	 *         stack. Migth return null if depth is out of range.
+	 */
+	public static ClassLoader getClassLoaderContextAt(int i) {
+		Class[] classes = MANAGER.getClassContext();
+		if (classes != null && classes.length > i) {
+			return classes[i].getClassLoader();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets an InputStream to a resource of a specified name. First, the
+	 * caller's classloader is used to load the resource and if it fails the
+	 * thread's context classloader is used to load the resource.
+	 */
+	public static InputStream getResourceAsStream(String name) {
+		// try with caller classloader
+		ClassLoader loader = getClassLoaderContextAt(3);
+		InputStream in = (loader == null) ? null : loader.getResourceAsStream(name);
+		if (in == null) {
+			// try with context classloader if set & different
+			ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+			if (contextLoader != null && contextLoader != loader) {
+				in = contextLoader.getResourceAsStream(name);
+			}
+		}
+		return in;
+	}
+
+	/**
+	 * Loads a specified class. First, the caller's classloader is used to load
+	 * the class and if it fails the thread's context classloader is used to
+	 * load the specified class.
+	 */
+	public static Class forName(String name) throws ClassNotFoundException {
+		// try with caller classloader
+		ClassLoader loader = getClassLoaderContextAt(3);
+		try {
+			return Class.forName(name, true, loader);
+		} catch (ClassNotFoundException e) {
+			// try with context classloader if set & different
+			ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+			if (contextLoader == null || contextLoader == loader) {
+				throw e;
+			} else {
+				return Class.forName(name, true, contextLoader);
+			}
+		}
+	}
+
+	public static Class<?> loadClass(String className, Class<?> callingClass) throws ClassNotFoundException {
+		try {
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			if (cl != null) {
+				return cl.loadClass(className);
+			}
+		} catch (ClassNotFoundException e) {
+			// ignore
+		}
+		return loadClass2(className, callingClass);
+	}
+
+	private static Class<?> loadClass2(String className, Class<?> callingClass) throws ClassNotFoundException {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException ex) {
+			try {
+				if (ClassLoaderUtils.class.getClassLoader() != null) {
+					return ClassLoaderUtils.class.getClassLoader().loadClass(className);
+				}
+			} catch (ClassNotFoundException exc) {
+				if (callingClass != null && callingClass.getClassLoader() != null) {
+					return callingClass.getClassLoader().loadClass(className);
+				}
+			}
+			throw ex;
+		}
+	}
+
 }

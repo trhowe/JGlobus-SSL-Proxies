@@ -15,12 +15,12 @@
  */
 package org.globus.util;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * An utility class for internationalized message handling.
@@ -90,8 +90,7 @@ public class I18n {
     private static ClassLoader getClassLoader() {
         // try to get caller's classloader otherwise use context classloader
         ClassLoader loader = ClassLoaderUtils.getClassLoaderContextAt(4);
-        return (loader == null) ? 
-            Thread.currentThread().getContextClassLoader() : loader;
+        return (loader == null) ? Thread.currentThread().getContextClassLoader() : loader;
     }
     
     /**

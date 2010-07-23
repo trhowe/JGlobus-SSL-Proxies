@@ -14,6 +14,13 @@
  */
 package org.globus.security.filestore;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.security.Security;
@@ -25,7 +32,9 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+
 import javax.security.auth.x500.X500Principal;
+
 import org.globus.security.DirSetupUtil;
 import org.globus.security.SigningPolicy;
 import org.globus.security.provider.GlobusProvider;
@@ -34,16 +43,9 @@ import org.globus.security.provider.SigningPolicyStoreParameters;
 import org.globus.security.stores.ResourceCertStoreParameters;
 import org.globus.security.stores.ResourceSigningPolicyStore;
 import org.globus.security.stores.ResourceSigningPolicyStoreParameters;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * FILL ME
@@ -52,171 +54,171 @@ import static org.junit.Assert.assertTrue;
  */
 public class TestFileBasedTrustStore {
 
-    static DirSetupUtil dir;
-    static CertStoreParameters parameters;
-    static CertStoreParameters directoryParameters;
-    static CertStore certStore;
-    static CertStoreParameters crlParameters;
-    static SigningPolicyStoreParameters policyParameters;
-    static Collection<? extends Certificate> trustAnchors;
+	static DirSetupUtil dir;
+	static CertStoreParameters parameters;
+	static CertStoreParameters directoryParameters;
+	static CertStore certStore;
+	static CertStoreParameters crlParameters;
+	static SigningPolicyStoreParameters policyParameters;
+	static Collection<? extends Certificate> trustAnchors;
 
-    @Before
-    public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 
-        // FIXME: mock the actual reading of the files and test the idea that
-        // modified is used and map is used to pull information.
-        dir = new DirSetupUtil(new String[] { "testTrustStore/1c3f2ca8.0", "testTrustStore/b38b4d8c.0",
-                "testTrustStore/d1b603c3.0", "testTrustStore/1c3f2ca8.r0", "testTrustStore/d1b603c3.r0",
-                "testTrustStore/1c3f2ca8.signing_policy", "testTrustStore/b38b4d8c.signing_policy",
-                "testTrustStore/d1b603c3.signing_policy" });
-        dir.createTempDirectory();
-        dir.copy();
-        parameters = new ResourceCertStoreParameters("classpath:/testTrustStore/*.0,classpath:/testTrustStore/*.9",
-            null);
-        crlParameters = new ResourceCertStoreParameters(null, "classpath:/testTrustStore/*.r*");
-        policyParameters = new ResourceSigningPolicyStoreParameters("classpath:/testTrustStore/*.signing_policy");
-        directoryParameters = new ResourceCertStoreParameters("file:" + dir.getTempDirectory().getAbsolutePath()
-            + "/*.0", null);
-        Security.addProvider(new GlobusProvider());
-    }
+		// FIXME: mock the actual reading of the files and test the idea that
+		// modified is used and map is used to pull information.
+		dir = new DirSetupUtil(new String[] { "testTrustStore/1c3f2ca8.0", "testTrustStore/b38b4d8c.0",
+				"testTrustStore/d1b603c3.0", "testTrustStore/1c3f2ca8.r0", "testTrustStore/d1b603c3.r0",
+				"testTrustStore/1c3f2ca8.signing_policy", "testTrustStore/b38b4d8c.signing_policy",
+				"testTrustStore/d1b603c3.signing_policy" });
+		dir.createTempDirectory();
+		dir.copy();
+		parameters = new ResourceCertStoreParameters("classpath:/testTrustStore/*.0,classpath:/testTrustStore/*.9",
+				null);
+		crlParameters = new ResourceCertStoreParameters(null, "classpath:/testTrustStore/*.r*");
+		policyParameters = new ResourceSigningPolicyStoreParameters("classpath:/testTrustStore/*.signing_policy");
+		directoryParameters = new ResourceCertStoreParameters("file:" + dir.getTempDirectory().getAbsolutePath()
+				+ "/*.0", null);
+		Security.addProvider(new GlobusProvider());
+	}
 
-    @Test
-    public void testEngineGetCertificates() throws Exception {
+	@Test
+	public void testEngineGetCertificates() throws Exception {
 
-        // File tempDir = dir.getTempDirectory();
+//		File tempDir = dir.getTempDirectory();
 
-        // number of CA files
-        // String[] caFiles = tempDir.list(new TrustAnchorFilter());
+		// number of CA files
+		// String[] caFiles = tempDir.list(new TrustAnchorFilter());
 
-        // Get comparison parameters
-        certStore = CertStore.getInstance("PEMFilebasedCertStore", parameters);
+		// Get comparison parameters
+		certStore = CertStore.getInstance("PEMFilebasedCertStore", parameters);
 
-        assert certStore != null;
+		assert certStore != null;
 
-        trustAnchors = certStore.getCertificates(new X509CertSelector());
+		trustAnchors = certStore.getCertificates(new X509CertSelector());
 
-        assert trustAnchors != null;
+		assert trustAnchors != null;
 
-        assertTrue(trustAnchors.size() > 0);
+		assertTrue(trustAnchors.size() > 0);
 
-        // assert caFiles != null;
+		// assert caFiles != null;
 
-        assertThat(trustAnchors.size(), is(3));
+		assertThat(trustAnchors.size(), is(3));
 
-        for (Certificate trustAnchor : trustAnchors) {
+		for (Certificate trustAnchor : trustAnchors) {
 
-            assert (trustAnchor instanceof X509Certificate);
+			assert (trustAnchor instanceof X509Certificate);
 
-        }
+		}
 
-        // FIXME: figure out whether reload functions as expected
+		// FIXME: figure out whether reload functions as expected
 
-    }
+	}
 
-    @Test
-    public void testEngineGetCertificatesDirectory() throws Exception {
-        File tempDir = this.dir.getTempDirectory();
-        // number of CA files
-        // String[] caFiles = tempDir.list(new TrustAnchorFilter());
-        this.certStore = CertStore.getInstance("PEMFilebasedCertStore", directoryParameters);
+	@Test
+	public void testEngineGetCertificatesDirectory() throws Exception {
+		File tempDir = this.dir.getTempDirectory();
+		// number of CA files
+		// String[] caFiles = tempDir.list(new TrustAnchorFilter());
+		this.certStore = CertStore.getInstance("PEMFilebasedCertStore", directoryParameters);
 
-        assert certStore != null;
+		assert certStore != null;
 
-        this.trustAnchors = certStore.getCertificates(new X509CertSelector());
+		this.trustAnchors = certStore.getCertificates(new X509CertSelector());
 
-        assert trustAnchors != null;
+		assert trustAnchors != null;
 
-        assertTrue(trustAnchors.size() > 0);
+		assertTrue(trustAnchors.size() > 0);
 
-        // assert caFiles != null;
+		// assert caFiles != null;
 
-        assertTrue(trustAnchors.size() == 3);
+		assertTrue(trustAnchors.size() == 3);
 
-        for (Certificate trustAnchor : trustAnchors) {
+		for (Certificate trustAnchor : trustAnchors) {
 
-            assertThat(trustAnchor, instanceOf(X509Certificate.class));
+			assertThat(trustAnchor, instanceOf(X509Certificate.class));
 
-        }
+		}
 
-    }
+	}
 
-    public static class CrlFilter implements FilenameFilter {
+	public static class CrlFilter implements FilenameFilter {
 
-        public boolean accept(File dir, String file) {
+		public boolean accept(File dir, String file) {
 
-            if (file == null) {
-                throw new IllegalArgumentException();
-            }
+			if (file == null) {
+				throw new IllegalArgumentException();
+			}
 
-            int length = file.length();
-            return length > 3 && file.charAt(length - 3) == '.' && file.charAt(length - 2) == 'r'
-                && file.charAt(length - 1) >= '0' && file.charAt(length - 1) <= '9';
+			int length = file.length();
+			return length > 3 && file.charAt(length - 3) == '.' && file.charAt(length - 2) == 'r'
+					&& file.charAt(length - 1) >= '0' && file.charAt(length - 1) <= '9';
 
-        }
-    }
+		}
+	}
 
-    @Test
-    public void testEngineGetCRLs() throws Exception {
+	@Test
+	public void testEngineGetCRLs() throws Exception {
 
-        File tempDir = dir.getTempDirectory();
-        // number of CRL files
-        String[] crlFiles = tempDir.list(new CrlFilter());
+		File tempDir = dir.getTempDirectory();
+		// number of CRL files
+		String[] crlFiles = tempDir.list(new CrlFilter());
 
-        // Get comparison parameters
-        certStore = CertStore.getInstance("PEMFilebasedCertStore", crlParameters);
+		// Get comparison parameters
+		certStore = CertStore.getInstance("PEMFilebasedCertStore", crlParameters);
 
-        assert certStore != null;
+		assert certStore != null;
 
-        Collection<? extends CRL> crls = certStore.getCRLs(null);
+		Collection<? extends CRL> crls = certStore.getCRLs(null);
 
-        assertThat(crls, not(nullValue()));
+		assertThat(crls, not(nullValue()));
 
-        assertTrue(crls.size() > 0);
+		assertTrue(crls.size() > 0);
 
-        assert crlFiles != null;
+		assert crlFiles != null;
 
-        assertThat(crls.size(), is(crlFiles.length));
+		assertThat(crls.size(), is(crlFiles.length));
 
-        for (CRL crl : crls) {
+		for (CRL crl : crls) {
 
-            assertThat(crl, instanceOf(X509CRL.class));
+			assertThat(crl, instanceOf(X509CRL.class));
 
-        }
+		}
 
-        // FIXME: figure out whether reload functions as expected
-    }
+		// FIXME: figure out whether reload functions as expected
+	}
 
-    @Test
-    public void testGetSigningPolicies() throws Exception {
+	@Test
+	public void testGetSigningPolicies() throws Exception {
 
-        SigningPolicyStore store = new ResourceSigningPolicyStore(policyParameters);
+		SigningPolicyStore store = new ResourceSigningPolicyStore(policyParameters);
 
-        SigningPolicy policy = store.getSigningPolicy(null);
+		SigningPolicy policy = store.getSigningPolicy(null);
 
-        assert (policy == null);
+		assert (policy == null);
 
-        policy = store.getSigningPolicy(new X500Principal("C=US, CN=Foo"));
+		policy = store.getSigningPolicy(new X500Principal("C=US, CN=Foo"));
 
-        assert (policy == null);
+		assert (policy == null);
 
-        for (Certificate trustAnchor : trustAnchors) {
+		for (Certificate trustAnchor : trustAnchors) {
 
-            X509Certificate certificate = (X509Certificate) trustAnchor;
+			X509Certificate certificate = (X509Certificate) trustAnchor;
 
-            X500Principal principal = certificate.getIssuerX500Principal();
+			X500Principal principal = certificate.getIssuerX500Principal();
 
-            policy = store.getSigningPolicy(principal);
+			policy = store.getSigningPolicy(principal);
 
-            assert (policy != null);
+			assert (policy != null);
 
-            assert (policy.getAllowedDNs() != null);
-        }
+			assert (policy.getAllowedDNs() != null);
+		}
 
-        // FIXME: figure out whether reload functions as expected
-    }
+		// FIXME: figure out whether reload functions as expected
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        dir.delete();
-    }
+	@AfterClass
+	public static void tearDown() throws Exception {
+		dir.delete();
+	}
 }

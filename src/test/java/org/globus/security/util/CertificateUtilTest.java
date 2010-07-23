@@ -14,75 +14,82 @@
  */
 package org.globus.security.util;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+
 import org.globus.security.FileSetupUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * FILL ME
- * 
+ *
  * @author ranantha@mcs.anl.gov
  */
 public class CertificateUtilTest {
 
-    String validCert1 = "-----BEGIN CERTIFICATE-----\n"
-        + "MIID+DCCAuCgAwIBAgIBKTANBgkqhkiG9w0BAQUFADB1MRMwEQYKCZImiZPyLGQB\n"
-        + "GRYDbmV0MRIwEAYKCZImiZPyLGQBGRYCRVMxDjAMBgNVBAoTBUVTbmV0MSAwHgYD\n"
-        + "VQQLExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEYMBYGA1UEAxMPRVNuZXQgUm9v\n"
-        + "dCBDQSAxMB4XDTAyMTIwNTA4MDAwMFoXDTEzMDEyNTA4MDAwMFowaTETMBEGCgmS\n"
-        + "JomT8ixkARkWA29yZzEYMBYGCgmSJomT8ixkARkWCERPRUdyaWRzMSAwHgYDVQQL\n"
-        + "ExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEWMBQGA1UEAxMNRE9FR3JpZHMgQ0Eg\n"
-        + "MTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALT11iNho9sIPma1uJBv\n"
-        + "sprfLWoCbRlyooIVyJZx97wrBy7L22Me4iwt/1ki12QNbjHLyy5r2cmXHcqXCO26\n"
-        + "ZMy062DfkpkKSdR3wozhUZNIV0tUb0Bs1rJ5/vpxpUIYzX6PIXQurTeRq4Y49Nw1\n"
-        + "9l7VNlrd7Vz2tzyWNXk5JZr+Z+wIALJLnMUha7TIgM3Il1/6fSHBo83nfCWWknfS\n"
-        + "1oP4kGNDuHaTjFFbN5rOcs5v07O1lVED/WxXN76JzMWHbHBrhV0bLR4gg/DWl+9j\n"
-        + "DE7fqubRLXT2q9uw2Vqug9FvF6s8pqRAukp7TfhdzHuAE+pST8XGhFFaKfkRY3ev\n"
-        + "P0sCAwEAAaOBnjCBmzAOBgNVHQ8BAf8EBAMCAYYwEQYJYIZIAYb4QgEBBAQDAgCH\n"
-        + "MB0GA1UdDgQWBBTKGR0Sjm6kOF1C1DEOCNvZjRcNXTAfBgNVHSMEGDAWgBS8XU1I\n"
-        + "L/g1lFmrXIlLPtGyOhQB6jAPBgNVHRMBAf8EBTADAQH/MCUGA1UdEQQeMByBGkRP\n"
-        + "RUdyaWRzLUNBLTFAZG9lZ3JpZHMub3JnMA0GCSqGSIb3DQEBBQUAA4IBAQBk1Wsg\n"
-        + "Mup7f0IQ6Im3tDsSkE+ECKEy8NNJ//ja7RIxtSYKHDDiYuamHkMGCFlRUXxifn2R\n"
-        + "FkyfVAs607UfMuq8C88hNpxlU+UmAbYhfOVHrfpiCFkUDJxshQQ4kMEdHi+1A7Uo\n"
-        + "PGBnC8Bu2YoijG+FQKrbGx8W32QIEGf4li1Do7kuwEmrc+a65t4xxzuZtAB8lnuH\n"
-        + "/dCCGCQUiGYTX4sFc8luS4/y+B+DqHYEqgB/lMV9kQKAZkqKZ83XXS0G9950ZnBh\n"
-        + "h3f8awlzzcHQk3WCfLSCo1U+bf3ZRyFcZ4FGseebaCSEiSvjw6roSY0ZX39rpd9u\n" + "mVBb8lZu09U9aRqL\n"
-        + "-----END CERTIFICATE-----";
+    String validCert1 =
+            "-----BEGIN CERTIFICATE-----\n" +
+                    "MIID+DCCAuCgAwIBAgIBKTANBgkqhkiG9w0BAQUFADB1MRMwEQYKCZImiZPyLGQB\n" +
+                    "GRYDbmV0MRIwEAYKCZImiZPyLGQBGRYCRVMxDjAMBgNVBAoTBUVTbmV0MSAwHgYD\n" +
+                    "VQQLExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEYMBYGA1UEAxMPRVNuZXQgUm9v\n" +
+                    "dCBDQSAxMB4XDTAyMTIwNTA4MDAwMFoXDTEzMDEyNTA4MDAwMFowaTETMBEGCgmS\n" +
+                    "JomT8ixkARkWA29yZzEYMBYGCgmSJomT8ixkARkWCERPRUdyaWRzMSAwHgYDVQQL\n" +
+                    "ExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEWMBQGA1UEAxMNRE9FR3JpZHMgQ0Eg\n" +
+                    "MTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALT11iNho9sIPma1uJBv\n" +
+                    "sprfLWoCbRlyooIVyJZx97wrBy7L22Me4iwt/1ki12QNbjHLyy5r2cmXHcqXCO26\n" +
+                    "ZMy062DfkpkKSdR3wozhUZNIV0tUb0Bs1rJ5/vpxpUIYzX6PIXQurTeRq4Y49Nw1\n" +
+                    "9l7VNlrd7Vz2tzyWNXk5JZr+Z+wIALJLnMUha7TIgM3Il1/6fSHBo83nfCWWknfS\n" +
+                    "1oP4kGNDuHaTjFFbN5rOcs5v07O1lVED/WxXN76JzMWHbHBrhV0bLR4gg/DWl+9j\n" +
+                    "DE7fqubRLXT2q9uw2Vqug9FvF6s8pqRAukp7TfhdzHuAE+pST8XGhFFaKfkRY3ev\n" +
+                    "P0sCAwEAAaOBnjCBmzAOBgNVHQ8BAf8EBAMCAYYwEQYJYIZIAYb4QgEBBAQDAgCH\n" +
+                    "MB0GA1UdDgQWBBTKGR0Sjm6kOF1C1DEOCNvZjRcNXTAfBgNVHSMEGDAWgBS8XU1I\n" +
+                    "L/g1lFmrXIlLPtGyOhQB6jAPBgNVHRMBAf8EBTADAQH/MCUGA1UdEQQeMByBGkRP\n" +
+                    "RUdyaWRzLUNBLTFAZG9lZ3JpZHMub3JnMA0GCSqGSIb3DQEBBQUAA4IBAQBk1Wsg\n" +
+                    "Mup7f0IQ6Im3tDsSkE+ECKEy8NNJ//ja7RIxtSYKHDDiYuamHkMGCFlRUXxifn2R\n" +
+                    "FkyfVAs607UfMuq8C88hNpxlU+UmAbYhfOVHrfpiCFkUDJxshQQ4kMEdHi+1A7Uo\n" +
+                    "PGBnC8Bu2YoijG+FQKrbGx8W32QIEGf4li1Do7kuwEmrc+a65t4xxzuZtAB8lnuH\n" +
+                    "/dCCGCQUiGYTX4sFc8luS4/y+B+DqHYEqgB/lMV9kQKAZkqKZ83XXS0G9950ZnBh\n" +
+                    "h3f8awlzzcHQk3WCfLSCo1U+bf3ZRyFcZ4FGseebaCSEiSvjw6roSY0ZX39rpd9u\n" +
+                    "mVBb8lZu09U9aRqL\n" +
+                    "-----END CERTIFICATE-----";
 
-    String invalidCert1 = "MB0GA1UdDgQWBBTKGR0Sjm6kOF1C1DEOCNvZjRcNXTAfBgNVHSMEGDAWgBS8XU1I\n"
-        + "L/g1lFmrXIlLPtGyOhQB6jAPBgNVHRMBAf8EBTADAQH/MCUGA1UdEQQeMByBGkRP\n"
-        + "RUdyaWRzLUNBLTFAZG9lZ3JpZHMub3JnMA0GCSqGSIb3DQEBBQUAA4IBAQBk1Wsg\n"
-        + "Mup7f0IQ6Im3tDsSkE+ECKEy8NNJ//ja7RIxtSYKHDDiYuamHkMGCFlRUXxifn2R\n"
-        + "FkyfVAs607UfMuq8C88hNpxlU+UmAbYhfOVHrfpiCFkUDJxshQQ4kMEdHi+1A7Uo\n"
-        + "PGBnC8Bu2YoijG+FQKrbGx8W32QIEGf4li1Do7kuwEmrc+a65t4xxzuZtAB8lnuH\n"
-        + "/dCCGCQUiGYTX4sFc8luS4/y+B+DqHYEqgB/lMV9kQKAZkqKZ83XXS0G9950ZnBh\n"
-        + "h3f8awlzzcHQk3WCfLSCo1U+bf3ZRyFcZ4FGseebaCSEiSvjw6roSY0ZX39rpd9u\n" + "mVBb8lZu09U9aRqL\n"
-        + "-----END CERTIFICATE-----";
+    String invalidCert1 =
+            "MB0GA1UdDgQWBBTKGR0Sjm6kOF1C1DEOCNvZjRcNXTAfBgNVHSMEGDAWgBS8XU1I\n" +
+                    "L/g1lFmrXIlLPtGyOhQB6jAPBgNVHRMBAf8EBTADAQH/MCUGA1UdEQQeMByBGkRP\n" +
+                    "RUdyaWRzLUNBLTFAZG9lZ3JpZHMub3JnMA0GCSqGSIb3DQEBBQUAA4IBAQBk1Wsg\n" +
+                    "Mup7f0IQ6Im3tDsSkE+ECKEy8NNJ//ja7RIxtSYKHDDiYuamHkMGCFlRUXxifn2R\n" +
+                    "FkyfVAs607UfMuq8C88hNpxlU+UmAbYhfOVHrfpiCFkUDJxshQQ4kMEdHi+1A7Uo\n" +
+                    "PGBnC8Bu2YoijG+FQKrbGx8W32QIEGf4li1Do7kuwEmrc+a65t4xxzuZtAB8lnuH\n" +
+                    "/dCCGCQUiGYTX4sFc8luS4/y+B+DqHYEqgB/lMV9kQKAZkqKZ83XXS0G9950ZnBh\n" +
+                    "h3f8awlzzcHQk3WCfLSCo1U+bf3ZRyFcZ4FGseebaCSEiSvjw6roSY0ZX39rpd9u\n" +
+                    "mVBb8lZu09U9aRqL\n" +
+                    "-----END CERTIFICATE-----";
 
-    String invalidCert2 = "-----BEGIN CERTIFICATE-----\n"
-        + "MIID+DCCAuCgAwIBAgIBKTANBgkqhkiG9w0BAQUFADB1MRMwEQYKCZImiZPyLGQB\n"
-        + "GRYDbmV0MRIwEAYKCZImiZPyLGQBGRYCRVMxDjAMBgNVBAoTBUVTbmV0MSAwHgYD\n"
-        + "VQQLExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEYMBYGA1UEAxMPRVNuZXQgUm9v\n"
-        + "dCBDQSAxMB4XDTAyMTIwNTA4MDAwMFoXDTEzMDEyNTA4MDAwMFowaTETMBEGCgmS\n"
-        + "JomT8ixkARkWA29yZzEYMBYGCgmSJomT8ixkARkWCERPRUdyaWRzMSAwHgYDVQQL\n"
-        + "ExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEWMBQGA1UEAxMNRE9FR3JpZHMgQ0Eg\n"
-        + "MTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALT11iNho9sIPma1uJBv\n"
-        + "sprfLWoCbRlyooIVyJZx97wrBy7L22Me4iwt/1ki12QNbjHLyy5r2cmXHcqXCO26\n"
-        + "ZMy062DfkpkKSdR3wozhUZNIV0tUb0Bs1rJ5/vpxpUIYzX6PIXQurTeRq4Y49Nw1\n";
+    String invalidCert2 =
+            "-----BEGIN CERTIFICATE-----\n" +
+                    "MIID+DCCAuCgAwIBAgIBKTANBgkqhkiG9w0BAQUFADB1MRMwEQYKCZImiZPyLGQB\n" +
+                    "GRYDbmV0MRIwEAYKCZImiZPyLGQBGRYCRVMxDjAMBgNVBAoTBUVTbmV0MSAwHgYD\n" +
+                    "VQQLExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEYMBYGA1UEAxMPRVNuZXQgUm9v\n" +
+                    "dCBDQSAxMB4XDTAyMTIwNTA4MDAwMFoXDTEzMDEyNTA4MDAwMFowaTETMBEGCgmS\n" +
+                    "JomT8ixkARkWA29yZzEYMBYGCgmSJomT8ixkARkWCERPRUdyaWRzMSAwHgYDVQQL\n" +
+                    "ExdDZXJ0aWZpY2F0ZSBBdXRob3JpdGllczEWMBQGA1UEAxMNRE9FR3JpZHMgQ0Eg\n" +
+                    "MTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALT11iNho9sIPma1uJBv\n" +
+                    "sprfLWoCbRlyooIVyJZx97wrBy7L22Me4iwt/1ki12QNbjHLyy5r2cmXHcqXCO26\n" +
+                    "ZMy062DfkpkKSdR3wozhUZNIV0tUb0Bs1rJ5/vpxpUIYzX6PIXQurTeRq4Y49Nw1\n";
 
-    String invalidCrl1 = "-----BEGIN X509 CRL-----\n"
-        + "MIIBLDCBljANBgkqhkiG9w0BAQQFADA9MREwDwYDVQQKEwh0ZXN0IENBMjESMBAG\n"
-        + "A1UECxMJc2ltcGxlIGNhMRQwEgYDVQQDEwtHbG9idXMgVGVzdBcNMDYwNTIzMDEy\n"
-        + "NjEwWhcNMDcwNTIzMDEyNjEwWjAoMBICAQIXDTA2MDUyMzAxMTM1MFowEgIBAxcN";
+    String invalidCrl1 =
+            "-----BEGIN X509 CRL-----\n" +
+                    "MIIBLDCBljANBgkqhkiG9w0BAQQFADA9MREwDwYDVQQKEwh0ZXN0IENBMjESMBAG\n" +
+                    "A1UECxMJc2ltcGxlIGNhMRQwEgYDVQQDEwtHbG9idXMgVGVzdBcNMDYwNTIzMDEy\n" +
+                    "NjEwWhcNMDcwNTIzMDEyNjEwWjAoMBICAQIXDTA2MDUyMzAxMTM1MFowEgIBAxcN";
 
     FileSetupUtil testCert1;
     FileSetupUtil testCert2;
@@ -93,7 +100,8 @@ public class CertificateUtilTest {
 
         this.testCert1 = new FileSetupUtil("certificateUtilTest/1c3f2ca8.0");
 
-        this.testCert2 = new FileSetupUtil("certificateUtilTest/b38b4d8c-invalid.0");
+        this.testCert2 =
+                new FileSetupUtil("certificateUtilTest/b38b4d8c-invalid.0");
 
         this.testCrl1 = new FileSetupUtil("certificateUtilTest/validCrl.r0");
     }
@@ -101,8 +109,10 @@ public class CertificateUtilTest {
     @Test
     public void testReadCertificate() throws Exception {
 
-        BufferedReader reader = new BufferedReader(new StringReader(this.validCert1));
-        X509Certificate cert = CertificateLoadUtil.readCertificate(reader);
+        BufferedReader reader =
+                new BufferedReader(new StringReader(this.validCert1));
+        X509Certificate cert =
+                CertificateLoadUtil.readCertificate(reader);
         assert (cert != null);
 
         reader = new BufferedReader(new StringReader(this.invalidCert1));
@@ -112,7 +122,8 @@ public class CertificateUtilTest {
             cert = CertificateLoadUtil.readCertificate(reader);
         } catch (GeneralSecurityException e) {
 
-            if ((e.getMessage().indexOf("Certificate needs to start with  BEGIN CERTIFICATE")) != -1) {
+            if ((e.getMessage().indexOf(
+                    "Certificate needs to start with  BEGIN CERTIFICATE")) != -1) {
                 expected = true;
             }
         }
@@ -125,7 +136,8 @@ public class CertificateUtilTest {
             cert = CertificateLoadUtil.readCertificate(reader);
         } catch (GeneralSecurityException e) {
 
-            if ((e.getMessage().indexOf("Certificate needs to start with  BEGIN CERTIFICATE")) != -1) {
+            if ((e.getMessage().indexOf(
+                    "Certificate needs to start with  BEGIN CERTIFICATE")) != -1) {
                 expected = true;
             }
         }
@@ -138,7 +150,9 @@ public class CertificateUtilTest {
 
             this.testCert1.copyFileToTemp();
 
-            X509Certificate cert = CertificateLoadUtil.loadCertificate(testCert1.getAbsoluteFilename());
+            X509Certificate cert =
+                    CertificateLoadUtil
+                            .loadCertificate(testCert1.getAbsoluteFilename());
 
             assert (cert != null);
 
@@ -146,10 +160,12 @@ public class CertificateUtilTest {
 
             boolean worked = false;
             try {
-                cert = CertificateLoadUtil.loadCertificate(testCert2.getAbsoluteFilename());
+                cert = CertificateLoadUtil
+                        .loadCertificate(testCert2.getAbsoluteFilename());
             } catch (GeneralSecurityException e) {
                 String err = e.getMessage();
-                if (err != null && err.indexOf("BEGIN CERTIFICATE") != -1) {
+                if (err != null &&
+                        err.indexOf("BEGIN CERTIFICATE") != -1) {
                     worked = true;
                 }
             }
@@ -163,11 +179,13 @@ public class CertificateUtilTest {
 
         this.testCrl1.copyFileToTemp();
 
-        X509CRL crl = CertificateLoadUtil.loadCrl(testCrl1.getAbsoluteFilename());
+        X509CRL crl =
+                CertificateLoadUtil.loadCrl(testCrl1.getAbsoluteFilename());
 
         assert (crl != null);
 
-        ByteArrayInputStream in = new ByteArrayInputStream(this.invalidCrl1.getBytes());
+        ByteArrayInputStream in =
+                new ByteArrayInputStream(this.invalidCrl1.getBytes());
 
         boolean worked = false;
         try {

@@ -20,6 +20,7 @@ import java.security.cert.CertPathValidatorResult;
 import java.security.cert.CertStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
 import org.globus.security.X509ProxyCertPathParameters;
 import org.globus.security.X509ProxyCertPathValidatorResult;
 import org.globus.security.trustmanager.PKITrustManager;
@@ -30,7 +31,7 @@ import org.junit.Test;
  * FILL ME
  * <p/>
  * // FIXME: separate this from proxy path validator test class.
- * 
+ *
  * @author ranantha@mcs.anl.gov
  */
 public class TestTrustManager extends TestProxyPathValidator {
@@ -44,16 +45,24 @@ public class TestTrustManager extends TestProxyPathValidator {
     @Test
     public void validationTest() throws Exception {
 
-        KeyStore keyStore = getKeyStore(new X509Certificate[] { goodCertsArr[0] });
+        KeyStore keyStore = getKeyStore(new X509Certificate[]{goodCertsArr[0]});
         TestCertParameters parameters = new TestCertParameters(null, this.crls);
 
-        CertStore certStore = CertStore.getInstance("MockCertStore", parameters);
-        TestPolicyStore policyStore = new TestPolicyStore(null);
-        X509ProxyCertPathParameters validatorParam = new X509ProxyCertPathParameters(keyStore, certStore, policyStore,
-            false, null);
-        PKITrustManager manager = new PKITrustManager(new MockProxyCertPathValidator(false, false, false),
-            validatorParam);
-        X509Certificate[] certChain = new X509Certificate[] { goodCertsArr[5], goodCertsArr[1], goodCertsArr[0] };
+        CertStore certStore =
+                CertStore.getInstance("MockCertStore", parameters);
+        TestPolicyStore policyStore =
+                new TestPolicyStore(null);
+        X509ProxyCertPathParameters validatorParam =
+                new X509ProxyCertPathParameters(keyStore, certStore, policyStore,
+                        false,
+                        null);
+        PKITrustManager manager =
+                new PKITrustManager(
+                        new MockProxyCertPathValidator(false, false, false),
+                        validatorParam);
+        X509Certificate[] certChain =
+                new X509Certificate[]{goodCertsArr[5], goodCertsArr[1],
+                        goodCertsArr[0]};
         manager.checkClientTrusted(certChain, "RSA");
         manager.checkServerTrusted(certChain, "RSA");
         CertPathValidatorResult result = manager.getValidationResult();
@@ -67,10 +76,11 @@ public class TestTrustManager extends TestProxyPathValidator {
 
         assert (acceptedIssuers[0].equals(goodCertsArr[0]));
 
+
         // Fail because of reject limited proxy
         validatorParam = new X509ProxyCertPathParameters(keyStore, certStore, policyStore, true, null);
         manager = new PKITrustManager(new MockProxyCertPathValidator(false, false, false), validatorParam);
-        certChain = new X509Certificate[] { goodCertsArr[3], goodCertsArr[1], goodCertsArr[0] };
+        certChain = new X509Certificate[]{goodCertsArr[3], goodCertsArr[1], goodCertsArr[0]};
         boolean exception = false;
         try {
             manager.checkClientTrusted(certChain, "RSA");

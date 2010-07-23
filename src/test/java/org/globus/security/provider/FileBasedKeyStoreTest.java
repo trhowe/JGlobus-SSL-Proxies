@@ -15,14 +15,19 @@
 
 package org.globus.security.provider;
 
+import org.apache.commons.logging.LogFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
-import org.junit.Test;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.globus.security.stores.PEMKeyStore;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,7 +39,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 public class FileBasedKeyStoreTest {
     private PEMKeyStore keystore = new PEMKeyStore();
     private PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
+    private Logger logger = Logger.getLogger(FileBasedKeyStoreTest.class.getCanonicalName());
+    
     @Test
     public void testIO() throws Exception {
         InputStream is;
@@ -47,7 +53,7 @@ public class FileBasedKeyStoreTest {
         keystore.engineLoad(bais, null);
         Enumeration en = keystore.engineAliases();
         while (en.hasMoreElements()) {
-            System.out.println("en.nextElement().toString() = " + en.nextElement().toString());
+            logger.fine("en.nextElement().toString() = " + en.nextElement().toString());
         }
         os = new ByteArrayOutputStream();
 //        keystore.engineStore(os, null);

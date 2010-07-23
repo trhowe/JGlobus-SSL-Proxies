@@ -16,106 +16,129 @@
 package org.globus.gsi.gssapi.test;
 
 import java.io.File;
+
 import java.security.cert.X509Certificate;
+
+import org.ietf.jgss.GSSException;
+import org.ietf.jgss.GSSCredential;
+
+import org.gridforum.jgss.ExtendedGSSManager;
+import org.gridforum.jgss.ExtendedGSSCredential;
+
+import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+import org.globus.gsi.gssapi.GlobusGSSManagerImpl;
+import org.globus.gsi.gssapi.GlobusGSSException;
+import org.globus.gsi.gssapi.GSSConstants;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.globus.gsi.gssapi.GSSConstants;
-import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
-import org.globus.gsi.gssapi.GlobusGSSException;
-import org.globus.gsi.gssapi.GlobusGSSManagerImpl;
-import org.gridforum.jgss.ExtendedGSSCredential;
-import org.gridforum.jgss.ExtendedGSSManager;
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
 
 public class GlobusGSSCredentialTest extends TestCase {
 
-    private Log logger = LogFactory.getLog(GlobusGSSCredentialTest.class);
     ExtendedGSSManager manager;
-
+    private Log logger = LogFactory.getLog(GlobusGSSCredentialTest.class);
+    
     protected void setUp() throws Exception {
-        manager = new GlobusGSSManagerImpl();
+	manager = new GlobusGSSManagerImpl();
     }
 
     public void testImportBadFile() throws Exception {
-        String handle = "PROXY = /a/b/c";
-
-        try {
-            manager.createCredential(handle.getBytes(), ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC,
-                GSSCredential.DEFAULT_LIFETIME, null, GSSCredential.ACCEPT_ONLY);
-            fail("Exception not thrown as expected.");
-        } catch (GSSException e) {
-            // TODO: check for specific major/minor code
-        }
-
+	String handle = "PROXY = /a/b/c";
+	
+	try {
+	    manager.createCredential(handle.getBytes(),
+				     ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC,
+				     GSSCredential.DEFAULT_LIFETIME,
+				     null,
+				     GSSCredential.ACCEPT_ONLY);
+	    fail("Exception not thrown as expected.");
+	} catch (GSSException e) {
+	    // TODO: check for specific major/minor code
+	}
+	
     }
 
     public void testImportBadOption() throws Exception {
-        String handle = "PROXY = /a/b/c";
-
-        try {
-            manager.createCredential(handle.getBytes(), 3, GSSCredential.DEFAULT_LIFETIME, null,
-                GSSCredential.ACCEPT_ONLY);
-            fail("Exception not thrown as expected.");
-        } catch (GSSException e) {
-            if (e.getMajor() != GSSException.FAILURE && e.getMinor() != GlobusGSSException.BAD_ARGUMENT) {
-                e.printStackTrace();
-                fail("Unexpected exception");
-            }
-        }
-
+	String handle = "PROXY = /a/b/c";
+	
+	try {
+	    manager.createCredential(handle.getBytes(),
+				     3,
+				     GSSCredential.DEFAULT_LIFETIME,
+				     null,
+				     GSSCredential.ACCEPT_ONLY);
+	    fail("Exception not thrown as expected.");
+	} catch (GSSException e) {
+	    if (e.getMajor() != GSSException.FAILURE &&
+		e.getMinor() != GlobusGSSException.BAD_ARGUMENT) {
+		e.printStackTrace();
+		fail("Unexpected exception");
+	    }
+	}
+	
     }
 
     public void testImportExportOpaque() throws Exception {
+	
+	GlobusGSSCredentialImpl cred = 
+	    (GlobusGSSCredentialImpl)manager.createCredential(GSSCredential.ACCEPT_ONLY);
+	assertTrue(cred != null);
+	
+	byte [] data = cred.export(ExtendedGSSCredential.IMPEXP_OPAQUE);
+	assertTrue(data != null);
 
-        GlobusGSSCredentialImpl cred = (GlobusGSSCredentialImpl) manager.createCredential(GSSCredential.ACCEPT_ONLY);
-        assertTrue(cred != null);
-
-        byte[] data = cred.export(ExtendedGSSCredential.IMPEXP_OPAQUE);
-        assertTrue(data != null);
-
-        logger.debug(new String(data));
-
-        GlobusGSSCredentialImpl cred2 = (GlobusGSSCredentialImpl) manager.createCredential(data,
-            ExtendedGSSCredential.IMPEXP_OPAQUE, GSSCredential.DEFAULT_LIFETIME, null, GSSCredential.ACCEPT_ONLY);
-        assertTrue(cred2 != null);
-        assertEquals(cred.getPrivateKey(), cred2.getPrivateKey());
+	logger.debug(new String(data));
+	
+	GlobusGSSCredentialImpl cred2 = 
+	    (GlobusGSSCredentialImpl)manager.createCredential(data,
+							      ExtendedGSSCredential.IMPEXP_OPAQUE,
+							      GSSCredential.DEFAULT_LIFETIME,
+							      null,
+							      GSSCredential.ACCEPT_ONLY);
+	assertTrue(cred2 != null);
+	assertEquals(cred.getPrivateKey(), cred2.getPrivateKey());
     }
-
+    
     public void testImportExportMechSpecific() throws Exception {
+	
+	GlobusGSSCredentialImpl cred = 
+	    (GlobusGSSCredentialImpl)manager.createCredential(GSSCredential.ACCEPT_ONLY);
+	assertTrue(cred != null);
+	
+	byte [] data = cred.export(ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC);
+	assertTrue(data != null);
 
-        GlobusGSSCredentialImpl cred = (GlobusGSSCredentialImpl) manager.createCredential(GSSCredential.ACCEPT_ONLY);
-        assertTrue(cred != null);
+	String handle = new String(data);
+	logger.debug(handle);
+	
+	GlobusGSSCredentialImpl cred2 = 
+	    (GlobusGSSCredentialImpl)manager.createCredential(data,
+							      ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC,
+							      GSSCredential.DEFAULT_LIFETIME,
+							      null,
+							      GSSCredential.ACCEPT_ONLY);
+	assertTrue(cred2 != null);
 
-        byte[] data = cred.export(ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC);
-        assertTrue(data != null);
+	assertEquals(cred.getPrivateKey(), cred2.getPrivateKey());
 
-        String handle = new String(data);
-        logger.debug(handle);
-
-        GlobusGSSCredentialImpl cred2 = (GlobusGSSCredentialImpl) manager
-            .createCredential(data, ExtendedGSSCredential.IMPEXP_MECH_SPECIFIC, GSSCredential.DEFAULT_LIFETIME, null,
-                GSSCredential.ACCEPT_ONLY);
-        assertTrue(cred2 != null);
-
-        assertEquals(cred.getPrivateKey(), cred2.getPrivateKey());
-
-        handle = handle.substring(handle.indexOf('=') + 1);
-        assertTrue((new File(handle)).delete());
+	handle = handle.substring(handle.indexOf('=')+1);
+	assertTrue((new File(handle)).delete());
     }
 
     public void testInquireByOid() throws Exception {
 
-        ExtendedGSSCredential cred = (ExtendedGSSCredential) manager.createCredential(GSSCredential.ACCEPT_ONLY);
+	ExtendedGSSCredential cred =
+	    (ExtendedGSSCredential)manager.createCredential(GSSCredential.ACCEPT_ONLY);
 
-        Object tmp = null;
-        X509Certificate[] chain = null;
-
-        tmp = cred.inquireByOid(GSSConstants.X509_CERT_CHAIN);
-        assertTrue(tmp != null);
-        assertTrue(tmp instanceof X509Certificate[]);
-        chain = (X509Certificate[]) tmp;
-        assertTrue(chain.length > 0);
+	Object tmp = null;
+	X509Certificate[] chain = null;
+	
+	tmp = cred.inquireByOid(GSSConstants.X509_CERT_CHAIN);
+	assertTrue(tmp != null);
+	assertTrue(tmp instanceof X509Certificate[]);
+	chain = (X509Certificate[])tmp;
+	assertTrue(chain.length > 0);
     }
 }

@@ -15,59 +15,63 @@
  */
 package org.globus.gsi.bc.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.security.KeyPair;
+import java.io.StringWriter;
+import java.io.ByteArrayInputStream;
+
 import org.globus.gsi.CertUtil;
 import org.globus.gsi.OpenSSLKey;
 import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 
-public class BouncyCastleOpenSSLKeyTest extends TestCase {
+import junit.framework.TestCase;
 
-    private Log logger = LogFactory.getLog(BouncyCastleOpenSSLKeyTest.class);
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class BouncyCastleOpenSSLKeyTest extends TestCase {
 
     private static final String pwd = "testpwd";
 
+    private Log logger = LogFactory.getLog(BouncyCastleOpenSSLKeyTest.class);
+    
     private KeyPair getKeyPair() throws Exception {
         CertUtil.init();
-
-        int bits = 512;
-
-        KeyPairGenerator keyGen = null;
-        keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-        keyGen.initialize(bits);
-
+        
+	int bits = 512;
+        
+	KeyPairGenerator keyGen = null;
+	keyGen = KeyPairGenerator.getInstance("RSA", "BC");
+	keyGen.initialize(bits);
+        
         return keyGen.genKeyPair();
     }
 
     public void testEncrypt() throws Exception {
         KeyPair keyPair = getKeyPair();
 
-        OpenSSLKey key = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
+	OpenSSLKey key = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
+	
+	assertTrue(!key.isEncrypted());
 
-        assertTrue(!key.isEncrypted());
+	key.encrypt(pwd);
 
-        key.encrypt(pwd);
-
-        assertTrue(key.isEncrypted());
+	assertTrue(key.isEncrypted());
     }
 
     public void testEncryptAES() throws Exception {
         KeyPair keyPair = getKeyPair();
 
-        OpenSSLKey key = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
-
-        assertTrue(!key.isEncrypted());
+	OpenSSLKey key = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
+	
+	assertTrue(!key.isEncrypted());
 
         key.setEncryptionAlgorithm("AES-128-CBC");
 
-        key.encrypt(pwd);
+	key.encrypt(pwd);
 
-        assertTrue(key.isEncrypted());
+	assertTrue(key.isEncrypted());
+
     }
 
     private String toString(OpenSSLKey key) throws Exception {
@@ -81,9 +85,9 @@ public class BouncyCastleOpenSSLKeyTest extends TestCase {
 
     public void testDecryptedToString() throws Exception {
         KeyPair keyPair = getKeyPair();
-        OpenSSLKey inKey = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
-        assertTrue(!inKey.isEncrypted());
-
+	OpenSSLKey inKey = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
+	assertTrue(!inKey.isEncrypted());
+        
         ByteArrayInputStream in = null;
         in = new ByteArrayInputStream(toString(inKey).getBytes());
         OpenSSLKey outKey = new BouncyCastleOpenSSLKey(in);
@@ -96,11 +100,11 @@ public class BouncyCastleOpenSSLKeyTest extends TestCase {
 
     public void testEcryptedToString() throws Exception {
         KeyPair keyPair = getKeyPair();
-        OpenSSLKey inKey = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
-        assertTrue(!inKey.isEncrypted());
-        inKey.encrypt(pwd);
-        assertTrue(inKey.isEncrypted());
-
+	OpenSSLKey inKey = new BouncyCastleOpenSSLKey(keyPair.getPrivate());
+	assertTrue(!inKey.isEncrypted());
+	inKey.encrypt(pwd);
+	assertTrue(inKey.isEncrypted());
+        
         ByteArrayInputStream in = null;
         in = new ByteArrayInputStream(toString(inKey).getBytes());
         OpenSSLKey outKey = new BouncyCastleOpenSSLKey(in);
@@ -112,3 +116,4 @@ public class BouncyCastleOpenSSLKeyTest extends TestCase {
     }
 
 }
+

@@ -15,52 +15,56 @@
  */
 package org.globus.gsi.test;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.Vector;
-import java.util.regex.Pattern;
+
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
+
 import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.globus.gsi.SigningPolicy;
 import org.globus.gsi.SigningPolicyParser;
 import org.globus.gsi.SigningPolicyParserException;
 
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class SigningPolicyParserTest extends TestCase {
 
-    private Log logger = LogFactory.getLog(SigningPolicyParserTest.class);
-
     public static final String BASE = "org/globus/gsi/test/";
+    private Log logger = LogFactory.getLog(SigningPolicyParserTest.class);
     private String SUCCESS_FILE = "samplePolicy.signing_policy";
 
     private String SINGLE_ALLOWED_DN = "5aba75cb.signing_policy";
 
-    private String[] TAB_TEST_FILE = new String[] { "afe55e66.signing_policy", "cf4ba8c8.signing_policy",
-            "49f18420.signing_policy" };
-
-    public void testPatternMatching() throws Exception {
+    private String[] TAB_TEST_FILE = 
+        new String[] { "afe55e66.signing_policy", "cf4ba8c8.signing_policy", 
+                       "49f18420.signing_policy" };
+    
+    public void testPatternMatching() throws Exception { 
 
         // test getPattern method
         // no wildcards or question marks
         String patternStr = "abcdefgh";
-        String patternR = (SigningPolicyParser.getPattern(patternStr)).pattern();
+        String patternR = (SigningPolicyParser.getPattern(patternStr))
+            .pattern();
         assertTrue("abcdefgh".equals(patternR));
 
         // first character wildcard and question marks
         String pattern1Str = "*def?gh?";
         Pattern pattern1 = SigningPolicyParser.getPattern(pattern1Str);
         String pattern1R = pattern1.pattern();
-        assertTrue((SigningPolicyParser.WILDCARD_PATTERN + "def" + SigningPolicyParser.SINGLE_PATTERN + "gh" + SigningPolicyParser.SINGLE_PATTERN)
-            .equals(pattern1R));
+        assertTrue((SigningPolicyParser.WILDCARD_PATTERN + "def" + SigningPolicyParser.SINGLE_PATTERN +"gh" + SigningPolicyParser.SINGLE_PATTERN).equals(pattern1R));
 
         // only wild cards
         String pattern2Str = "abc*def*gh";
         Pattern pattern2 = SigningPolicyParser.getPattern(pattern2Str);
         String pattern2R = pattern2.pattern();
-        assertTrue(("abc" + SigningPolicyParser.WILDCARD_PATTERN + "def" + SigningPolicyParser.WILDCARD_PATTERN + "gh")
-            .equals(pattern2R));
+        assertTrue(("abc" + SigningPolicyParser.WILDCARD_PATTERN + "def" + SigningPolicyParser.WILDCARD_PATTERN +"gh").equals(pattern2R));
 
         // test isValidDN methods
         // Add patern2, wildcards in middle
@@ -69,13 +73,13 @@ public class SigningPolicyParserTest extends TestCase {
         SigningPolicy policy = new SigningPolicy("foo", allowed);
 
         String subject21 = "abc12DEF34defdef56gh";
-        assertTrue(policy.isValidSubject(subject21));
+        assertTrue(policy.isValidSubject(subject21));        
 
         String subject22 = "123abc12def34defdef56gh";
-        assertFalse(policy.isValidSubject(subject22));
+        assertFalse(policy.isValidSubject(subject22));        
 
         String subject23 = "abc12def34defdef56gh123";
-        assertFalse(policy.isValidSubject(subject23));
+        assertFalse(policy.isValidSubject(subject23));        
 
         // wildcard as first and last character
         String pattern3Str = "*abc*def*gh*";
@@ -85,13 +89,13 @@ public class SigningPolicyParserTest extends TestCase {
         policy = new SigningPolicy("foo", allowed);
 
         String subject31 = "ABC12def34defdef56gh";
-        assertTrue(policy.isValidSubject(subject31));
+        assertTrue(policy.isValidSubject(subject31));        
 
         String subject32 = "123abc12def34defdef56gh555";
-        assertTrue(policy.isValidSubject(subject32));
+        assertTrue(policy.isValidSubject(subject32));        
 
         // use of space and slashes, from old signing policy file
-        String pattern4Str = "/C=US/O=Globus/*";
+        String pattern4Str = "/C=US/O=Globus/*"; 
         Pattern pattern4 = SigningPolicyParser.getPattern(pattern4Str);
         allowed.clear();
         allowed.add(pattern4);
@@ -99,21 +103,21 @@ public class SigningPolicyParserTest extends TestCase {
         policy = new SigningPolicy("foo", allowed);
 
         String subject41 = "/C=US/O=Globus/CN=Globus Certification Authority";
-        assertTrue(policy.isValidSubject(subject41));
-
+        assertTrue(policy.isValidSubject(subject41));        
+        
         // wildcard as first character, question mark
-        String pattern5Str = "*/C=US/O=Globus/CN=foo-?/CN=*";
+        String pattern5Str = "*/C=US/O=Globus/CN=foo-?/CN=*"; 
         Pattern pattern5 = SigningPolicyParser.getPattern(pattern5Str);
         allowed.clear();
         allowed.add(pattern5);
         policy = new SigningPolicy("foo", allowed);
 
         String subject51 = "/C=US/O=Globus/CN=Globus Certification Authority";
-        assertFalse(policy.isValidSubject(subject51));
+        assertFalse(policy.isValidSubject(subject51));        
         String subject52 = "SOME/C=US/O=Globus/CN=foo-1/CN=a12b/CN=test space";
-        assertTrue(policy.isValidSubject(subject52));
+        assertTrue(policy.isValidSubject(subject52));       
         String subject53 = "/C=US/O=Globus/CN=foo-k/CN=";
-        assertTrue(policy.isValidSubject(subject53));
+        assertTrue(policy.isValidSubject(subject53));       
         String subject54 = "/C=US/O=Globus/CN=foo- /CN= ";
         assertTrue(policy.isValidSubject(subject54));
         String subject55 = "/C=US/O=Globus/CN=foo-123/CN=";
@@ -127,11 +131,11 @@ public class SigningPolicyParserTest extends TestCase {
         policy = new SigningPolicy("foo", allowed);
 
         String subject61 = "/C=US/O=Globus/CN=foo/CN=user-12";
-        assertFalse(policy.isValidSubject(subject61));
+        assertFalse(policy.isValidSubject(subject61));       
         String subject62 = "/C=US/O=Global/CN=foo/CN=user-12";
-        assertTrue(policy.isValidSubject(subject62));
+        assertTrue(policy.isValidSubject(subject62));       
         String subject63 = "/C=US/O=global/CN=foo /CN=bar 1/CN=user-12";
-        assertTrue(policy.isValidSubject(subject63));
+        assertTrue(policy.isValidSubject(subject63));       
 
         // add multiple patterns and test validity if atleast one matches
         String pattern7Str = "/C=US/O=Globus/CN=*/CN=user-??";
@@ -140,7 +144,7 @@ public class SigningPolicyParserTest extends TestCase {
         policy = new SigningPolicy("foo", allowed);
 
         String subject71 = "/C=US/O=Globus/CN=foo /CN=bar 1/CN=user-12";
-        assertTrue(policy.isValidSubject(subject71));
+        assertTrue(policy.isValidSubject(subject71));  
         assertTrue(policy.isValidSubject(subject63));
     }
 
@@ -150,22 +154,21 @@ public class SigningPolicyParserTest extends TestCase {
 
         String name = BASE + SUCCESS_FILE;
 
-        ClassLoader loader = SigningPolicyParserTest.class.getClassLoader();
+	ClassLoader loader = SigningPolicyParserTest.class.getClassLoader();
         InputStream in = loader.getResourceAsStream(name);
         if (in == null) {
             throw new Exception("Unable to load: " + name);
         }
 
-        SigningPolicy policy = SigningPolicyParser.getPolicy(new InputStreamReader(in),
-            "/C=US/O=Globus/CN=Globus Certification Authority");
+        SigningPolicy policy = SigningPolicyParser.getPolicy(new InputStreamReader(in), "/C=US/O=Globus/CN=Globus Certification Authority");
         assertTrue(policy != null);
         Vector allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
         assertTrue(allowedDN.size() == 2);
-
+        
         Vector patterns = new Vector(2);
-        patterns.add(((Pattern) allowedDN.get(0)).pattern());
-        patterns.add(((Pattern) allowedDN.get(1)).pattern());
+        patterns.add(((Pattern)allowedDN.get(0)).pattern());
+        patterns.add(((Pattern)allowedDN.get(1)).pattern());
 
         // given the getPattern method is already tested, assuming it
         // works here.
@@ -180,16 +183,15 @@ public class SigningPolicyParserTest extends TestCase {
         if (in == null) {
             throw new Exception("Unable to load: " + name);
         }
-        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in),
-            "/C=US/O=National Computational Science Alliance/CN=Globus Certification Authority");
+        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in), "/C=US/O=National Computational Science Alliance/CN=Globus Certification Authority");
         assertTrue(policy != null);
         allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
         assertTrue(allowedDN.size() == 1);
         patterns.clear();
-        patterns.add(((Pattern) allowedDN.get(0)).pattern());
+        patterns.add(((Pattern)allowedDN.get(0)).pattern());
         p1 = SigningPolicyParser.getPattern("/C=us/O=National Computational Science Alliance/*");
-        assertTrue(patterns.contains(p1.pattern()));
+        assertTrue(patterns.contains(p1.pattern()));        
 
         // test file with single allows DN without double quotes
         name = BASE + SINGLE_ALLOWED_DN;
@@ -199,8 +201,7 @@ public class SigningPolicyParserTest extends TestCase {
             throw new Exception("Unable to load: " + name);
         }
 
-        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in),
-            "/C=US/O=National Computational Science Alliance/OU=Certification Authority");
+        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in), "/C=US/O=National Computational Science Alliance/OU=Certification Authority");
 
         assertTrue(policy != null);
         allowedDN.clear();
@@ -209,8 +210,8 @@ public class SigningPolicyParserTest extends TestCase {
         assertTrue(allowedDN.size() == 1);
 
         patterns = new Vector(1);
-        patterns.add(((Pattern) allowedDN.get(0)).pattern());
-
+        patterns.add(((Pattern)allowedDN.get(0)).pattern());
+        
         p1 = SigningPolicyParser.getPattern("/C=US/O=National Computational Science Alliance/*");
         assertTrue(patterns.contains(p1.pattern()));
     }
@@ -219,14 +220,13 @@ public class SigningPolicyParserTest extends TestCase {
 
         String name = BASE + TAB_TEST_FILE[0];
 
-        ClassLoader loader = SigningPolicyParserTest.class.getClassLoader();
+	ClassLoader loader = SigningPolicyParserTest.class.getClassLoader();
         InputStream in = loader.getResourceAsStream(name);
         if (in == null) {
             throw new Exception("Unable to load: " + name);
         }
 
-        SigningPolicy policy = SigningPolicyParser.getPolicy(new InputStreamReader(in),
-            "/C=CY/O=CyGrid/O=HPCL/CN=CyGridCA");
+        SigningPolicy policy = SigningPolicyParser.getPolicy(new InputStreamReader(in), "/C=CY/O=CyGrid/O=HPCL/CN=CyGridCA");
         assertTrue(policy != null);
         Vector allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
@@ -243,14 +243,15 @@ public class SigningPolicyParserTest extends TestCase {
         allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
         assertTrue(allowedDN.size() == 2);
-
+        
         Vector patterns = new Vector(2);
-        patterns.add(((Pattern) allowedDN.get(0)).pattern());
-        patterns.add(((Pattern) allowedDN.get(1)).pattern());
+        patterns.add(((Pattern)allowedDN.get(0)).pattern());
+        patterns.add(((Pattern)allowedDN.get(1)).pattern());
 
         // given the getPattern method is already tested, assuming it
         // works here.
-        Pattern p1 = SigningPolicyParser.getPattern("/C=FR/O=CNRS/CN=CNRS-Projets");
+        Pattern p1 = SigningPolicyParser
+            .getPattern("/C=FR/O=CNRS/CN=CNRS-Projets");
         assertTrue(patterns.contains(p1.pattern()));
         p1 = SigningPolicyParser.getPattern("/C=FR/O=CNRS/CN=CNRS");
         assertTrue(patterns.contains(p1.pattern()));
@@ -263,16 +264,15 @@ public class SigningPolicyParserTest extends TestCase {
         }
 
         allowedDN.clear();
-        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in),
-            "/C=IT/O=INFN/CN=INFN Certification Authority");
+        policy = SigningPolicyParser.getPolicy(new InputStreamReader(in), "/C=IT/O=INFN/CN=INFN Certification Authority");
         assertTrue(policy != null);
         allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
         assertTrue(allowedDN.size() == 2);
 
         patterns.clear();
-        patterns.add(((Pattern) allowedDN.get(0)).pattern());
-        patterns.add(((Pattern) allowedDN.get(1)).pattern());
+        patterns.add(((Pattern)allowedDN.get(0)).pattern());
+        patterns.add(((Pattern)allowedDN.get(1)).pattern());
 
         // given the getPattern method is already tested, assuming it
         // works here.
@@ -283,7 +283,7 @@ public class SigningPolicyParserTest extends TestCase {
     }
 
     public void testFileFailure() throws Exception {
-
+        
         boolean exception = false;
         try {
             SigningPolicyParser.getPolicy("foo", "bar");
@@ -300,24 +300,21 @@ public class SigningPolicyParserTest extends TestCase {
 
         // not x509
         String error1 = "access_id_CA      notX509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        globus        CA:sign\n cond_subjects     globus       '\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"'";
-
-        SigningPolicy policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-            "/C=US/O=Globus/CN=Globus Certification Authority");
+        
+        SigningPolicy policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         assertTrue(policy != null);
         assertTrue(!policy.isPolicyAvailable());
 
         // not globus
         error1 = "access_id_CA      X509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        notglobus        CA:sign\n cond_subjects     globus       '\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"'";
-        policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-            "/C=US/O=Globus/CN=Globus Certification Authority");
+        policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         assertTrue(policy != null);
         assertTrue(!policy.isPolicyAvailable());
 
         // order of rights matter, atleast one positive right implies
         // allowed DN
         error1 = "access_id_CA      X509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        globus        CA:sign\n cond_subjects     globus       '\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"' \n neg_rights        notglobus        some:right";
-        policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-            "/C=US/O=Globus/CN=Globus Certification Authority");
+        policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         assertTrue(policy != null);
         Vector allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
@@ -327,11 +324,11 @@ public class SigningPolicyParserTest extends TestCase {
         error1 = "X509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        notglobus        CA:sign\n cond_subjects     globus       \'\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"\'";
         boolean exception = false;
         try {
-            policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-                "/C=US/O=Globus/CN=Globus Certification Authority");
+            policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         } catch (SigningPolicyParserException exp) {
-            if ((exp.getMessage().indexOf("File format is incorrect") != -1)
-                && (exp.getMessage().indexOf("Expected line to start with access_id") != -1)) {
+            if ((exp.getMessage().indexOf("File format is incorrect") != -1) &&
+                (exp.getMessage().
+                indexOf("Expected line to start with access_id") != -1)) {
                 exception = true;
             }
         }
@@ -341,11 +338,11 @@ public class SigningPolicyParserTest extends TestCase {
         error1 = "access_id_CA X509         '/C=US/O=Globus/CN=Globus Certification Authority\n pos_rights        notglobus        CA:sign\n cond_subjects     globus       \'\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"\'";
         exception = false;
         try {
-            policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-                "/C=US/O=Globus/CN=Globus Certification Authority");
+            policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         } catch (SigningPolicyParserException exp) {
-            if ((exp.getMessage().indexOf("Line format is incorrect") != -1)
-                && (exp.getMessage().indexOf("CA DN with space should be enclosed in quotes") != -1)) {
+            if ((exp.getMessage().indexOf("Line format is incorrect") != -1) &&
+                (exp.getMessage().
+                 indexOf("CA DN with space should be enclosed in quotes") != -1)) {
                 exception = true;
             }
         }
@@ -355,11 +352,11 @@ public class SigningPolicyParserTest extends TestCase {
         error1 = "access_id_CA      X509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        globus        CA:sign\n  neg_rights        notglobus        some:right";
         exception = false;
         try {
-            policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-                "/C=US/O=Globus/CN=Globus Certification Authority");
+            policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
         } catch (SigningPolicyParserException exp) {
-            if ((exp.getMessage().indexOf("File format is incorrect") != -1)
-                && (exp.getMessage().indexOf("neg_rights cannot be used here") != -1)) {
+            if ((exp.getMessage().indexOf("File format is incorrect") != -1) &&
+                (exp.getMessage().
+                 indexOf("neg_rights cannot be used here") != -1)) {
                 exception = true;
             }
         }
@@ -367,9 +364,8 @@ public class SigningPolicyParserTest extends TestCase {
 
         // first pos_rights is all that matters
         error1 = "access_id_CA X509         '/C=US/O=Globus/CN=Globus Certification Authority'\n pos_rights        globus        CA:sign\n cond_subjects     globus       '\"/C=us/O=Globus/*\"  \"/C=US/O=Globus/*\"' \n cond_subjects     globus       '\"/C=us/O=Globus/*\"'";
-        policy = SigningPolicyParser.getPolicy(new StringReader(error1),
-            "/C=US/O=Globus/CN=Globus Certification Authority");
-        assertTrue(policy != null);
+        policy = SigningPolicyParser.getPolicy(new StringReader(error1), "/C=US/O=Globus/CN=Globus Certification Authority");
+        assertTrue(policy != null);        
         allowedDN = policy.getPatterns();
         assertTrue(allowedDN != null);
         assertTrue(allowedDN.size() == 2);

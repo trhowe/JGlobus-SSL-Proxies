@@ -14,20 +14,21 @@
  */
 package org.globus.security.filestore;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
+
 import org.globus.security.FileSetupUtil;
 import org.globus.security.stores.ResourceTrustAnchor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * FILL ME
- * 
+ *
  * @author ranantha@mcs.anl.gov
  */
 public class TestFileBasedTrustAnchor {
@@ -40,6 +41,7 @@ public class TestFileBasedTrustAnchor {
         this.testCert1 = new FileSetupUtil("certificateUtilTest/1c3f2ca8.0");
     }
 
+
     @Test
     public void testGetTrustAnchor() throws Exception {
 
@@ -49,7 +51,7 @@ public class TestFileBasedTrustAnchor {
 
         ResourceTrustAnchor fileAnchor = new ResourceTrustAnchor("classpath:/certificateUtilTest/1c3f2ca8.0");
 
-        // assert (fileAnchor != null);
+//        assert (fileAnchor != null);
 
         TrustAnchor anchor = fileAnchor.getSecurityObject();
 
@@ -78,36 +80,37 @@ public class TestFileBasedTrustAnchor {
 
     }
 
-    // @Test
-    // public void testGetTrustAnchorFilter() {
-    //
-    // FilenameFilter filter = new TrustAnchorFilter();
-    //
-    // // Null checks
-    // boolean worked = false;
-    // try {
-    // filter.accept(null, null);
-    // } catch (IllegalArgumentException e) {
-    // worked = true;
-    // }
-    // assert worked;
-    //
-    // // null dir name
-    // assert (filter.accept(null, "foo.1"));
-    //
-    // // dir name ignored
-    // assert (filter.accept(new File("bar"), "foo.9"));
-    //
-    // // only single digit at end
-    // assertFalse(filter.accept(null, "foo.10"));
-    //
-    // // only single digit at end
-    // assertFalse(filter.accept(null, "foo.bar"));
-    //
-    // // the most common usage. *.0
-    // assertTrue(filter.accept(null, "foo.0"));
-    //
-    // }
+
+//    @Test
+//    public void testGetTrustAnchorFilter() {
+//
+//        FilenameFilter filter = new TrustAnchorFilter();
+//
+//        // Null checks
+//        boolean worked = false;
+//        try {
+//            filter.accept(null, null);
+//        } catch (IllegalArgumentException e) {
+//            worked = true;
+//        }
+//        assert worked;
+//
+//        // null dir name
+//        assert (filter.accept(null, "foo.1"));
+//
+//        // dir name ignored
+//        assert (filter.accept(new File("bar"), "foo.9"));
+//
+//        // only single digit at end
+//        assertFalse(filter.accept(null, "foo.10"));
+//
+//        // only single digit at end
+//        assertFalse(filter.accept(null, "foo.bar"));
+//
+//        // the most common usage. *.0
+//        assertTrue(filter.accept(null, "foo.0"));
+//
+//    }
 
     @After
     public void tearDown() {

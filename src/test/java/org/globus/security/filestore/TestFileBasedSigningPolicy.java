@@ -14,21 +14,22 @@
  */
 package org.globus.security.filestore;
 
-import java.util.Collection;
-import org.globus.security.FileSetupUtil;
-import org.globus.security.SigningPolicy;
-import org.globus.security.stores.ResourceSigningPolicy;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
+
+import org.globus.security.FileSetupUtil;
+import org.globus.security.SigningPolicy;
+import org.globus.security.stores.ResourceSigningPolicy;
+import org.springframework.core.io.FileSystemResource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * FILL ME
- * 
+ *
  * @author ranantha@mcs.anl.gov
  */
 public class TestFileBasedSigningPolicy {
@@ -39,16 +40,19 @@ public class TestFileBasedSigningPolicy {
     public void setUp() throws Exception {
 
         // FIXME paramters
-        this.testPolicy1 = new FileSetupUtil("certificateUtilTest/validPolicy1.signing_policy");
+        this.testPolicy1 =
+                new FileSetupUtil(
+                        "certificateUtilTest/validPolicy1.signing_policy");
     }
+
 
     @Test
     public void testSigningPolicy() throws Exception {
 
         this.testPolicy1.copyFileToTemp();
 
-        ResourceSigningPolicy filePolicy = new ResourceSigningPolicy(new FileSystemResource(testPolicy1
-            .getAbsoluteFilename()));
+        ResourceSigningPolicy filePolicy =
+                new ResourceSigningPolicy(new FileSystemResource(testPolicy1.getAbsoluteFilename()));
 
         Collection<SigningPolicy> policies = filePolicy.getSigningPolicies();
 
@@ -74,33 +78,33 @@ public class TestFileBasedSigningPolicy {
         assertTrue(filePolicy.hasChanged());
     }
 
-    // @Test
-    // public void testPolicyFilter() {
-    //
-    // FilenameFilter filter = new SigningPolicyFilter();
-    //
-    // // Null checks
-    // boolean worked = false;
-    // try {
-    // filter.accept(null, null);
-    // } catch (IllegalArgumentException e) {
-    // worked = true;
-    // }
-    // assert worked;
-    //
-    // // null dir name
-    // assert (filter.accept(null, "foo.signing_policy"));
-    //
-    // // dir name ignored
-    // assert (filter.accept(new File("bar"), "foo.signing_policy"));
-    //
-    // assertFalse(filter.accept(null, "foo.r"));
-    //
-    // assertFalse(filter.accept(null, "foo.SIGNING_POLICY"));
-    //
-    // assertFalse(filter.accept(null, "foo.signing"));
-    //
-    // }
+	// @Test
+	// public void testPolicyFilter() {
+	//
+	// FilenameFilter filter = new SigningPolicyFilter();
+	//
+	// // Null checks
+	// boolean worked = false;
+	// try {
+	// filter.accept(null, null);
+	// } catch (IllegalArgumentException e) {
+	// worked = true;
+	// }
+	// assert worked;
+	//
+	// // null dir name
+	// assert (filter.accept(null, "foo.signing_policy"));
+	//
+	// // dir name ignored
+	// assert (filter.accept(new File("bar"), "foo.signing_policy"));
+	//
+	// assertFalse(filter.accept(null, "foo.r"));
+	//
+	// assertFalse(filter.accept(null, "foo.SIGNING_POLICY"));
+	//
+	// assertFalse(filter.accept(null, "foo.signing"));
+	//
+	// }
 
     @After
     public void tearDown() throws Exception {
