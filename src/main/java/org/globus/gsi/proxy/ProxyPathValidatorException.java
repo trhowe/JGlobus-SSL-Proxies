@@ -15,20 +15,17 @@
  */
 package org.globus.gsi.proxy;
 
-import java.util.Date;
-import java.text.DateFormat;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
-
+import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-
-import org.globus.common.ChainedGeneralSecurityException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  */
-public class ProxyPathValidatorException 
-    extends ChainedGeneralSecurityException {
-    
+public class ProxyPathValidatorException extends GeneralSecurityException {
+
     public static final int FAILURE = -1;
 
     // proxy constraints violation
@@ -67,47 +64,40 @@ public class ProxyPathValidatorException
     private X509Certificate cert;
 
     private int errorCode = FAILURE;
-    
+
     public ProxyPathValidatorException(int errorCode) {
-	this(errorCode, null);
+        this(errorCode, null);
     }
 
-    public ProxyPathValidatorException(int errorCode,
-				       Throwable root) {
-	this(errorCode, "", root);
+    public ProxyPathValidatorException(int errorCode, Throwable root) {
+        this(errorCode, "", root);
     }
 
-    public ProxyPathValidatorException(int errorCode,
-				       String msg,
-				       Throwable root) {
-	super(msg, root);
-	this.errorCode = errorCode;
+    public ProxyPathValidatorException(int errorCode, String msg, Throwable root) {
+        super(msg, root);
+        this.errorCode = errorCode;
     }
 
-    public ProxyPathValidatorException(int errorCode,
-				       X509Certificate cert,
-				       String msg) {
-	super(msg, null);
-	this.errorCode = errorCode;
-	this.cert = cert;
+    public ProxyPathValidatorException(int errorCode, X509Certificate cert, String msg) {
+        super(msg, null);
+        this.errorCode = errorCode;
+        this.cert = cert;
     }
-    
+
     public int getErrorCode() {
-	return this.errorCode;
+        return this.errorCode;
     }
-    
 
     /**
-     * Returns the certificate that was being validated when
-     * the exception was thrown.
-     *
-     * @return the <code>Certificate</code> that was being validated when
-     * the exception was thrown (or <code>null</code> if not specified)
+     * Returns the certificate that was being validated when the exception was thrown.
+     * 
+     * @return the <code>Certificate</code> that was being validated when the exception was thrown (or
+     *         <code>null</code> if not specified)
      */
     public X509Certificate getCertificate() {
-	return this.cert;
+        return this.cert;
     }
-    
+
     public static String getDateAsString(Date date) {
         TimeZone tz = TimeZone.getTimeZone("GMT");
         DateFormat df = new SimpleDateFormat("MMM dd HH:mm:ss yyyy z");

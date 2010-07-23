@@ -289,7 +289,7 @@ public class SigningPolicyParserTest extends TestCase {
             SigningPolicyParser.getPolicy("foo", "bar");
         } catch (SigningPolicyParserException e) {
             logger.debug(e.getMessage());
-            if (e.getException() instanceof FileNotFoundException) {
+            if (e.getCause() instanceof FileNotFoundException) {
                 exception = true;
             }
         }

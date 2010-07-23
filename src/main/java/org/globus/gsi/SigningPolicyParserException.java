@@ -15,16 +15,15 @@
  */
 package org.globus.gsi;
 
-import org.globus.common.ChainedException;
 
-public class SigningPolicyParserException extends ChainedException {
-    
+public class SigningPolicyParserException extends Exception {
+
     public SigningPolicyParserException(String msg) {
-	super(msg);
+        super(msg);
     }
-    
+
     public SigningPolicyParserException(String msg, Throwable ex) {
-	super(msg, ex);
+        super(msg, ex);
     }
-    
+
 }
