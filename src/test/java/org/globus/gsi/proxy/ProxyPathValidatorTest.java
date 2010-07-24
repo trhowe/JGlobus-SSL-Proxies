@@ -15,6 +15,10 @@
  */
 package org.globus.gsi.proxy;
 
+import org.globus.gsi.CertUtil;
+
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.security.cert.CertPathValidatorException;
 
 import java.security.cert.CertPath;
@@ -24,7 +28,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
 import java.security.cert.X509CRL;
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;

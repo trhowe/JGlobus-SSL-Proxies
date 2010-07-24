@@ -14,6 +14,8 @@
  */
 package org.globus.security.util;
 
+import java.security.Principal;
+
 import org.globus.gsi.bc.X509NameHelper;
 
 import java.util.Arrays;
@@ -355,6 +357,77 @@ public final class CertificateUtil {
     public static DERObject getExtensionObject(X509Extension ext)
             throws IOException {
         return toDERObject(ext.getValue().getOctets());
+    }
+
+    /**
+     * Converts DN of the form "CN=A, OU=B, O=C" into Globus 
+     * format "/CN=A/OU=B/O=C".<BR>
+     * This function might return incorrect Globus-formatted ID when one of
+     * the RDNs in the DN contains commas.
+     * @see #toGlobusID(String, boolean)
+     *
+     * @param dn the DN to convert to Globus format.
+     * @return the converted DN in Globus format.
+     */
+    public static String toGlobusID(String dn) {
+        return toGlobusID(dn, true);
+    }
+
+    /**
+     * Converts DN of the form "CN=A, OU=B, O=C" into Globus 
+     * format "/CN=A/OU=B/O=C" or "/O=C/OU=B/CN=A" depending on the
+     * <code>noreverse</code> option. If <code>noreverse</code> is true
+     * the order of the DN components is not reveresed - "/CN=A/OU=B/O=C" is
+     * returned. If <code>noreverse</code> is false, the order of the 
+     * DN components is reversed - "/O=C/OU=B/CN=A" is returned. <BR>
+     * This function might return incorrect Globus-formatted ID when one of
+     * the RDNs in the DN contains commas.
+     *
+     * @param dn the DN to convert to Globus format.
+     * @param noreverse the direction of the conversion.
+     * @return the converted DN in Globus format.
+     */
+    public static String toGlobusID(String dn, boolean noreverse) {
+        if (dn == null) {
+            return null;
+        }
+
+        StringTokenizer tokens = new StringTokenizer(dn, ",");
+        StringBuffer buf = new StringBuffer();
+        String token;
+        
+        while(tokens.hasMoreTokens()) {
+            token = tokens.nextToken().trim();
+
+            if (noreverse) {
+                buf.append("/");
+                buf.append(token);
+            } else {
+                buf.insert(0, token);
+                buf.insert(0, "/");
+            }
+        }
+        
+        return buf.toString();
+    }
+
+    /**
+     * Converts the specified principal into Globus format.
+     * If the principal is of unrecognized type a simple string-based
+     * conversion is made using the {@link #toGlobusID(String) toGlobusID()}
+     * function.
+     *
+     * @see #toGlobusID(String)
+     *
+     * @param name the principal to convert to Globus format.
+     * @return the converted DN in Globus format.
+     */
+    public static String toGlobusID(Principal name) {
+        if (name instanceof X509Name) {
+            return X509NameHelper.toString((X509Name)name);
+        } else {
+            return CertificateUtil.toGlobusID(name.getName());
+        }
     }
 
     /**
