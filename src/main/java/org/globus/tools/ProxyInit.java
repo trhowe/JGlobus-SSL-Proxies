@@ -140,7 +140,7 @@ public abstract class ProxyInit {
 	}
 
 	ProxyPathValidator validator = new ProxyPathValidator();
-
+    
 	if (proxyCertInfo != null) {
 	    String oid = 
 		proxyCertInfo.getProxyPolicy().getPolicyLanguage().getId();

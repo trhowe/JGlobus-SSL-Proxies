@@ -14,24 +14,21 @@
  */
 package org.globus.security.util;
 
+import org.globus.gsi.bc.X509NameHelper;
+
 import java.util.Arrays;
-
 import java.util.List;
-
 import java.util.Vector;
-
-import java.security.cert.CertificateFactory;
-
-import java.security.cert.CertPath;
-
+import java.util.StringTokenizer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.StringTokenizer;
-
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1InputStream;
