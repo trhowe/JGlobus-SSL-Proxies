@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.net.ssl.ManagerFactoryParameters;
 
 import org.globus.security.X509ProxyCertPathParameters;
-import org.globus.security.proxyExtension.ProxyPolicyHandler;
+import org.globus.gsi.proxy.ProxyPolicyHandler;
 
 public class GlobusTrustManagerFactoryParameters implements
 		ManagerFactoryParameters {

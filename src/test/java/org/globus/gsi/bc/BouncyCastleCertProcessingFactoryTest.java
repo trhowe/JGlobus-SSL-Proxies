@@ -103,7 +103,7 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 	
 	byte [] realValue = 
 	    X509Extension.getExtensionValue(newCert, 
-					    ProxyCertInfo.OID.getId());
+					    GSIConstants.PROXY_OID.getId());
 	assertTrue(realValue != null && realValue.length > 0);
 
 	ProxyCertInfo proxyCertInfo = 

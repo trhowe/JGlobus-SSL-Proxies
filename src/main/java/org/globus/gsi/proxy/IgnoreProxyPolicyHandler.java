@@ -15,7 +15,8 @@
  */
 package org.globus.gsi.proxy;
 
-import java.security.cert.X509Certificate;
+import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertPath;
 
 import org.globus.gsi.proxy.ext.ProxyCertInfo;
 
@@ -32,9 +33,9 @@ public class IgnoreProxyPolicyHandler implements ProxyPolicyHandler {
 	LogFactory.getLog(IgnoreProxyPolicyHandler.class.getName());
 
     public void validate(ProxyCertInfo proxyCertInfo,
-			 X509Certificate[] certPath,
+			 CertPath certPath,
 			 int index)
-	throws ProxyPathValidatorException {
+	throws CertPathValidatorException {
 	logger.info("ProxyPolicy ignored: " + proxyCertInfo.getProxyPolicy().getPolicyLanguage().getId());
     }
     

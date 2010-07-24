@@ -14,6 +14,8 @@
  */
 package org.globus.security.trustmanager;
 
+import org.globus.security.util.CertificateUtil;
+
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStoreException;
 import java.security.cert.CertPath;
@@ -81,7 +83,7 @@ public class PKITrustManager implements X509TrustManager {
     public void checkClientTrusted(X509Certificate[] x509Certificates, String authType)
             throws CertificateException {
         // FIXME: anonymous clients?
-        CertPath certPath = getCertPath(x509Certificates);
+        CertPath certPath = CertificateUtil.getCertPath(x509Certificates);
         try {
             this.result = this.validator.engineValidate(certPath, parameters);
         } catch (CertPathValidatorException exception) {
@@ -100,7 +102,7 @@ public class PKITrustManager implements X509TrustManager {
      */
     public void checkServerTrusted(X509Certificate[] x509Certificates, String authType)
             throws CertificateException {
-        CertPath certPath = getCertPath(x509Certificates);
+        CertPath certPath = CertificateUtil.getCertPath(x509Certificates);
         try {
             this.result = this.validator.engineValidate(certPath, parameters);
         } catch (CertPathValidatorException exception) {
@@ -136,15 +138,4 @@ public class PKITrustManager implements X509TrustManager {
         return this.result;
     }
 
-    // FIXME: THis is super naive, fix it.
-
-    private CertPath getCertPath(X509Certificate[] certs) throws CertificateException {
-
-        CertificateFactory factory = CertificateFactory.getInstance("X.509");
-        List<X509Certificate> certList = new Vector<X509Certificate>(certs.length);
-        certList.addAll(Arrays.asList(certs));
-        CertPath certPath = factory.generateCertPath(certList);
-        logger.finest(String.format("CertPath: %s", certPath.toString()));
-        return certPath;
-    }
 }

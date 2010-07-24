@@ -40,9 +40,9 @@ import org.globus.gsi.GSIConstants;
 import org.globus.security.X509ProxyCertPathParameters;
 import org.globus.security.X509ProxyCertPathValidatorResult;
 import org.globus.security.provider.SigningPolicyStore;
-import org.globus.security.proxyExtension.ProxyCertInfo;
-import org.globus.security.proxyExtension.ProxyPolicy;
-import org.globus.security.proxyExtension.ProxyPolicyHandler;
+import org.globus.gsi.proxy.ext.ProxyCertInfo;
+import org.globus.gsi.proxy.ext.ProxyPolicy;
+import org.globus.gsi.proxy.ProxyPolicyHandler;
 import org.globus.security.util.CertificateUtil;
 import org.globus.security.util.ProxyCertificateUtil;
 

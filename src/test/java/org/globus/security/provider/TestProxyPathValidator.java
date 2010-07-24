@@ -42,12 +42,13 @@ import java.util.Vector;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.globus.gsi.proxy.ext.ProxyCertInfo;
+import org.globus.gsi.proxy.ext.ProxyPolicy;
+import org.globus.gsi.proxy.ProxyPolicyHandler;
+
 import org.globus.security.SigningPolicy;
 import org.globus.security.X509ProxyCertPathParameters;
 import org.globus.security.X509ProxyCertPathValidatorResult;
-import org.globus.security.proxyExtension.ProxyCertInfo;
-import org.globus.security.proxyExtension.ProxyPolicy;
-import org.globus.security.proxyExtension.ProxyPolicyHandler;
 import org.globus.security.trustmanager.CRLChecker;
 import org.globus.security.trustmanager.CertificateChecker;
 import org.globus.security.trustmanager.DateValidityChecker;

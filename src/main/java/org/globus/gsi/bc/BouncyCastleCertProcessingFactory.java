@@ -548,9 +548,9 @@ public class BouncyCastleCertProcessingFactory {
 	    serialNum = new BigInteger(20, rand);
 	
 	    if (extSet != null) {
-		x509Ext = extSet.get(ProxyCertInfo.OID.getId());
+		x509Ext = extSet.get(GSIConstants.PROXY_OID.getId());
                 if (x509Ext == null) {
-                    x509Ext = extSet.get(ProxyCertInfo.OLD_OID.getId());
+                    x509Ext = extSet.get(GSIConstants.PROXY_OLD_OID.getId());
                 }
 	    }
 	    
@@ -657,8 +657,8 @@ public class BouncyCastleCertProcessingFactory {
 	    while(iter.hasNext()) {
 		String oid = (String)iter.next();
 		// skip ProxyCertInfo extension
-		if (oid.equals(ProxyCertInfo.OID.getId()) ||
-                    oid.equals(ProxyCertInfo.OLD_OID.getId())) {
+		if (oid.equals(GSIConstants.PROXY_OID.getId()) ||
+                    oid.equals(GSIConstants.PROXY_OLD_OID.getId())) {
 		    continue;
 		}
 		x509Ext = (org.globus.gsi.X509Extension)extSet.get(oid);

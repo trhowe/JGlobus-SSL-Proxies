@@ -15,6 +15,8 @@
  */
 package org.globus.gsi.proxy.ext;
 
+import org.globus.gsi.GSIConstants;
+
 import org.globus.gsi.bc.BouncyCastleX509Extension;
 import org.globus.util.I18n;
 
@@ -28,7 +30,7 @@ public class ProxyCertInfoExtension extends BouncyCastleX509Extension {
                          ProxyCertInfoExtension.class.getClassLoader());
 
     public ProxyCertInfoExtension(ProxyCertInfo value) {
-    super(ProxyCertInfo.OID.getId(), true, null);
+    super(GSIConstants.PROXY_OID.getId(), true, null);
     if (value == null) {
         throw new IllegalArgumentException(i18n.getMessage("proxyErr28"));
     }

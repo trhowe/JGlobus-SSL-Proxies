@@ -15,9 +15,15 @@
  */
 package org.globus.gsi.proxy;
 
+
+import org.globus.security.util.CertificateUtil;
+
+import java.security.cert.CertPathValidatorException;
+
+import java.security.cert.CertificateException;
+
 import org.globus.common.CoGProperties;
 
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Date;
@@ -604,7 +610,7 @@ public class ProxyPathValidator {
     protected void checkRestrictedProxy(TBSCertificateStructure proxy,
 					X509Certificate[] certPath,
 					int index) 
-	throws ProxyPathValidatorException, IOException {
+	throws ProxyPathValidatorException, IOException, CertificateException, CertPathValidatorException {
 	
 	logger.debug("enter: checkRestrictedProxy");
 
@@ -639,7 +645,7 @@ public class ProxyPathValidator {
            i18n.getMessage("proxyErr09", pl));
     }
 
-	handler.validate(info, certPath, index);
+	handler.validate(info, CertificateUtil.getCertPath(certPath), index);
 
 	logger.debug("exit: checkRestrictedProxy");
 	
@@ -764,9 +770,9 @@ public class ProxyPathValidator {
 		if (ext.isCritical()) {
 		    if (oid.equals(X509Extensions.BasicConstraints) ||
 			oid.equals(X509Extensions.KeyUsage) ||
-			(oid.equals(ProxyCertInfo.OID) && 
+			(oid.equals(GSIConstants.PROXY_OID) && 
                          CertUtil.isGsi4Proxy(certType)) ||
-			(oid.equals(ProxyCertInfo.OLD_OID) && 
+			(oid.equals(GSIConstants.PROXY_OLD_OID) && 
                          CertUtil.isGsi3Proxy(certType))) {
 		    } else {
 			throw new ProxyPathValidatorException(
@@ -976,4 +982,5 @@ public class ProxyPathValidator {
         }
         return true;
     }
+
 }

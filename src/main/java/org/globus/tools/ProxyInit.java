@@ -15,6 +15,10 @@
  */
 package org.globus.tools;
 
+import java.security.cert.CertPathValidatorException;
+
+import java.security.cert.CertPath;
+
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -142,9 +146,9 @@ public abstract class ProxyInit {
 		proxyCertInfo.getProxyPolicy().getPolicyLanguage().getId();
 	    validator.setProxyPolicyHandler(oid, new ProxyPolicyHandler() {
 		    public void validate(ProxyCertInfo proxyCertInfo,
-					 X509Certificate[] certPath,
+					 CertPath certPath,
 					 int index)
-			throws ProxyPathValidatorException {
+			throws CertPathValidatorException {
 			// ignore policy - this is just for proxy init case
 			System.out.println("Proxy verify: Ignoring proxy policy");
 			if (debug) {

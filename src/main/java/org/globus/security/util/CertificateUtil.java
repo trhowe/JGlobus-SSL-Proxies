@@ -14,6 +14,16 @@
  */
 package org.globus.security.util;
 
+import java.util.Arrays;
+
+import java.util.List;
+
+import java.util.Vector;
+
+import java.security.cert.CertificateFactory;
+
+import java.security.cert.CertPath;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -38,8 +48,8 @@ import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.globus.gsi.GSIConstants;
-import org.globus.security.proxyExtension.ProxyCertInfo;
-import org.globus.security.proxyExtension.ProxyPolicy;
+import org.globus.gsi.proxy.ext.ProxyCertInfo;
+import org.globus.gsi.proxy.ext.ProxyPolicy;
 
 /**
  * FILL ME
@@ -404,5 +414,15 @@ public final class CertificateUtil {
         return new X500Principal(dn);
     }
 
+    // FIXME: THis is super naive, fix it.
+    public static CertPath getCertPath(X509Certificate[] certs) throws CertificateException {
 
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        List<X509Certificate> certList = new Vector<X509Certificate>(certs.length);
+        certList.addAll(Arrays.asList(certs));
+        CertPath certPath = factory.generateCertPath(certList);
+        return certPath;
+    }
+
+    
 }

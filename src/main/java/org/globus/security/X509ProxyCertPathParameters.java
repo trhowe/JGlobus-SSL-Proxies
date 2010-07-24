@@ -18,9 +18,8 @@ import java.security.KeyStore;
 import java.security.cert.CertPathParameters;
 import java.security.cert.CertStore;
 import java.util.Map;
-
 import org.globus.security.provider.SigningPolicyStore;
-import org.globus.security.proxyExtension.ProxyPolicyHandler;
+import org.globus.gsi.proxy.ProxyPolicyHandler;
 
 /**
  * FILL ME

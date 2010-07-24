@@ -20,7 +20,7 @@ import org.bouncycastle.asn1.x509.TBSCertificateStructure;
 import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.globus.gsi.GSIConstants;
-import org.globus.security.proxyExtension.ProxyCertInfo;
+import org.globus.gsi.proxy.ext.ProxyCertInfo;
 
 /**
  * FILL ME

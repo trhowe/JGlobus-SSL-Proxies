@@ -15,11 +15,14 @@
  */
 package org.globus.gsi.proxy;
 
+import java.security.cert.CertPathValidatorException;
+
+import java.security.cert.CertPath;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
-import java.io.File;
 import java.security.cert.X509CRL;
 import org.globus.gsi.CertUtil;
 import org.globus.gsi.GlobusCredential;
@@ -336,8 +339,8 @@ public class ProxyPathValidatorTest extends TestCase {
 
 	TestProxyPathValidator v = new TestProxyPathValidator();
 	v.setProxyPolicyHandler("1.3.6.1.4.1.3536.1.1.1.8", new ProxyPolicyHandler() {
-		public void validate(ProxyCertInfo info, X509Certificate[] path, int index)
-		    throws ProxyPathValidatorException {
+		public void validate(ProxyCertInfo info, CertPath path, int index)
+		    throws CertPathValidatorException {
 		    ProxyPolicy policy = info.getProxyPolicy();
 		    String pol = policy.getPolicyAsString();
 		    assertEquals("<AllPermissions...>\r\n", pol);
