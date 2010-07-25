@@ -517,6 +517,31 @@ public class BouncyCastleUtil {
 	}
     }
 
+    /**
+     * Returns the actual value of the extension.
+     *
+     * @param cert the certificate that contains the extensions to retrieve.
+     * @param oid the oid of the extension to retrieve.
+     * @return the actual value of the extension (not octet string encoded)
+     * @exception IOException if decoding the extension fails.
+     */
+    public static byte[] getExtensionValue(X509Certificate cert, String oid) 
+    throws IOException {
+    if (cert == null) {
+        throw new IllegalArgumentException(i18n.getMessage("certNull"));
+    }
+    if (oid == null) {
+        throw new IllegalArgumentException(i18n.getMessage("oidNull"));
+    }
+    
+    byte [] value = cert.getExtensionValue(oid);
+    if (value == null) {
+        return null;
+    }
+    
+    return getExtensionValue(value);
+    }
+
     public static int getProxyPathConstraint(X509Certificate cert)
             throws IOException, CertificateEncodingException {
         

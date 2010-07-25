@@ -105,7 +105,7 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 	verifyExtension(newCert, oid, expectedValue, critical);
 	
 	byte [] realValue = 
-	    X509Extension.getExtensionValue(newCert, 
+	    BouncyCastleUtil.getExtensionValue(newCert, 
 					    GSIConstants.PROXY_OID.getId());
 	assertTrue(realValue != null && realValue.length > 0);
 
@@ -160,7 +160,7 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 				 String oid,
 				 String expectedValue,
 				 boolean critical) throws Exception {
-	byte [] realValue = X509Extension.getExtensionValue(cert, oid);
+	byte [] realValue = BouncyCastleUtil.getExtensionValue(cert, oid);
 
 	assertTrue(realValue != null && realValue.length > 0);
 	assertEquals(expectedValue, new String(realValue));
