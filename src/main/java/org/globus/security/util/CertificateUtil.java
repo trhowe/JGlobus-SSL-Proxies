@@ -484,14 +484,11 @@ public final class CertificateUtil {
         return new X500Principal(dn);
     }
 
-    // FIXME: THis is super naive, fix it.
+    // FIXME: This is super naive, fix it.
     public static CertPath getCertPath(X509Certificate[] certs) throws CertificateException {
 
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
-        List<X509Certificate> certList = new Vector<X509Certificate>(certs.length);
-        certList.addAll(Arrays.asList(certs));
-        CertPath certPath = factory.generateCertPath(certList);
-        return certPath;
+        return factory.generateCertPath(Arrays.asList(certs));
     }
 
     
