@@ -15,6 +15,10 @@
  */
 package org.globus.gsi.bc;
 
+import org.bouncycastle.asn1.DERSet;
+
+import org.bouncycastle.asn1.ASN1InputStream;
+
 import java.util.Map;
 
 import org.globus.gsi.VersionUtil;
@@ -52,11 +56,9 @@ import org.globus.gsi.proxy.ext.GlobusProxyCertInfoExtension;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.jce.provider.X509CertificateObject;
-import org.bouncycastle.asn1.DERConstructedSet;
 import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.TBSCertificateStructure;
 import org.bouncycastle.asn1.x509.X509CertificateStructure;
@@ -176,7 +178,7 @@ public class BouncyCastleCertProcessingFactory {
 					     String cnValue) 
 	throws IOException, GeneralSecurityException {
 
-	DERInputStream derin = new DERInputStream(certRequestInputStream);
+    ASN1InputStream derin = new ASN1InputStream(certRequestInputStream);
 	DERObject reqInfo = derin.readObject();
 	PKCS10CertificationRequest certReq = 
 	    new PKCS10CertificationRequest((ASN1Sequence)reqInfo);
@@ -207,7 +209,7 @@ public class BouncyCastleCertProcessingFactory {
      */
     public X509Certificate loadCertificate(InputStream in)
 	throws IOException, GeneralSecurityException {
-	DERInputStream derin = new DERInputStream(in);
+    ASN1InputStream derin = new ASN1InputStream(in);
 	DERObject certInfo = derin.readObject();
 	ASN1Sequence seq = ASN1Sequence.getInstance(certInfo);
 	return new X509CertificateObject(new X509CertificateStructure(seq));
@@ -391,7 +393,7 @@ public class BouncyCastleCertProcessingFactory {
 					   String sigAlgName,
 					   KeyPair keyPair)
 	throws GeneralSecurityException {
-	DERConstructedSet attrs = null;
+	DERSet attrs = null;
 	PKCS10CertificationRequest certReq = null;
 	certReq = new PKCS10CertificationRequest(sigAlgName,
 						 subjectDN,

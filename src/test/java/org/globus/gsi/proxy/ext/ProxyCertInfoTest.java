@@ -15,6 +15,8 @@
  */
 package org.globus.gsi.proxy.ext;
 
+import org.bouncycastle.asn1.ASN1InputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 
@@ -23,7 +25,6 @@ import org.globus.gsi.proxy.ext.ProxyCertInfo;
 
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DEROutputStream;
-import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.ASN1Sequence;
 
@@ -62,7 +63,7 @@ public class ProxyCertInfoTest extends TestCase {
 
 	ByteArrayInputStream bIn = 
 	    new ByteArrayInputStream(bOut.toByteArray());
-	DERInputStream dIn = new DERInputStream(bIn);
+	ASN1InputStream dIn = new ASN1InputStream(bIn);
 	DERObject obj = dIn.readObject();
 	
 	assertTrue(obj instanceof ASN1Sequence);
@@ -111,7 +112,7 @@ public class ProxyCertInfoTest extends TestCase {
 	
 	ByteArrayInputStream bIn = 
 	    new ByteArrayInputStream(bOut.toByteArray());
-	DERInputStream dIn = new DERInputStream(bIn);
+	ASN1InputStream dIn = new ASN1InputStream(bIn);
 	DERObject obj = dIn.readObject();
 
 	ProxyCertInfo testInfo = new ProxyCertInfo((ASN1Sequence)obj);

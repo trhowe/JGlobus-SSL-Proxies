@@ -15,6 +15,8 @@
  */
 package org.globus.gsi.bc;
 
+import org.bouncycastle.asn1.ASN1InputStream;
+
 import org.globus.security.util.ProxyCertificateUtil;
 
 import org.globus.util.I18n;
@@ -36,7 +38,6 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROutputStream;
-import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DERString;
 import org.bouncycastle.asn1.DERBoolean;
@@ -91,10 +92,12 @@ public class BouncyCastleUtil {
      */
     public static DERObject toDERObject(byte[] data) 
 	throws IOException {
-	ByteArrayInputStream inStream = new ByteArrayInputStream(data);
-	DERInputStream derInputStream = new DERInputStream(inStream);
-	return derInputStream.readObject();
+        ByteArrayInputStream inStream = new ByteArrayInputStream(data);
+        ASN1InputStream derInputStream = new ASN1InputStream(inStream);
+        return derInputStream.readObject();
     }
+    
+    
 
     /**
      * Replicates a given <code>DERObject</code>.
@@ -505,7 +508,7 @@ public class BouncyCastleUtil {
     public static byte[] getExtensionValue(byte [] certExtValue) 
 	throws IOException {
 	ByteArrayInputStream inStream = new ByteArrayInputStream(certExtValue);
-	DERInputStream derInputStream = new DERInputStream(inStream);
+	ASN1InputStream derInputStream = new ASN1InputStream(inStream);
 	DERObject object = derInputStream.readObject();
 	if (object instanceof ASN1OctetString) {
 	    return ((ASN1OctetString)object).getOctets();

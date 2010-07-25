@@ -44,7 +44,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import org.bouncycastle.asn1.DERConstructedSet;
+import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.util.encoders.Base64;
@@ -418,7 +418,7 @@ public final class GridCertRequest {
         PublicKey pubKey = keyPair.getPublic();
 
         // Generate the certificate request.        
-        DERConstructedSet derSet = new DERConstructedSet();
+        DERSet derSet = new DERSet();
         PKCS10CertificationRequest request =
             new PKCS10CertificationRequest(
                 sigAlgName,
