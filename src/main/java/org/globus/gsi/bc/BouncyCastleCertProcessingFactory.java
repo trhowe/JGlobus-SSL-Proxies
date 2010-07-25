@@ -46,7 +46,6 @@ import org.globus.util.I18n;
 
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GSIConstants;
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.proxy.ext.ProxyCertInfo;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
