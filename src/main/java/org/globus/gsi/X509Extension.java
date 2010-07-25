@@ -17,11 +17,6 @@ package org.globus.gsi;
 
 import org.globus.util.I18n;
 
-import java.io.IOException;
-import java.security.cert.X509Certificate;
-
-import org.globus.gsi.bc.BouncyCastleUtil;
-
 /** 
  * Represents an X.509 extension. It is used to create X.509 extensions
  * and pass them in a map during certificate generation.
