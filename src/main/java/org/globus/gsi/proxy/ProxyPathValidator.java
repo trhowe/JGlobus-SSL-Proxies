@@ -16,6 +16,10 @@
 package org.globus.gsi.proxy;
 
 
+import org.globus.security.util.ProxyCertificateUtil;
+
+import org.globus.security.util.CertificateLoadUtil;
+
 import org.globus.security.util.CertificateUtil;
 
 import java.security.cert.CertPathValidatorException;
@@ -39,7 +43,6 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509CRL;
 
 import org.globus.gsi.GSIConstants;
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.SigningPolicy;
 import org.globus.gsi.CertificateRevocationLists;
@@ -303,7 +306,7 @@ public class ProxyPathValidator {
 		    cert = (X509Cert)validatedChain.elementAt(i);
 		    in = new ByteArrayInputStream(cert.getDER());
 		    newCertPath[i+certPath.length] = 
-                        CertUtil.loadCertificate(in);
+                        CertificateLoadUtil.loadCertificate(in);
 		}
 	    } catch (GeneralSecurityException e) {
 		throw new ProxyPathValidatorException(
@@ -426,7 +429,7 @@ public class ProxyPathValidator {
             if (requireSigningPolicyCheck(certType)) {
                 checkSigningPolicy(cert, trustedCerts, enforceSigningPolicy);
             }
-	    if (CertUtil.isProxy(certType)) {
+	    if (ProxyCertificateUtil.isProxy(certType)) {
 		proxyDepth++;
 	    }
 
@@ -446,7 +449,7 @@ public class ProxyPathValidator {
 
 		if (issuerCertType == GSIConstants.CA) {
 		    // PC can only be signed by EEC or PC
-		    if (CertUtil.isProxy(certType)) {
+		    if (ProxyCertificateUtil.isProxy(certType)) {
 			throw new ProxyPathValidatorException(
 			      ProxyPathValidatorException.FAILURE, 
 			      issuerCert,
@@ -474,18 +477,18 @@ public class ProxyPathValidator {
                           Integer.toString(i-proxyDepth-1) }));
 
 		    }
-		} else if (CertUtil.isGsi3Proxy(issuerCertType) ||
-                            CertUtil.isGsi4Proxy(issuerCertType)) {
+		} else if (ProxyCertificateUtil.isGsi3Proxy(issuerCertType) ||
+		           ProxyCertificateUtil.isGsi4Proxy(issuerCertType)) {
 		    // PC can sign EEC or another PC only. 
                     String errMsg = i18n.getMessage("proxyErr02");
-                    if (CertUtil.isGsi3Proxy(issuerCertType)) { 
-                        if (! CertUtil.isGsi3Proxy(certType)) {
+                    if (ProxyCertificateUtil.isGsi3Proxy(issuerCertType)) { 
+                        if (! ProxyCertificateUtil.isGsi3Proxy(certType)) {
                             throw new ProxyPathValidatorException(
                                       ProxyPathValidatorException.FAILURE, 
                                       issuerCert, errMsg);
                         }
-                    } else if (CertUtil.isGsi4Proxy(issuerCertType)) {
-                        if (! CertUtil.isGsi4Proxy(certType)) {
+                    } else if (ProxyCertificateUtil.isGsi4Proxy(issuerCertType)) {
+                        if (! ProxyCertificateUtil.isGsi4Proxy(certType)) {
                             throw new ProxyPathValidatorException(
                                       ProxyPathValidatorException.FAILURE, 
                                       issuerCert, errMsg);
@@ -510,9 +513,9 @@ public class ProxyPathValidator {
                   }));
             }
 		    proxyDepth++;
-		} else if (CertUtil.isGsi2Proxy(issuerCertType)) {
+		} else if (ProxyCertificateUtil.isGsi2Proxy(issuerCertType)) {
 		    // PC can sign EEC or another PC only
-		    if (!CertUtil.isGsi2Proxy(certType)) {
+		    if (!ProxyCertificateUtil.isGsi2Proxy(certType)) {
 			throw new ProxyPathValidatorException(
 			      ProxyPathValidatorException.FAILURE, 
 			      issuerCert,
@@ -520,7 +523,7 @@ public class ProxyPathValidator {
 		    }
 		    proxyDepth++;
 		} else if (issuerCertType == GSIConstants.EEC) {
-		    if (!CertUtil.isProxy(certType)) {
+		    if (!ProxyCertificateUtil.isProxy(certType)) {
 			throw new ProxyPathValidatorException(
 			      ProxyPathValidatorException.FAILURE, 
 			      issuerCert,
@@ -535,10 +538,10 @@ public class ProxyPathValidator {
                                   Integer.toString(issuerCertType)));
 		}
 	    
-		if (CertUtil.isProxy(certType)) {
+		if (ProxyCertificateUtil.isProxy(certType)) {
 		    // check all the proxy & issuer constraints
-		    if (CertUtil.isGsi3Proxy(certType) || 
-                        CertUtil.isGsi4Proxy(certType)) {
+		    if (ProxyCertificateUtil.isGsi3Proxy(certType) || 
+		        ProxyCertificateUtil.isGsi4Proxy(certType)) {
 			checkProxyConstraints(tbsCert, issuerTbsCert, cert);
 			if ((certType == GSIConstants.GSI_3_RESTRICTED_PROXY) 
                             || (certType == 
@@ -589,7 +592,7 @@ public class ProxyPathValidator {
 	
 	if (this.identityCert == null) {
 	    // check if limited
-	    if (CertUtil.isLimitedProxy(certType)) {
+	    if (ProxyCertificateUtil.isLimitedProxy(certType)) {
 		this.limited = true;
 
 		if (this.rejectLimitedProxyCheck) {
@@ -601,7 +604,7 @@ public class ProxyPathValidator {
 	    }
 
 	    // set the identity cert
-	    if (!CertUtil.isImpersonationProxy(certType)) {
+	    if (!ProxyCertificateUtil.isImpersonationProxy(certType)) {
 		this.identityCert = cert;
 	    }
 	}
@@ -771,9 +774,9 @@ public class ProxyPathValidator {
 		    if (oid.equals(X509Extensions.BasicConstraints) ||
 			oid.equals(X509Extensions.KeyUsage) ||
 			(oid.equals(GSIConstants.PROXY_OID) && 
-                         CertUtil.isGsi4Proxy(certType)) ||
+			        ProxyCertificateUtil.isGsi4Proxy(certType)) ||
 			(oid.equals(GSIConstants.PROXY_OLD_OID) && 
-                         CertUtil.isGsi3Proxy(certType))) {
+			        ProxyCertificateUtil.isGsi3Proxy(certType))) {
 		    } else {
 			throw new ProxyPathValidatorException(
 			      ProxyPathValidatorException
@@ -937,7 +940,7 @@ public class ProxyPathValidator {
         }
 
          String issuerName = certificate.getIssuerDN().getName();
-         String issuerGlobusId = CertUtil.toGlobusID(issuerName, true);
+         String issuerGlobusId = CertificateUtil.toGlobusID(issuerName, true);
          SigningPolicy policy = trustedCerts.getSigningPolicy(issuerGlobusId);
          if (policy == null) {
              String err = i18n.getMessage("proxyErr33", issuerGlobusId);
@@ -948,7 +951,7 @@ public class ProxyPathValidator {
          } 
 
          String certDN = certificate.getSubjectDN().toString();
-         String certDNGlobus = CertUtil.toGlobusID(certDN, true);
+         String certDNGlobus = CertificateUtil.toGlobusID(certDN, true);
          if (policy.isPolicyAvailable()) {
              boolean isValidDN = policy.isValidSubject(certDNGlobus);
              if (!isValidDN) {
@@ -977,7 +980,7 @@ public class ProxyPathValidator {
     // if a certificate is not a CA or if it is not a proxy, return true.
     private boolean requireSigningPolicyCheck(int certType) {
 
-        if (CertUtil.isProxy(certType) || (certType == GSIConstants.CA)) {
+        if (ProxyCertificateUtil.isProxy(certType) || (certType == GSIConstants.CA)) {
             return false;
         }
         return true;

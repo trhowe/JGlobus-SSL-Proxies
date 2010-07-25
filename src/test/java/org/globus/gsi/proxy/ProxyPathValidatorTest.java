@@ -15,12 +15,10 @@
  */
 package org.globus.gsi.proxy;
 
-import org.globus.gsi.CertUtil;
 
 import org.globus.security.util.CertificateLoadUtil;
 
 import java.security.cert.CertPathValidatorException;
-
 import java.security.cert.CertPath;
 
 import java.io.ByteArrayInputStream;
@@ -218,7 +216,7 @@ public class ProxyPathValidatorTest extends TestCase {
 	    if (in == null) {
 		throw new Exception("Unable to load: " + name);
 	    }
-	    goodCertsArr[i] = CertUtil.loadCertificate(in);
+	    goodCertsArr[i] = CertificateLoadUtil.loadCertificate(in);
 	}
 	return goodCertsArr;
     }
@@ -531,7 +529,7 @@ public class ProxyPathValidatorTest extends TestCase {
 	X509Certificate [] certsArr = new X509Certificate[testCerts.length];
 	for (int i=0;i<certsArr.length;i++) {
 	    certsArr[i] = 
-		CertUtil.loadCertificate(new ByteArrayInputStream(testCerts[i].getBytes()));
+		CertificateLoadUtil.loadCertificate(new ByteArrayInputStream(testCerts[i].getBytes()));
 	}
 
 	X509Certificate [] chain = null;

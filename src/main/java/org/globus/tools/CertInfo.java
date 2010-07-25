@@ -15,12 +15,15 @@
  */
 package org.globus.tools;
 
+import org.globus.security.util.CertificateUtil;
+
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.security.cert.X509Certificate;
 import java.util.TimeZone;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.globus.gsi.CertUtil;
 import org.globus.common.CoGProperties;
 import org.globus.common.Version;
 
@@ -129,7 +132,7 @@ public class CertInfo {
 	X509Certificate cert = null;
 
 	try {
-	    cert = CertUtil.loadCertificate(file);
+	    cert = CertificateLoadUtil.loadCertificate(file);
 	} catch(Exception e) {
 	    System.err.println("Unable to load the certificate : " + e.getMessage());
 	    System.exit(1);
@@ -143,7 +146,7 @@ public class CertInfo {
 	if ((options & SUBJECT) != 0) {
 	    String dn = null;
 	    if (globusStyle) {
-		dn = CertUtil.toGlobusID(cert.getSubjectDN());
+		dn = CertificateUtil.toGlobusID(cert.getSubjectDN());
 	    } else {
 		dn = cert.getSubjectDN().getName();
 	    }
@@ -153,7 +156,7 @@ public class CertInfo {
 	if ((options & ISSUER) != 0) {
 	    String dn = null;
 	    if (globusStyle) {
-		dn = CertUtil.toGlobusID(cert.getIssuerDN());
+		dn = CertificateUtil.toGlobusID(cert.getIssuerDN());
 	    } else {
 		dn = cert.getIssuerDN().getName();
 	    }

@@ -15,6 +15,8 @@
  */
 package org.globus.gsi;
 
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.security.cert.X509CRL;
 import java.util.Map;
 import java.util.Iterator;
@@ -167,14 +169,14 @@ public class CertificateRevocationLists {
         try {
             if (crlEntry == null) {
                 logger.debug("Loading " + crlPath + " CRL.");
-                crl = CertUtil.loadCrl(crlPath);
+                crl = CertificateLoadUtil.loadCrl(crlPath);
                 crlEntry = new TimestampEntry();
                 crlEntry.setValue(crl);
                 crlEntry.setLastModified(latestLastModified);
                 crlEntry.setDescription(crl.getIssuerDN().getName());
             } else if (latestLastModified > crlEntry.getLastModified()) {
                 logger.debug("Reloading " + crlPath + " CRL.");
-                crl = CertUtil.loadCrl(crlPath);
+                crl = CertificateLoadUtil.loadCrl(crlPath);
                 crlEntry.setValue(crl);
                 crlEntry.setLastModified(latestLastModified);
                 crlEntry.setDescription(crl.getIssuerDN().getName());

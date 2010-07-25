@@ -163,7 +163,7 @@ public final class CertificateLoadUtil {
             //i18n
             //                                 .getMessage("certFileNull"));
         }
-
+        
         List<X509Certificate> list = new ArrayList<X509Certificate>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         X509Certificate cert = readCertificate(reader);
@@ -203,7 +203,9 @@ public final class CertificateLoadUtil {
         String line;
         StringBuffer buff = new StringBuffer();
         boolean isCert = false;
+        boolean notNull = false;
         while ((line = reader.readLine()) != null) {
+            notNull = true;
             if (line.indexOf("BEGIN CERTIFICATE") != -1) {
                 isCert = true;
             } else if (isCert && line.indexOf("END CERTIFICATE") != -1) {
@@ -213,7 +215,7 @@ public final class CertificateLoadUtil {
                 buff.append(line);
             }
         }
-        if (!isCert) {
+        if (notNull && !isCert) {
             throw new GeneralSecurityException(
                     "Certificate needs to start with "
                             + " BEGIN CERTIFICATE");

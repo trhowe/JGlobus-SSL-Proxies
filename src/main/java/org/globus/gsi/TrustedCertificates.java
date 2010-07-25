@@ -15,6 +15,10 @@
  */
 package org.globus.gsi;
 
+import org.globus.security.util.CertificateUtil;
+
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -152,7 +156,7 @@ public class TrustedCertificates implements Serializable {
      * @param subject
      *        CA's subject DN for which signing policy is
      *        required. The DN should be in Globus format (with slashes) and
-     *        not reversed. See CertUtil.toGlobusID();
+     *        not reversed. See CertificateUtil.toGlobusID();
      * @return 
      *        Signing policy object associated with the CA's DN. Null
      *        if no policy was configured. SigningPolicy object might not
@@ -329,7 +333,7 @@ public class TrustedCertificates implements Serializable {
         try {
             if (certEntry == null) {
                 logger.debug("Loading " + certPath + " certificate.");
-                cert = CertUtil.loadCertificate(certPath);
+                cert = CertificateLoadUtil.loadCertificate(certPath);
                 String caDN = cert.getSubjectDN().getName();
                 certEntry = new TimestampEntry();
                 certEntry.setValue(cert);
@@ -341,7 +345,7 @@ public class TrustedCertificates implements Serializable {
                 policyEntry = getPolicyEntry(policyPath, policyModified, caDN);
             } else if (latestLastModified > certEntry.getLastModified()) {
                 logger.debug("Reloading " + certPath + " certificate.");
-                cert = CertUtil.loadCertificate(certPath);
+                cert = CertificateLoadUtil.loadCertificate(certPath);
                 String caDN = cert.getSubjectDN().getName();
                 certEntry.setValue(cert);
                 certEntry.setLastModified(latestLastModified);
@@ -398,7 +402,7 @@ public class TrustedCertificates implements Serializable {
         // CA DN in signing policy files are in Globus format. There
         // is no reason to reverse it, but the format needs to use
         // slashes rather than comma.
-        String globusDN = CertUtil.toGlobusID(caDN, true);
+        String globusDN = CertificateUtil.toGlobusID(caDN, true);
 
         SigningPolicy policy = null;
         File policyFile = new File(policyPath);

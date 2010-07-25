@@ -15,12 +15,13 @@
  */
 package org.globus.gsi.bc;
 
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
 
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.bc.BouncyCastleUtil;
@@ -41,7 +42,7 @@ public class BouncyCastleUtilTest extends TestCase {
 	if (in == null) {
 	    throw new Exception("Unable to load: " + name);
 	}
-	return CertUtil.loadCertificate(in);
+	return CertificateLoadUtil.loadCertificate(in);
     }
 
     public void testGetCertificateType() throws Exception {
@@ -54,7 +55,7 @@ public class BouncyCastleUtilTest extends TestCase {
 
     public void testGetCertificateType2() throws Exception {
 	for (int i=0;i<badCerts.length;i++) {
-	    X509Certificate cert = CertUtil.loadCertificate(new ByteArrayInputStream(badCerts[i].getBytes()));
+	    X509Certificate cert = CertificateLoadUtil.loadCertificate(new ByteArrayInputStream(badCerts[i].getBytes()));
 	    try {
 		BouncyCastleUtil.getCertificateType(cert);
 		fail("proxy verification did not fail as expected");
@@ -66,7 +67,7 @@ public class BouncyCastleUtilTest extends TestCase {
 
     public void testGetCertificateType3() throws Exception {
 	X509Certificate cert = getCertificate(1);
-	int type = Integer.parseInt(ProxyPathValidatorTest.certs[1][0]);
+	Integer.parseInt(ProxyPathValidatorTest.certs[1][0]);
 	assertEquals(GSIConstants.EEC, BouncyCastleUtil.getCertificateType(cert));
 
 	TrustedCertificates trustedCerts =

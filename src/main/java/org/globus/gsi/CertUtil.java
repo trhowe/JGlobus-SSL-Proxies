@@ -51,10 +51,6 @@ public class CertUtil {
     private static Log logger =
         LogFactory.getLog(CertUtil.class.getName());
     
-    private static I18n i18n =
-        I18n.getI18n("org.globus.gsi.errors",
-                     CertUtil.class.getClassLoader());
-
     static {
         Security.addProvider(new BouncyCastleProvider());
         setProvider("BC");

@@ -15,12 +15,19 @@
  */
 package org.globus.gsi.bc;
 
+import org.globus.gsi.CertUtil;
+
+import java.security.Provider;
+
+import java.security.Security;
+
+import org.globus.common.CoGProperties;
+
 import java.security.KeyPairGenerator;
 import java.security.KeyPair;
 import java.io.StringWriter;
 import java.io.ByteArrayInputStream;
 
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.OpenSSLKey;
 import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 
@@ -34,9 +41,9 @@ public class BouncyCastleOpenSSLKeyTest extends TestCase {
     private static final String pwd = "testpwd";
 
     private Log logger = LogFactory.getLog(BouncyCastleOpenSSLKeyTest.class);
-    
+        
     private KeyPair getKeyPair() throws Exception {
-        CertUtil.init();
+    CertUtil.init();
         
 	int bits = 512;
         

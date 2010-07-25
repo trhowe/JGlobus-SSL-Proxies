@@ -15,6 +15,8 @@
  */
 package org.globus.tools;
 
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
@@ -24,7 +26,6 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
 import org.globus.gsi.OpenSSLKey;
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 import org.globus.common.Version;
 import org.globus.common.CoGProperties;
@@ -148,7 +149,7 @@ public class KeyStoreConvert {
 	PrivateKey key = null;
 	
 	try {
-	    certs[0] = CertUtil.loadCertificate(certFile);
+	    certs[0] = CertificateLoadUtil.loadCertificate(certFile);
 	} catch(Exception e) {
 	    System.err.println("Failed to load certificate: " + e.getMessage());
 	    return -1;

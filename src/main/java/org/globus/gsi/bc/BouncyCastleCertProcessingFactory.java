@@ -15,6 +15,14 @@
  */
 package org.globus.gsi.bc;
 
+import java.util.Map;
+
+import org.globus.gsi.VersionUtil;
+
+import org.globus.security.util.ProxyCertificateUtil;
+
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.GregorianCalendar;
@@ -36,7 +44,6 @@ import org.globus.util.I18n;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.CertUtil;
-import org.globus.gsi.X509ExtensionSet;
 import org.globus.gsi.proxy.ext.ProxyCertInfo;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
@@ -88,7 +95,7 @@ public class BouncyCastleCertProcessingFactory {
      * Creates a proxy certificate from the certificate request. 
      *
      * @see #createCertificate(InputStream, X509Certificate, PrivateKey, 
-     *      int, int, X509ExtensionSet, String) createCertificate
+     *      int, int, Map<String, org.globus.gsi.X509Extension>, String) createCertificate
      */
     public X509Certificate createCertificate(InputStream certRequestInputStream,
 					     X509Certificate cert,
@@ -101,7 +108,7 @@ public class BouncyCastleCertProcessingFactory {
 				 privateKey,
 				 lifetime,
 				 delegationMode,
-				 (X509ExtensionSet)null,
+				 (Map<String,org.globus.gsi.X509Extension>)null,
 				 null);
     }
 
@@ -109,14 +116,14 @@ public class BouncyCastleCertProcessingFactory {
      * Creates a proxy certificate from the certificate request. 
      *
      * @see #createCertificate(InputStream, X509Certificate, PrivateKey, 
-     *      int, int, X509ExtensionSet, String) createCertificate
+     *      int, int, Map<String, org.globus.gsi.X509Extension>, String) createCertificate
      */
     public X509Certificate createCertificate(InputStream certRequestInputStream,
 					     X509Certificate cert,
 					     PrivateKey privateKey,
 					     int lifetime,
 					     int delegationMode,
-					     X509ExtensionSet extSet)
+					     Map<String, org.globus.gsi.X509Extension> extSet)
 	throws IOException, GeneralSecurityException {
 	return createCertificate(certRequestInputStream,
 				 cert,
@@ -132,7 +139,7 @@ public class BouncyCastleCertProcessingFactory {
      * (Signs a certificate request creating a new certificate)
      *
      * @see #createProxyCertificate(X509Certificate, PrivateKey, PublicKey, 
-     *        int, int, X509ExtensionSet, String) createProxyCertificate
+     *        int, int, Map<String, org.globus.gsi.X509Extension>, String) createProxyCertificate
      * @param certRequestInputStream the input stream to read the
      *        certificate request from.
      * @param cert the issuer certificate
@@ -165,7 +172,7 @@ public class BouncyCastleCertProcessingFactory {
 					     PrivateKey privateKey,
 					     int lifetime,
 					     int delegationMode,
-					     X509ExtensionSet extSet,
+					     Map<String, org.globus.gsi.X509Extension> extSet,
 					     String cnValue) 
 	throws IOException, GeneralSecurityException {
 
@@ -211,7 +218,7 @@ public class BouncyCastleCertProcessingFactory {
      * chain and a private key.
      *
      * @see #createCredential(X509Certificate[], PrivateKey, int, 
-     *      int, int, X509ExtensionSet, String) createCredential
+     *      int, int, Map<String, org.globus.gsi.X509Extension>, String) createCredential
      */
     public GlobusCredential createCredential(X509Certificate [] certs,
 					     PrivateKey privateKey,
@@ -221,7 +228,7 @@ public class BouncyCastleCertProcessingFactory {
 	throws GeneralSecurityException {
 	return createCredential(certs, privateKey, bits,
 				lifetime, delegationMode, 
-				(X509ExtensionSet)null, null);
+				(Map<String, org.globus.gsi.X509Extension>)null, null);
     }
     
     /**
@@ -229,14 +236,14 @@ public class BouncyCastleCertProcessingFactory {
      * chain and a private key.
      *
      * @see #createCredential(X509Certificate[], PrivateKey, int, 
-     *      int, int, X509ExtensionSet, String) createCredential
+     *      int, int, Map<String, org.globus.gsi.X509Extension>, String) createCredential
      */
     public GlobusCredential createCredential(X509Certificate [] certs,
 					     PrivateKey privateKey,
 					     int bits,
 					     int lifetime,
 					     int delegationMode,
-					     X509ExtensionSet extSet)
+					     Map<String, org.globus.gsi.X509Extension> extSet)
 	throws GeneralSecurityException {
 	return createCredential(certs, privateKey, bits, lifetime, 
 				delegationMode, extSet, null);
@@ -249,7 +256,7 @@ public class BouncyCastleCertProcessingFactory {
      * This function automatically creates a "RSA"-based key pair.
      *
      * @see #createProxyCertificate(X509Certificate, PrivateKey, PublicKey,
-     *        int, int, X509ExtensionSet, String) createProxyCertificate
+     *        int, int, Map<String, org.globus.gsi.X509Extension>, String) createProxyCertificate
      * @param certs the certificate chain for the new proxy credential.
      *        The top-most certificate <code>cert[0]</code> will be
      *        designated as the issuing certificate.
@@ -262,7 +269,7 @@ public class BouncyCastleCertProcessingFactory {
      *        If 0 (or less then) the new certificate will have the
      *        same lifetime as the issuing certificate. 
      * @param delegationMode the type of proxy credential to create
-     * @param extSet a set of X.509 extensions to be included in the new
+     * @param extSet a map of X.509 extensions to be included in the new
      *        proxy certificate. Can be null. If delegation mode is 
      *        {@link GSIConstants#GSI_3_RESTRICTED_PROXY
      *        GSIConstants.GSI_3_RESTRICTED_PROXY} or
@@ -283,14 +290,14 @@ public class BouncyCastleCertProcessingFactory {
 					     int bits,
 					     int lifetime,
 					     int delegationMode,
-					     X509ExtensionSet extSet,
+					     Map<String, org.globus.gsi.X509Extension> extSet,
 					     String cnValue)
 	throws GeneralSecurityException {
 	
         X509Certificate[] bcCerts = new X509Certificate[certs.length];
         for (int i = 0; i < certs.length; i++) {
             if (! (certs[i] instanceof X509CertificateObject)) {
-                bcCerts[i] = CertUtil
+                bcCerts[i] = CertificateLoadUtil
                     .loadCertificate(new ByteArrayInputStream(certs[i]
                                                               .getEncoded()));
             } else {
@@ -448,19 +455,19 @@ public class BouncyCastleCertProcessingFactory {
      *
      *        If {@link GSIConstants#DELEGATION_LIMITED
      *        GSIConstants.DELEGATION_LIMITED} and if
-     *        {@link CertUtil#isGsi2Enabled() CertUtil.isGsi2Enabled}
+     *        {@link ProxyCertificateUtil#isGsi2Enabled() ProxyCertificateUtil.isGsi2Enabled}
      *        returns true then a GSI-2 limited proxy will be
-     *        created. Else if {@link CertUtil#isGsi3Enabled() 
-     *        CertUtil.isGsi3Enabled} returns true then a GSI-3
+     *        created. Else if {@link ProxyCertificateUtil#isGsi3Enabled() 
+     *        ProxyCertificateUtil.isGsi3Enabled} returns true then a GSI-3
      *        limited proxy will be created. If not,
      *        a GSI-4 limited proxy will be created. 
      *
      *        If {@link GSIConstants#DELEGATION_FULL
      *        GSIConstants.DELEGATION_FULL} and if
-     *        {@link CertUtil#isGsi2Enabled() CertUtil.isGsi2Enabled}
+     *        {@link ProxyCertificateUtil#isGsi2Enabled() ProxyCertificateUtil.isGsi2Enabled}
      *        returns true then a GSI-2 full proxy will be
-     *        created. Else if {@link CertUtil#isGsi3Enabled() 
-     *        CertUtil.isGsi3Enabled} returns true then a GSI-3
+     *        created. Else if {@link ProxyCertificateUtil#isGsi3Enabled() 
+     *        ProxyCertificateUtil.isGsi3Enabled} returns true then a GSI-3
      *        full proxy will be created. If not,
      *        a GSI-4 full proxy will be created. 
      *
@@ -486,49 +493,49 @@ public class BouncyCastleCertProcessingFactory {
                                                   PublicKey publicKey,
                                                   int lifetime,
                                                   int proxyType,
-                                                  X509ExtensionSet extSet,
+                                                  Map<String, org.globus.gsi.X509Extension> extSet,
                                                   String cnValue) 
 	throws GeneralSecurityException {
 
         X509Certificate issuerCert = issuerCert_;
         if (! (issuerCert_ instanceof X509CertificateObject)) {
-            issuerCert = CertUtil
+            issuerCert = CertificateLoadUtil
                 .loadCertificate(new ByteArrayInputStream(issuerCert
                                                           .getEncoded()));
         }
 	
 	if (proxyType == GSIConstants.DELEGATION_LIMITED) {
 	    int type = BouncyCastleUtil.getCertificateType(issuerCert);
-            if (CertUtil.isGsi4Proxy(type)) {
+            if (ProxyCertificateUtil.isGsi4Proxy(type)) {
 		proxyType = GSIConstants.GSI_4_LIMITED_PROXY;
-	    } else if (CertUtil.isGsi3Proxy(type)) {
+	    } else if (ProxyCertificateUtil.isGsi3Proxy(type)) {
 		proxyType = GSIConstants.GSI_3_LIMITED_PROXY;
-	    } else if (CertUtil.isGsi2Proxy(type)) {
+	    } else if (ProxyCertificateUtil.isGsi2Proxy(type)) {
 		proxyType = GSIConstants.GSI_2_LIMITED_PROXY;
 	    } else {
                 // default to RFC compliant proxy
-                if (CertUtil.isGsi2Enabled()) {
+                if (VersionUtil.isGsi2Enabled()) {
                     proxyType = GSIConstants.GSI_2_LIMITED_PROXY;
                 } else {
-                    proxyType = CertUtil.isGsi3Enabled() ?
+                    proxyType = VersionUtil.isGsi3Enabled() ?
                         GSIConstants.GSI_3_LIMITED_PROXY :
                         GSIConstants.GSI_4_LIMITED_PROXY;
                 }
 	    }
 	} else if (proxyType == GSIConstants.DELEGATION_FULL) {
 	    int type = BouncyCastleUtil.getCertificateType(issuerCert);
-            if (CertUtil.isGsi4Proxy(type)) {
+            if (ProxyCertificateUtil.isGsi4Proxy(type)) {
 		proxyType = GSIConstants.GSI_4_IMPERSONATION_PROXY;
-            } else if (CertUtil.isGsi3Proxy(type)) {
+            } else if (ProxyCertificateUtil.isGsi3Proxy(type)) {
 		proxyType = GSIConstants.GSI_3_IMPERSONATION_PROXY;
-	    } else if (CertUtil.isGsi2Proxy(type)) {
+	    } else if (ProxyCertificateUtil.isGsi2Proxy(type)) {
 		proxyType = GSIConstants.GSI_2_PROXY;
 	    } else {
                 // Default to RFC complaint proxy
-                if (CertUtil.isGsi2Enabled()) {
+                if (VersionUtil.isGsi2Enabled()) {
                     proxyType = GSIConstants.GSI_2_PROXY;
                 } else {
-		proxyType = (CertUtil.isGsi3Enabled()) ? 
+		proxyType = (VersionUtil.isGsi3Enabled()) ? 
 		    GSIConstants.GSI_3_IMPERSONATION_PROXY :
 		    GSIConstants.GSI_4_IMPERSONATION_PROXY;		    
                 }
@@ -541,8 +548,8 @@ public class BouncyCastleCertProcessingFactory {
 	BigInteger serialNum = null;
 	String delegDN = null;
 	
-	if (CertUtil.isGsi3Proxy(proxyType) || 
-            CertUtil.isGsi4Proxy(proxyType) ) {
+	if (ProxyCertificateUtil.isGsi3Proxy(proxyType) || 
+	    ProxyCertificateUtil.isGsi4Proxy(proxyType) ) {
 	    Random rand = new Random();
 	    delegDN = String.valueOf(Math.abs(rand.nextInt()));
 	    serialNum = new BigInteger(20, rand);
@@ -557,11 +564,11 @@ public class BouncyCastleCertProcessingFactory {
 	    if (x509Ext == null) {
 		// create ProxyCertInfo extension
 		ProxyPolicy policy = null;
-                if (CertUtil.isLimitedProxy(proxyType)) {
+                if (ProxyCertificateUtil.isLimitedProxy(proxyType)) {
                     policy = new ProxyPolicy(ProxyPolicy.LIMITED);
-                } else if (CertUtil.isIndependentProxy(proxyType)) {
+                } else if (ProxyCertificateUtil.isIndependentProxy(proxyType)) {
                     policy = new ProxyPolicy(ProxyPolicy.INDEPENDENT);
-                } else if (CertUtil.isImpersonationProxy(proxyType)) {
+                } else if (ProxyCertificateUtil.isImpersonationProxy(proxyType)) {
                     //since limited has already been checked, this should work.
                     policy = new ProxyPolicy(ProxyPolicy.IMPERSONATION);
 		} else if 
@@ -576,7 +583,7 @@ public class BouncyCastleCertProcessingFactory {
 		
 		ProxyCertInfo proxyCertInfo = new ProxyCertInfo(policy);
 		x509Ext = new ProxyCertInfoExtension(proxyCertInfo);
-                if (CertUtil.isGsi4Proxy(proxyType)) {
+                if (ProxyCertificateUtil.isGsi4Proxy(proxyType)) {
                     // RFC compliant OID
                     x509Ext = new ProxyCertInfoExtension(proxyCertInfo);
                 } else {
@@ -653,7 +660,7 @@ public class BouncyCastleCertProcessingFactory {
 
 	// add specified extensions
 	if (extSet != null) {
-	    Iterator iter = extSet.oidSet().iterator();
+	    Iterator iter = extSet.keySet().iterator();
 	    while(iter.hasNext()) {
 		String oid = (String)iter.next();
 		// skip ProxyCertInfo extension
@@ -703,17 +710,6 @@ public class BouncyCastleCertProcessingFactory {
 	 */
 
 	return certGen.generateX509Certificate(issuerKey);
-    }
-
-    // ----------------- OLDER API ------------------------------
-
-    private X509ExtensionSet createExtensionSet(ProxyCertInfo proxyCertInfo) {
-	X509ExtensionSet set = null;
-	if (proxyCertInfo != null) {
-	    set = new X509ExtensionSet();
-	    set.add(new ProxyCertInfoExtension(proxyCertInfo));
-	}	
-	return set;
     }
 
 }

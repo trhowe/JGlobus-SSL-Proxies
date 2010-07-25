@@ -15,6 +15,18 @@
  */
 package org.globus.tools;
 
+import java.util.HashMap;
+
+import org.globus.gsi.X509Extension;
+
+import java.util.Map;
+
+import org.globus.security.util.CertificateLoadUtil;
+
+import org.globus.security.util.ProxyCertificateUtil;
+
+import org.globus.security.util.CertificateUtil;
+
 import java.security.cert.CertPathValidatorException;
 
 import java.security.cert.CertPath;
@@ -38,7 +50,6 @@ import org.globus.gsi.CertUtil;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;
-import org.globus.gsi.X509ExtensionSet;
 import org.globus.gsi.bc.BouncyCastleOpenSSLKey;
 import org.globus.gsi.bc.BouncyCastleCertProcessingFactory;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
@@ -209,7 +220,7 @@ public abstract class ProxyInit {
 	if (!quiet) {
 	    String dn = null;
 	    if (globusStyle) {
-		dn = CertUtil.toGlobusID(getCertificate().getSubjectDN());
+		dn = CertificateUtil.toGlobusID(getCertificate().getSubjectDN());
 	    } else {
 		dn = getCertificate().getSubjectDN().getName();
 	    }
@@ -500,14 +511,14 @@ public abstract class ProxyInit {
 
 	ProxyCertInfo proxyCertInfo = null;
 
-	if ((CertUtil.isGsi3Proxy(proxyType)) || 
-            (CertUtil.isGsi4Proxy(proxyType))) {
+	if ((ProxyCertificateUtil.isGsi3Proxy(proxyType)) || 
+            (ProxyCertificateUtil.isGsi4Proxy(proxyType))) {
 	    ProxyPolicy policy = null;
-            if (CertUtil.isLimitedProxy(proxyType)) {
+            if (ProxyCertificateUtil.isLimitedProxy(proxyType)) {
 		policy = new ProxyPolicy(ProxyPolicy.LIMITED);
-            } else if (CertUtil.isIndependentProxy(proxyType)) {
+            } else if (ProxyCertificateUtil.isIndependentProxy(proxyType)) {
 		policy = new ProxyPolicy(ProxyPolicy.INDEPENDENT);
-            } else if (CertUtil.isImpersonationProxy(proxyType)) {
+            } else if (ProxyCertificateUtil.isImpersonationProxy(proxyType)) {
                 // since limited has already been checked, this should work.
 		policy = new ProxyPolicy(ProxyPolicy.IMPERSONATION);
 	    } else if ((proxyType == GSIConstants.GSI_3_RESTRICTED_PROXY) ||
@@ -623,7 +634,7 @@ class DefaultProxyInit extends ProxyInit {
 
     public void loadCertificates(String arg) {
 	try {
-	    certificates = CertUtil.loadCertificates(arg);
+	    certificates = CertificateLoadUtil.loadCertificates(arg);
 	} catch(IOException e) {
 	    System.err.println("Error: Failed to load cert: " + arg);
 	    System.exit(-1);
@@ -673,16 +684,15 @@ class DefaultProxyInit extends ProxyInit {
 	    BouncyCastleCertProcessingFactory factory =
 		BouncyCastleCertProcessingFactory.getDefault();
 
-	    X509ExtensionSet extSet = null;
+	    Map<String,X509Extension> extSet = null;
 	    if (proxyCertInfo != null) {
-		extSet = new X509ExtensionSet();
-                if (CertUtil.isGsi4Proxy(proxyType)) {
+		extSet = new HashMap<String,X509Extension>();
+                if (ProxyCertificateUtil.isGsi4Proxy(proxyType)) {
                     // RFC compliant OID
-                    extSet.add(new ProxyCertInfoExtension(proxyCertInfo));
+                    extSet.put(GSIConstants.PROXY_OID.getId(), new ProxyCertInfoExtension(proxyCertInfo));
                 } else {
                     // old OID
-                    extSet
-                        .add(new GlobusProxyCertInfoExtension(proxyCertInfo));
+                    extSet.put(GSIConstants.PROXY_OLD_OID.getId(), new GlobusProxyCertInfoExtension(proxyCertInfo));
                 }
 	    }
 

@@ -15,6 +15,10 @@
  */
 package org.globus.gsi;
 
+import org.globus.security.util.ProxyCertificateUtil;
+import org.globus.security.util.CertificateIOUtil;
+import org.globus.security.util.CertificateLoadUtil;
+
 import java.security.PrivateKey;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
@@ -63,7 +67,7 @@ public class GlobusCredential implements Serializable {
 
     private static I18n i18n =
         I18n.getI18n("org.globus.gsi.errors",
-                     CertUtil.class.getClassLoader());
+            GlobusCredential.class.getClassLoader());
 
     private static Log logger =
 	LogFactory.getLog(GlobusCredential.class.getName());
@@ -140,7 +144,7 @@ public class GlobusCredential implements Serializable {
 	}
 
 	try {
-	    this.certs = CertUtil.loadCertificates(certFile);
+	    this.certs = CertificateLoadUtil.loadCertificates(certFile);
 	    OpenSSLKey k = new BouncyCastleOpenSSLKey(unencryptedKeyFile);
 	    if (k.isEncrypted()) {
 		throw new GlobusCredentialException(
@@ -202,7 +206,7 @@ public class GlobusCredential implements Serializable {
    
 		if (line.indexOf("BEGIN CERTIFICATE") != -1) {
 		    byte [] data = getDecodedPEMObject(reader);
-		    cert = CertUtil.loadCertificate(new ByteArrayInputStream(data));
+		    cert = CertificateLoadUtil.loadCertificate(new ByteArrayInputStream(data));
 		    chain.addElement(cert);
 		} else if (line.indexOf("BEGIN RSA PRIVATE KEY") != -1) {
 		    byte [] data = getDecodedPEMObject(reader);
@@ -287,7 +291,7 @@ public class GlobusCredential implements Serializable {
 	throws IOException {
 	
 	try {
-	    CertUtil.writeCertificate(out, this.certs[0]);
+	    CertificateIOUtil.writeCertificate(out, this.certs[0]);
 	    
 	    OpenSSLKey k = new BouncyCastleOpenSSLKey(key);
 	    k.writeTo(out);
@@ -295,7 +299,7 @@ public class GlobusCredential implements Serializable {
 	    for (int i=1;i<this.certs.length;i++) {
 		// this will skip the self-signed certificates
 		if (this.certs[i].getSubjectDN().equals(certs[i].getIssuerDN())) continue;
-		CertUtil.writeCertificate(out, this.certs[i]);
+		CertificateIOUtil.writeCertificate(out, this.certs[i]);
 	    }
 	} catch (CertificateEncodingException e) {
             throw new ChainedIOException(e.getMessage(), e);
@@ -555,7 +559,7 @@ public class GlobusCredential implements Serializable {
         try {
             for (int i=0;i<certs;i++) {
                 InputStream in = new ByteArrayInputStream(readData(ois));
-                this.certs[i] = CertUtil.loadCertificate(in);
+                this.certs[i] = CertificateLoadUtil.loadCertificate(in);
             }
         } catch (IOException e) {
             throw e;
@@ -617,7 +621,7 @@ public class GlobusCredential implements Serializable {
 	buf.append("issuer     : ").append(getIssuer()).append(lineSep);
 	buf.append("strength   : ").append(getStrength() + " bits").append(lineSep);
 	buf.append("timeleft   : ").append(getTimeLeft() + " sec").append(lineSep);
-	buf.append("proxy type : ").append(CertUtil.getProxyTypeAsString(getProxyType()));
+	buf.append("proxy type : ").append(ProxyCertificateUtil.getProxyTypeAsString(getProxyType()));
 	return buf.toString();
     }
     

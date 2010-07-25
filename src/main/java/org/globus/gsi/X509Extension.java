@@ -24,8 +24,7 @@ import org.globus.gsi.bc.BouncyCastleUtil;
 
 /** 
  * Represents an X.509 extension. It is used to create X.509 extensions
- * and pass them in a <code>X509ExtensionSet</code> during certificate
- * generation.
+ * and pass them in a map during certificate generation.
  */
 public class X509Extension {
    

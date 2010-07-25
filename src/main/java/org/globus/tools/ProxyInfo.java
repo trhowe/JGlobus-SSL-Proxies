@@ -15,6 +15,10 @@
  */
 package org.globus.tools;
 
+import org.globus.security.util.ProxyCertificateUtil;
+
+import org.globus.security.util.CertificateUtil;
+
 import org.globus.gsi.CertUtil;
 import org.globus.gsi.GlobusCredential;
 import org.globus.util.Util;
@@ -197,14 +201,14 @@ public class ProxyInfo {
 
 	if ((options & SUBJECT) != 0) {
 	    String dn = (globusStyle) ? 
-		CertUtil.toGlobusID(proxy.getCertificateChain()[0].getSubjectDN()) : 
+		CertificateUtil.toGlobusID(proxy.getCertificateChain()[0].getSubjectDN()) : 
 		proxy.getSubject();
 	    System.out.println("subject    : " + dn);
 	}
     
 	if ((options & ISSUER) != 0) {
 	    String dn = (globusStyle) ? 
-		CertUtil.toGlobusID(proxy.getCertificateChain()[0].getIssuerDN()) :
+		CertificateUtil.toGlobusID(proxy.getCertificateChain()[0].getIssuerDN()) :
 		proxy.getIssuer();
 	    System.out.println("issuer     : " + dn);
 	}
@@ -226,7 +230,7 @@ public class ProxyInfo {
 	    int type = proxy.getProxyType();
             String typeStr = (type == -1) ?
                 "failed to determine certificate type" :
-                CertUtil.getProxyTypeAsString(type);
+                ProxyCertificateUtil.getProxyTypeAsString(type);
             System.out.println("type       : " + typeStr);
 	}
 

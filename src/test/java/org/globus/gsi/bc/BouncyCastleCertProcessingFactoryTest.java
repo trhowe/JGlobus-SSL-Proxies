@@ -15,11 +15,14 @@
  */
 package org.globus.gsi.bc;
 
+import java.util.HashMap;
+
+import java.util.Map;
+
 import java.util.Set;
 import java.security.cert.X509Certificate;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GSIConstants;
-import org.globus.gsi.X509ExtensionSet;
 import org.globus.gsi.X509Extension;
 import org.globus.gsi.bc.BouncyCastleCertProcessingFactory;
 import org.globus.gsi.bc.BouncyCastleX509Extension;
@@ -52,7 +55,7 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 				     512,
 				     60 * 60,
 				     GSIConstants.GSI_3_RESTRICTED_PROXY,
-				     (X509ExtensionSet)null,
+				     (Map<String,X509Extension>)null,
 				     null);
 	    fail("Expected to fail");
 	} catch (IllegalArgumentException e) {
@@ -73,18 +76,18 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 	String policyOid = "1.2.3.4.5.6.7.8.9";
 	String policyValue = "bar";
 	
-	X509ExtensionSet extSet = new X509ExtensionSet();
+	Map<String,X509Extension> extSet = new HashMap<String,X509Extension>();
 	ext = new X509Extension(oid, critical, expectedValue.getBytes());
-	extSet.add(ext);
+	extSet.put(oid,ext);
 	
 	BasicConstraints constraints = new BasicConstraints(false, 15);
 	ext = new BouncyCastleX509Extension(X509Extensions.BasicConstraints.getId(),
 					    false, constraints);
-	extSet.add(ext);
+	extSet.put(X509Extensions.BasicConstraints.getId(),ext);
 	
 	ProxyPolicy policy = new ProxyPolicy(policyOid, policyValue.getBytes());
 	ext = new ProxyCertInfoExtension(new ProxyCertInfo(policy));
-	extSet.add(ext);
+	extSet.put(GSIConstants.PROXY_OID.getId(),ext);
 	
 	GlobusCredential newCred = 
 	    factory.createCredential(cred.getCertificateChain(),
@@ -130,11 +133,11 @@ public class BouncyCastleCertProcessingFactoryTest extends TestCase {
 	String expectedValue2 = "bar";
 	boolean critical2 = true;
 	
-	X509ExtensionSet extSet = new X509ExtensionSet();
+    Map<String,X509Extension> extSet = new HashMap<String,X509Extension>();
 	ext = new X509Extension(oid1, critical1, expectedValue1.getBytes());
-	extSet.add(ext);
+	extSet.put(oid1,ext);
 	ext = new X509Extension(oid2, critical2, expectedValue2.getBytes());
-	extSet.add(ext);
+	extSet.put(oid2,ext);
 
 	GlobusCredential newCred = 
 	    factory.createCredential(cred.getCertificateChain(),

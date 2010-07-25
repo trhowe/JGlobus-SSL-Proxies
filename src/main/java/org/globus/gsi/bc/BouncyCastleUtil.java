@@ -15,6 +15,8 @@
  */
 package org.globus.gsi.bc;
 
+import org.globus.security.util.ProxyCertificateUtil;
+
 import org.globus.util.I18n;
 
 import java.io.ByteArrayOutputStream;
@@ -26,7 +28,6 @@ import java.security.cert.CertificateException;
 import java.security.Security;
 
 import org.globus.gsi.GSIConstants;
-import org.globus.gsi.CertUtil;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 import org.globus.gsi.proxy.ext.ProxyCertInfo;
@@ -354,7 +355,7 @@ public class BouncyCastleUtil {
 		}
 	    }
 	    
-	    if (CertUtil.isProxy(type)) {
+	    if (ProxyCertificateUtil.isProxy(type)) {
 		X509NameHelper iss = new X509NameHelper(crt.getIssuer());
 		iss.add((ASN1Set)BouncyCastleUtil.duplicate(entry));
 		X509Name issuer = iss.getAsName();
@@ -488,7 +489,7 @@ public class BouncyCastleUtil {
 	int certType;
 	for (int i=0;i<chain.length;i++) {
 	    certType = getCertificateType(chain[i]);
-	    if (!CertUtil.isImpersonationProxy(certType)) {
+	    if (!ProxyCertificateUtil.isImpersonationProxy(certType)) {
 		return chain[i];
 	    }
 	}

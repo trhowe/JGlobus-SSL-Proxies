@@ -44,7 +44,7 @@ public class SigningPolicy {
      *
      * @param caDN_
      *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertUtil#toGlobusID()
+     *       slashes) and not reversed. See CertificateUtil#toGlobusID()
      */
     public SigningPolicy(String caDN_) {
 
@@ -59,7 +59,7 @@ public class SigningPolicy {
      *
      * @param caDN_
      *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertUtil.toGlobusID()
+     *       slashes) and not reversed. See CertificateUtil.toGlobusID()
      * @param patterns_
      *       Vector of java.util.Pattern, each representing an allowed
      *       subject DN policy.
@@ -77,7 +77,7 @@ public class SigningPolicy {
      *
      * @param caDN_
      *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertUtil.toGlobusID()
+     *       slashes) and not reversed. See CertificateUtil.toGlobusID()
      * @param patterns_
      *       Vector of java.util.Pattern, each representing an allowed
      *       subject DN policy.
