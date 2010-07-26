@@ -14,6 +14,8 @@
  */
 package org.globus.tools;
 
+import org.globus.gsi.X509ExtensionSet;
+
 import java.util.HashMap;
 
 import org.globus.gsi.X509Extension;
@@ -683,15 +685,15 @@ class DefaultProxyInit extends ProxyInit {
 	    BouncyCastleCertProcessingFactory factory =
 		BouncyCastleCertProcessingFactory.getDefault();
 
-	    Map<String,X509Extension> extSet = null;
+	    X509ExtensionSet extSet = null;
 	    if (proxyCertInfo != null) {
-		extSet = new HashMap<String,X509Extension>();
+		extSet = new X509ExtensionSet();
                 if (ProxyCertificateUtil.isGsi4Proxy(proxyType)) {
                     // RFC compliant OID
-                    extSet.put(GSIConstants.PROXY_OID.getId(), new ProxyCertInfoExtension(proxyCertInfo));
+                    extSet.add(new ProxyCertInfoExtension(proxyCertInfo));
                 } else {
                     // old OID
-                    extSet.put(GSIConstants.PROXY_OLD_OID.getId(), new GlobusProxyCertInfoExtension(proxyCertInfo));
+                    extSet.add(new GlobusProxyCertInfoExtension(proxyCertInfo));
                 }
 	    }
 

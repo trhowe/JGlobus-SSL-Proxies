@@ -14,8 +14,6 @@
  */
 package org.globus.gsi;
 
-import org.bouncycastle.asn1.DERObjectIdentifier;
-
 /** 
  * Defines common constants used by GSI.
  */
@@ -146,16 +144,6 @@ public interface GSIConstants {
     public static final String AUTHZ_REQUIRED_WITH_DELEGATION = 
         "org.globus.security.authz.required.delegation";
     
-    /**
-     * ProxyCertInfo extension OID
-     */
-    public static final DERObjectIdentifier PROXY_OID = new DERObjectIdentifier("1.3.6.1.5.5.7.1.14");
-    /**
-     * Old ProxyCertInfo extension OID
-     */
-    public static final DERObjectIdentifier PROXY_OLD_OID = new DERObjectIdentifier("1.3.6.1.4.1.3536.1.222");
-
-
     /**
      * Enumeration of Certificate types used by the Globus security provider.
      */

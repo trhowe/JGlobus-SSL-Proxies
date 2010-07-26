@@ -21,7 +21,6 @@ import org.globus.util.I18n;
 
 /** 
  * Represents a set of X.509 extensions.
- * @deprecated
  */
 public class X509ExtensionSet {
 

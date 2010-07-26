@@ -772,9 +772,9 @@ public class ProxyPathValidator {
 		if (ext.isCritical()) {
 		    if (oid.equals(X509Extensions.BasicConstraints) ||
 			oid.equals(X509Extensions.KeyUsage) ||
-			(oid.equals(GSIConstants.PROXY_OID) && 
+			(oid.equals(ProxyCertInfo.OID) && 
 			        ProxyCertificateUtil.isGsi4Proxy(certType)) ||
-			(oid.equals(GSIConstants.PROXY_OLD_OID) && 
+			(oid.equals(ProxyCertInfo.OLD_OID) && 
 			        ProxyCertificateUtil.isGsi3Proxy(certType))) {
 		    } else {
 			throw new ProxyPathValidatorException(

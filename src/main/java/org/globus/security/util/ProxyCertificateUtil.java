@@ -248,9 +248,9 @@ public final class ProxyCertificateUtil {
             return null;
         }
         X509Extension ext =
-                extensions.getExtension(GSIConstants.PROXY_OID);
+                extensions.getExtension(ProxyCertInfo.OID);
         if (ext == null) {
-            ext = extensions.getExtension(GSIConstants.PROXY_OLD_OID);
+            ext = extensions.getExtension(ProxyCertInfo.OLD_OID);
         }
         return (ext != null) ? getProxyCertInfo(ext) : null;
     }

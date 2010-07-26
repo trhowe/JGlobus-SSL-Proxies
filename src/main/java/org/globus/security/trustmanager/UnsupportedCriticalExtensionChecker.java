@@ -15,6 +15,8 @@
 
 package org.globus.security.trustmanager;
 
+import org.globus.gsi.proxy.ext.ProxyCertInfo;
+
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.X509Certificate;
 import java.util.Set;
@@ -54,10 +56,10 @@ public class UnsupportedCriticalExtensionChecker implements CertificateChecker {
         boolean unsupportedCritExtention = criticalExtensionOid.equals(X509ProxyCertPathValidator.BASIC_CONSTRAINT_OID);
         unsupportedCritExtention = unsupportedCritExtention || criticalExtensionOid.equals(X509ProxyCertPathValidator.KEY_USAGE_OID);
         unsupportedCritExtention = unsupportedCritExtention
-                || (criticalExtensionOid.equals(GSIConstants.PROXY_OID.toString())
+                || (criticalExtensionOid.equals(ProxyCertInfo.OID.toString())
                 && ProxyCertificateUtil.isGsi4Proxy(certType));
         unsupportedCritExtention = unsupportedCritExtention
-                || (criticalExtensionOid.equals(GSIConstants.PROXY_OLD_OID.toString())
+                || (criticalExtensionOid.equals(ProxyCertInfo.OLD_OID.toString())
                 && ProxyCertificateUtil.isGsi3Proxy(certType));
 
         if (unsupportedCritExtention) {

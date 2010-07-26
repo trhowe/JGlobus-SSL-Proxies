@@ -311,10 +311,10 @@ public class BouncyCastleUtil {
 	    } else if (extensions != null) {
                 boolean gsi4 = true;
                 // GSI_4
-		ext = extensions.getExtension(GSIConstants.PROXY_OID);
+		ext = extensions.getExtension(ProxyCertInfo.OID);
                 if (ext == null) {
                     // GSI_3
-                    ext = extensions.getExtension(GSIConstants.PROXY_OLD_OID);
+                    ext = extensions.getExtension(ProxyCertInfo.OLD_OID);
                     gsi4 = false;
                 }
 		if (ext != null) {
@@ -565,9 +565,9 @@ public class BouncyCastleUtil {
 	    return null;
 	}
 	X509Extension ext = 
-	    extensions.getExtension(GSIConstants.PROXY_OID);
+	    extensions.getExtension(ProxyCertInfo.OID);
         if (ext == null) {
-            ext = extensions.getExtension(GSIConstants.PROXY_OLD_OID);
+            ext = extensions.getExtension(ProxyCertInfo.OLD_OID);
         }
 	return (ext != null) ? BouncyCastleUtil.getProxyCertInfo(ext) : null;
     }
