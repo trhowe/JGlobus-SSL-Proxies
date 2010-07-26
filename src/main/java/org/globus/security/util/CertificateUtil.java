@@ -14,6 +14,22 @@
  */
 package org.globus.security.util;
 
+import java.security.Provider;
+
+import java.util.logging.Logger;
+
+import org.globus.common.CoGProperties;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
+
+import java.security.KeyPairGenerator;
+
+import java.security.GeneralSecurityException;
+
+import java.security.KeyPair;
+
 import java.security.Principal;
 
 import org.globus.gsi.bc.X509NameHelper;
@@ -68,8 +84,52 @@ public final class CertificateUtil {
     public static final int DECIPHER_ONLY = 8;
     public static final int DEFAULT_USAGE_LENGTH = 9;
 
+    private static String provider;
+    private static Logger logger;
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+        setProvider("BC");
+        logger = Logger.getLogger(CertificateLoadUtil.class.getCanonicalName());
+        installSecureRandomProvider();
+    }
+
     private CertificateUtil() {
         //this should not be constructed;
+    }
+
+    /**
+     * A no-op function that can be used to force the class
+     * to load and initialize.
+     */
+    public static void init() {
+        CertificateLoadUtil.init();
+    }
+
+    /**
+     * Sets a provider name to use for loading certificates
+     * and for generating key pairs.
+     *
+     * @param providerName provider name to use.
+     */
+    public static void setProvider(String providerName) {
+        provider = providerName;
+    }
+
+    /**
+     * Installs SecureRandom provider. 
+     * This function is automatically called when this class is loaded.
+     */
+    public static void installSecureRandomProvider() {
+        CoGProperties props = CoGProperties.getDefault();
+        String providerName = props.getSecureRandomProvider();
+        try {
+            Class providerClass = Class.forName(providerName);
+            Security.insertProviderAt( (Provider)providerClass.newInstance(), 
+                                       1 );
+        } catch (Exception e) {
+            logger.fine("Unable to install PRNG. Using default PRNG." + e.getMessage());
+        }
     }
 
     /**
@@ -100,6 +160,27 @@ public final class CertificateUtil {
         }
         return -1;
     }
+    
+    /**
+     * Generates a key pair of given algorithm and strength.
+     *
+     * @param algorithm the algorithm of the key pair.
+     * @param bits the strength
+     * @return <code>KeyPair</code> the generated key pair.
+     * @exception GeneralSecurityException if something goes wrong.
+     */
+    public static KeyPair generateKeyPair(String algorithm, int bits) 
+        throws GeneralSecurityException {
+        KeyPairGenerator generator = null;
+        if (provider == null) {
+            generator = KeyPairGenerator.getInstance(algorithm);
+        } else {
+            generator = KeyPairGenerator.getInstance(algorithm, provider);
+        }
+        generator.initialize(bits);
+        return generator.generateKeyPair();
+    }
+
 
     /**
      * Returns certificate type of the given TBS certificate. <BR> The

@@ -47,20 +47,13 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class CertUtil {
   
-    private static Log logger =
-        LogFactory.getLog(CertUtil.class.getName());
-    
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-        setProvider("BC");
-        installSecureRandomProvider();
-    }
-
     /**
      * A no-op function that can be used to force the class
      * to load and initialize.
      */
     public static void init() {
+        CertificateUtil.init();
+        CertificateLoadUtil.init();
     }
 
     /**
@@ -68,16 +61,7 @@ public class CertUtil {
      * This function is automatically called when this class is loaded.
      */
     public static void installSecureRandomProvider() {
-        CoGProperties props = CoGProperties.getDefault();
-        String providerName = props.getSecureRandomProvider();
-        try {
-            logger.debug("Loading SecureRandom provider: " + providerName);
-            Class providerClass = Class.forName(providerName);
-            Security.insertProviderAt( (Provider)providerClass.newInstance(), 
-                                       1 );
-        } catch (Exception e) {
-            logger.debug("Unable to install PRNG. Using default PRNG.", e);
-        }
+        CertificateUtil.installSecureRandomProvider();
     }
 
     /**
@@ -87,6 +71,7 @@ public class CertUtil {
      * @param providerName provider name to use.
      */
     public static void setProvider(String providerName) {
+        CertificateUtil.setProvider(providerName);
         CertificateLoadUtil.setProvider(providerName);
     }
 
