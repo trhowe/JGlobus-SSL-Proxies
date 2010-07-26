@@ -15,9 +15,10 @@
 
 package org.globus.security.util;
 
+import java.io.FileOutputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
@@ -30,7 +31,7 @@ import java.util.logging.Logger;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.asn1.x509.X509Name;
 
@@ -48,7 +49,6 @@ public final class CertificateIOUtil {
     public static final String KEY_FOOTER = "-----END RSA PRIVATE KEY-----";
 
     private static Logger logger = Logger.getLogger(CertificateIOUtil.class.getCanonicalName());
-    private static Base64 base64 = new Base64();
     private static MessageDigest md5;
 
     private CertificateIOUtil() {
@@ -124,16 +124,9 @@ public final class CertificateIOUtil {
 
     public static void writeCertificate(X509Certificate cert, File path)
             throws CertificateEncodingException, IOException {
-        String pubKeyPEM = certToPEMString(base64.encodeToString(cert.getEncoded()));
-        FileWriter pubFile = null;
-        try {
-            pubFile = new FileWriter(path);
-            pubFile.write(pubKeyPEM);
-        } finally {
-            if (pubFile != null) {
-                pubFile.close();
-            }
-        }
+        FileOutputStream fos = new FileOutputStream(path);
+        writeCertificate(fos, cert);
+        fos.close();
     }
 
     /**
@@ -155,7 +148,7 @@ public final class CertificateIOUtil {
             throws IOException, CertificateEncodingException {
         PEMUtil.writeBase64(out,
                 "-----BEGIN CERTIFICATE-----",
-                base64.encode(cert.getEncoded()),
+                Base64.encode(cert.getEncoded()),
                 "-----END CERTIFICATE-----");
     }
 
