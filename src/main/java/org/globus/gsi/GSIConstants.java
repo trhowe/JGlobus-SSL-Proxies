@@ -17,6 +17,7 @@ package org.globus.gsi;
 /** 
  * Defines common constants used by GSI.
  */
+// COMMENT: 2 ways to defined a certificate type: integer and enum. 
 public interface GSIConstants {
     
     /** The character sent on the wire to request delegation */
@@ -25,17 +26,23 @@ public interface GSIConstants {
     /** Null ciphersuite supported in older Globus servers */
     public static final String[] GLOBUS_CIPHER  = {"SSL_RSA_WITH_NULL_MD5"};
 
-    /** Indicates no delegation */
+    /** Indicates no delegation
+     * @deprecated Use DelegationType.NONE instead
+     */
     public static final int DELEGATION_NONE = 1;
 
     /** Indicates limited delegation. 
      * Depending on the settings it might mean GSI-2 limited delegation
-     * or GSI-3 limited delegation. */
+     * or GSI-3 limited delegation.
+     * @deprecated Use DelegationType.LIMITED instead
+     */
     public static final int DELEGATION_LIMITED = 2;
 
     /** Indicates full delegation. 
      * Depending on the settings it might mean GSI-2 full delegation
-     * or GSI-3 impersonation delegation. */
+     * or GSI-3 impersonation delegation.
+     * @deprecated Use DelegationType.FULL instead
+     */
     public static final int DELEGATION_FULL = 3;
 
     /** Indicates GSI mode (allows for delegation during authentication). 
@@ -48,60 +55,84 @@ public interface GSIConstants {
     
     /** Indicates full delegation. */
     public static final Integer DELEGATION_TYPE_FULL 
-	= new Integer(GSIConstants.DELEGATION_FULL);
+    = new Integer(GSIConstants.DELEGATION_FULL);
     
     /** Indicates limited delegation. */
     public static final Integer DELEGATION_TYPE_LIMITED 
-	= new Integer(GSIConstants.DELEGATION_LIMITED);
+    = new Integer(GSIConstants.DELEGATION_LIMITED);
     
-    /** Indicates End-Entity Certificate, e.g. user certificate */
+    /** Indicates End-Entity Certificate, e.g. user certificate
+     * @deprecated Use CertificateType.EEC instead
+     */
     public static final int EEC = 3;
 
-    /** Indicates Certificate Authority certificate */
+    /** Indicates Certificate Authority certificate 
+     * @deprecated Use CertificateType.CA instead
+     */
     public static final int CA = 4;
     
-    /** Indicates legacy full Globus proxy */
+    /** Indicates legacy full Globus proxy
+     * @deprecated Use CertificateType.GSI_2_PROXY instead
+     */
     public static final int GSI_2_PROXY         = 10;
 
-    /** Indicates legacy limited Globus proxy */
+    /** Indicates legacy limited Globus proxy
+     * @deprecated Use CertificateType.GSI_2_LIMITED_PROXY instead
+     */
     public static final int GSI_2_LIMITED_PROXY = 11;
 
     /** Indicates proxy draft compliant restricted proxy.
-     * A proxy with embedded policy. */
+     * A proxy with embedded policy.
+     * @deprecated Use CertificateType.GSI_3_RESTRICTED_PROXY instead
+     */
     public static final int GSI_3_RESTRICTED_PROXY    = 12;
 
     /** Indicates proxy draft compliant independent proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#INDEPENDENT
-     * ProxyPolicy.INDEPENDENT} policy language OID.*/
+     * ProxyPolicy.INDEPENDENT} policy language OID.
+     * @deprecated Use CertificateType.GSI_3_INDEPENDENT_PROXY instead
+     */
     public static final int GSI_3_INDEPENDENT_PROXY   = 13;
 
     /** Indicates proxy draft compliant impersonation proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#IMPERSONATION 
-     * ProxyPolicy.IMPERSONATION} policy language OID.*/
+     * ProxyPolicy.IMPERSONATION} policy language OID.
+     * @deprecated Use CertificateType.GSI_3_IMPERSONATION_PROXY instead
+     */
     public static final int GSI_3_IMPERSONATION_PROXY = 14;
 
     /** Indicates proxy draft compliant limited impersonation proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#LIMITED 
-     * ProxyPolicy.LIMITED} policy language OID.*/
+     * ProxyPolicy.LIMITED} policy language OID.
+     * @deprecated Use CertificateType.GSI_3_RESTRICTED_PROXY instead
+     */
     public static final int GSI_3_LIMITED_PROXY       = 15;
 
     /** Indicates RFC 3820 compliant restricted proxy.
-     * A proxy with embedded policy. */
+     * A proxy with embedded policy.
+     * @deprecated Use CertificateType.GSI_4_RESTRICTED_PROXY instead
+     */
     public static final int GSI_4_RESTRICTED_PROXY    = 16;
 
     /** Indicates RFC 3820 compliant independent proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#INDEPENDENT
-     * ProxyPolicy.INDEPENDENT} policy language OID.*/
+     * ProxyPolicy.INDEPENDENT} policy language OID.
+     * @deprecated Use CertificateType.GSI_4_INDEPENDENT_PROXY instead
+     */
     public static final int GSI_4_INDEPENDENT_PROXY   = 17;
 
     /** Indicates RFC 3820 compliant impersonation proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#IMPERSONATION 
-     * ProxyPolicy.IMPERSONATION} policy language OID.*/
+     * ProxyPolicy.IMPERSONATION} policy language OID.
+     * @deprecated Use CertificateType.GSI_4_IMPERSONATION_PROXY instead
+     */
     public static final int GSI_4_IMPERSONATION_PROXY = 18;
 
     /** Indicates RFC 3820 compliant limited impersonation proxy.
      * A proxy with {@link org.globus.gsi.proxy.ext.ProxyPolicy#LIMITED 
-     * ProxyPolicy.LIMITED} policy language OID.*/
+     * ProxyPolicy.LIMITED} policy language OID.
+     * @deprecated Use CertificateType.GSI_4_LIMITED_PROXY instead
+     */
     public static final int GSI_4_LIMITED_PROXY       = 19;
 
     /** GSI Transport protection method type
@@ -147,10 +178,58 @@ public interface GSIConstants {
     /**
      * Enumeration of Certificate types used by the Globus security provider.
      */
+    // COMMENT: TODO: replace the the cert type constants with this enum
     public enum CertificateType {
-        CA, EEC, GSI_2_PROXY, GSI_2_LIMITED_PROXY, GSI_3_LIMITED_PROXY,
-        GSI_3_RESTRICTED_PROXY, GSI_3_INDEPENDENT_PROXY, GSI_3_IMPERSONATION_PROXY,
-        GSI_4_LIMITED_PROXY, GSI_4_RESTRICTED_PROXY, GSI_4_INDEPENDENT_PROXY, GSI_4_IMPERSONATION_PROXY
+        CA(3), EEC(4), GSI_2_PROXY(10), GSI_2_LIMITED_PROXY(11), GSI_3_LIMITED_PROXY(12),
+        GSI_3_RESTRICTED_PROXY(13), GSI_3_INDEPENDENT_PROXY(14), GSI_3_IMPERSONATION_PROXY(15),
+        GSI_4_LIMITED_PROXY(16), GSI_4_RESTRICTED_PROXY(17), GSI_4_INDEPENDENT_PROXY(18), 
+        GSI_4_IMPERSONATION_PROXY(19), UNDEFINED(-1);
+        
+        private int code;
+
+        private CertificateType(int c) {
+            code = c;
+        }
+
+        public int getCode() {
+            return code;
+        }
+        
+        public static CertificateType get(int code) {
+            for (CertificateType tmp : CertificateType.values()) {
+                if (tmp.getCode() == code) {
+                    return tmp;
+                }
+            }
+            throw new IllegalArgumentException("invalid certificate type code");
+        }
+    }
+
+    /**
+     * Enumeration of Certificate types used by the Globus security provider.
+     */
+    // COMMENT: TODO: replace the the delegation type constants with this enum
+    public enum DelegationType {
+        NONE(1), LIMITED(2), FULL(3);
+        
+        private int code;
+
+        private DelegationType(int c) {
+            code = c;
+        }
+
+        public int getCode() {
+            return code;
+        }
+        
+        public static CertificateType get(int code) {
+            for (CertificateType tmp : CertificateType.values()) {
+                if (tmp.getCode() == code) {
+                    return tmp;
+                }
+            }
+            throw new IllegalArgumentException("invalid delegation  type code");
+        }
     }
 
 }
