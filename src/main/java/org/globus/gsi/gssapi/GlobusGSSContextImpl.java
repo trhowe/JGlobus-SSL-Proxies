@@ -767,7 +767,8 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
                                          "noCaCerts");
         }
         try {
-            this.context.setRootList(this.tc.getX509CertList());
+            // COMMENT: move use of PureTLS from TrustCertificates
+            this.context.setRootList(PureTLSUtil.certificateChainToVector(this.tc.getCertificates()));
         } catch (GeneralSecurityException e) {
             throw new GlobusGSSException(GSSException.FAILURE, e);
         }

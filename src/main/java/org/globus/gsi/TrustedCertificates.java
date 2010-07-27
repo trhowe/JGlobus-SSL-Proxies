@@ -98,16 +98,7 @@ public class TrustedCertificates implements Serializable {
         }
     }
 
-    /**
-     * Returns the trusted certificates as a Vector of X509Certificate objects.
-     */
-    public synchronized Vector getX509CertList() throws GeneralSecurityException {
-	if (certList == null) {
-            certList = 
-                PureTLSUtil.certificateChainToVector(getCertificates());
-	}
-	return certList;
-    }
+    // COMMENT: Removed getX509CertList() to get rid of PureTLS functionality
 
     public X509Certificate[] getCertificates() {
         if (this.certSubjectDNMap == null) {
