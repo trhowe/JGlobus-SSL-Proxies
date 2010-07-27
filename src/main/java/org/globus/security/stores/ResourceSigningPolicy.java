@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 import org.globus.security.SigningPolicyException;
 import org.globus.security.provider.SigningPolicyStoreException;
-import org.globus.security.util.SigningPolicyFileParser;
+import org.globus.gsi.SigningPolicyParser;
 import org.springframework.core.io.Resource;
 
 /**
@@ -84,7 +84,7 @@ public class ResourceSigningPolicy {
     }
 
     public Map<X500Principal, SigningPolicy> create(Resource signingPolicyResource) throws ResourceStoreException {
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
         Map<X500Principal, SigningPolicy> policies;
         try {
             policies = parser.parse(new InputStreamReader(signingPolicyResource.getInputStream()));

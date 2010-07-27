@@ -46,7 +46,7 @@ import org.globus.gsi.proxy.ext.ProxyCertInfo;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 import org.globus.gsi.proxy.ProxyPolicyHandler;
 
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 import org.globus.security.X509ProxyCertPathParameters;
 import org.globus.security.X509ProxyCertPathValidatorResult;
 import org.globus.security.trustmanager.CRLChecker;
@@ -57,7 +57,7 @@ import org.globus.security.trustmanager.SigningPolicyChecker;
 import org.globus.security.trustmanager.UnsupportedCriticalExtensionChecker;
 import org.globus.security.trustmanager.X509ProxyCertPathValidator;
 import org.globus.security.util.CertificateLoadUtil;
-import org.globus.security.util.SigningPolicyFileParser;
+import org.globus.gsi.SigningPolicyParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -900,7 +900,7 @@ public class TestProxyPathValidator {
                 CertStore.getInstance("MockCertStore", parameters);
 
         X509Certificate[] chain;
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
 
         Reader reader = new StringReader(signingPolicy);
         Map<X500Principal, SigningPolicy> map =

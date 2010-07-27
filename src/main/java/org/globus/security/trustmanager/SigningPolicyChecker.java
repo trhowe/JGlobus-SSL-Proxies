@@ -22,7 +22,7 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 
 import org.globus.gsi.GSIConstants;
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 import org.globus.security.provider.SigningPolicyStore;
 import org.globus.security.util.ProxyCertificateUtil;
 

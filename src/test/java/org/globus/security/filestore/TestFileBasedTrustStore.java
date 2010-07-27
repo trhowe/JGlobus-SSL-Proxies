@@ -36,7 +36,7 @@ import java.util.Collection;
 import javax.security.auth.x500.X500Principal;
 
 import org.globus.security.DirSetupUtil;
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 import org.globus.security.provider.GlobusProvider;
 import org.globus.security.provider.SigningPolicyStore;
 import org.globus.security.provider.SigningPolicyStoreParameters;

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 
 import org.globus.security.FileSetupUtil;
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 import org.globus.security.stores.ResourceSigningPolicy;
 import org.springframework.core.io.FileSystemResource;
 import org.junit.After;

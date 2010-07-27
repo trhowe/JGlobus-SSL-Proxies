@@ -26,7 +26,8 @@ import java.util.regex.Pattern;
 import javax.security.auth.x500.X500Principal;
 
 import org.globus.security.FileSetupUtil;
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
+import org.globus.gsi.SigningPolicyParser;
 import org.globus.security.SigningPolicyException;
 import org.junit.After;
 import org.junit.Before;
@@ -63,25 +64,25 @@ public class TestSigningPolicyFileParser {
         // test getPattern method
         // no wildcards or question marks
         String patternStr = "CN=abcdefgh";
-        String patternR = (SigningPolicyFileParser.getPattern(patternStr))
+        String patternR = (SigningPolicyParser.getPattern(patternStr))
                 .pattern();
         assertTrue("CN=abcdefgh".equals(patternR));
 
         // first character wildcard and question marks
         String pattern1Str = "CN=*def?gh?";
-        Pattern pattern1 = SigningPolicyFileParser.getPattern(pattern1Str);
+        Pattern pattern1 = SigningPolicyParser.getPattern(pattern1Str);
         String pattern1R = pattern1.pattern();
-        assertTrue(("CN=" + SigningPolicyFileParser.WILDCARD_PATTERN + "def" +
-                SigningPolicyFileParser.SINGLE_PATTERN + "gh" +
-                SigningPolicyFileParser.SINGLE_PATTERN).equals(pattern1R));
+        assertTrue(("CN=" + SigningPolicyParser.WILDCARD_PATTERN + "def" +
+                SigningPolicyParser.SINGLE_PATTERN + "gh" +
+                SigningPolicyParser.SINGLE_PATTERN).equals(pattern1R));
 
         // only wild cards
         String pattern2Str = "/CN=abc*def*gh";
-        Pattern pattern2 = SigningPolicyFileParser.getPattern(pattern2Str);
+        Pattern pattern2 = SigningPolicyParser.getPattern(pattern2Str);
         String pattern2R = pattern2.pattern();
         assertTrue(
-                ("/CN=abc" + SigningPolicyFileParser.WILDCARD_PATTERN + "def" +
-                        SigningPolicyFileParser.WILDCARD_PATTERN + "gh").equals(
+                ("/CN=abc" + SigningPolicyParser.WILDCARD_PATTERN + "def" +
+                        SigningPolicyParser.WILDCARD_PATTERN + "gh").equals(
                         pattern2R));
 
         // test isValidDN methods
@@ -104,7 +105,7 @@ public class TestSigningPolicyFileParser {
 
         // wildcard as first and last character
         String pattern3Str = "*abc*def*gh*";
-        Pattern pattern3 = SigningPolicyFileParser.getPattern(pattern3Str);
+        Pattern pattern3 = SigningPolicyParser.getPattern(pattern3Str);
         allowed.clear();
         allowed.add(pattern3);
         policy = new SigningPolicy(fooPrincipal, allowed);
@@ -118,7 +119,7 @@ public class TestSigningPolicyFileParser {
 
         // use of space and slashes, from old signing policy file
         String pattern4Str = "/C=US/O=Globus/*";
-        Pattern pattern4 = SigningPolicyFileParser.getPattern(pattern4Str);
+        Pattern pattern4 = SigningPolicyParser.getPattern(pattern4Str);
         allowed.clear();
         allowed.add(pattern4);
 
@@ -131,7 +132,7 @@ public class TestSigningPolicyFileParser {
 
         // wildcard as first character, question mark
         String pattern5Str = "/*C=US/O=Globus/CN=foo-?/CN=*";
-        Pattern pattern5 = SigningPolicyFileParser.getPattern(pattern5Str);
+        Pattern pattern5 = SigningPolicyParser.getPattern(pattern5Str);
         allowed.clear();
         allowed.add(pattern5);
         policy = new SigningPolicy(fooPrincipal, allowed);
@@ -157,7 +158,7 @@ public class TestSigningPolicyFileParser {
 
         // multiple question mark with punctuation
         String pattern6Str = "/C=US/O=global/CN=*/CN=user-??";
-        Pattern pattern6 = SigningPolicyFileParser.getPattern(pattern6Str);
+        Pattern pattern6 = SigningPolicyParser.getPattern(pattern6Str);
         allowed.clear();
         allowed.add(pattern6);
         policy = new SigningPolicy(fooPrincipal, allowed);
@@ -174,7 +175,7 @@ public class TestSigningPolicyFileParser {
 
         // add multiple patterns and test validity if atleast one matches
         String pattern7Str = "/C=US/O=Globus/CN=*/CN=user-??";
-        Pattern pattern7 = SigningPolicyFileParser.getPattern(pattern7Str);
+        Pattern pattern7 = SigningPolicyParser.getPattern(pattern7Str);
         allowed.add(pattern7);
         policy = new SigningPolicy(fooPrincipal, allowed);
 
@@ -191,7 +192,7 @@ public class TestSigningPolicyFileParser {
 
         this.successFile.copyFileToTemp();
 
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
         Map<X500Principal, SigningPolicy> map =
                 parser.parse(this.successFile.getAbsoluteFilename());
 
@@ -212,11 +213,11 @@ public class TestSigningPolicyFileParser {
 
         // given the getPattern method is already tested, assuming it
         // works here.
-        Pattern p1 = SigningPolicyFileParser.getPattern("/C=us/O=Globus/*");
+        Pattern p1 = SigningPolicyParser.getPattern("/C=us/O=Globus/*");
         assertTrue(patterns.contains(p1.pattern()));
-        p1 = SigningPolicyFileParser.getPattern("/C=US/O=Globus/*");
+        p1 = SigningPolicyParser.getPattern("/C=US/O=Globus/*");
         assertTrue(patterns.contains(p1.pattern()));
-        p1 = SigningPolicyFileParser
+        p1 = SigningPolicyParser
                 .getPattern("/C=us/O=National Computational Science Alliance/*");
         assertFalse(patterns.contains(p1.pattern()));
 
@@ -228,7 +229,7 @@ public class TestSigningPolicyFileParser {
         assertTrue(allowedDN.size() == 1);
         patterns.clear();
         patterns.add(((Pattern) allowedDN.get(0)).pattern());
-        p1 = SigningPolicyFileParser
+        p1 = SigningPolicyParser
                 .getPattern("/C=us/O=National Computational Science Alliance/*");
         assertTrue(patterns.contains(p1.pattern()));
 
@@ -249,7 +250,7 @@ public class TestSigningPolicyFileParser {
         patterns = new Vector(1);
         patterns.add(((Pattern) allowedDN.get(0)).pattern());
 
-        p1 = SigningPolicyFileParser
+        p1 = SigningPolicyParser
                 .getPattern("/C=US/O=National Computational Science Alliance/*");
         assertTrue(patterns.contains(p1.pattern()));
     }
@@ -258,7 +259,7 @@ public class TestSigningPolicyFileParser {
     public void testFilesWithTab() throws Exception {
 
         this.tabTestFiles[0].copyFileToTemp();
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
 
         Map<X500Principal, SigningPolicy> map =
                 parser.parse(this.tabTestFiles[0].getAbsoluteFilename());
@@ -286,10 +287,10 @@ public class TestSigningPolicyFileParser {
 
         // given the getPattern method is already tested, assuming it
         // works here.
-        Pattern p1 = SigningPolicyFileParser
+        Pattern p1 = SigningPolicyParser
                 .getPattern("/C=FR/O=CNRS/CN=CNRS-Projets");
         assertTrue(patterns.contains(p1.pattern()));
-        p1 = SigningPolicyFileParser.getPattern("/C=FR/O=CNRS/CN=CNRS");
+        p1 = SigningPolicyParser.getPattern("/C=FR/O=CNRS/CN=CNRS");
         assertTrue(patterns.contains(p1.pattern()));
 
 
@@ -311,22 +312,22 @@ public class TestSigningPolicyFileParser {
 
         // given the getPattern method is already tested, assuming it
         // works here.
-        p1 = SigningPolicyFileParser.getPattern("/C=it/O=INFN/*");
+        p1 = SigningPolicyParser.getPattern("/C=it/O=INFN/*");
         assertTrue(patterns.contains(p1.pattern()));
-        p1 = SigningPolicyFileParser.getPattern("/C=IT/O=INFN/*");
+        p1 = SigningPolicyParser.getPattern("/C=IT/O=INFN/*");
         assertTrue(patterns.contains(p1.pattern()));
     }
 
     @Test(expected = SigningPolicyException.class)
     public void testFileFailure() throws Exception {
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
         parser.parse("Foo");
     }
 
     @Test
     public void testParsingFailure() throws Exception {
 
-        SigningPolicyFileParser parser = new SigningPolicyFileParser();
+        SigningPolicyParser parser = new SigningPolicyParser();
 
         // not x509
         String error1 =

@@ -16,7 +16,7 @@ package org.globus.security.provider;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.globus.security.SigningPolicy;
+import org.globus.gsi.SigningPolicy;
 
 /**
  * // FIXME: Maybe a provider  access to this?

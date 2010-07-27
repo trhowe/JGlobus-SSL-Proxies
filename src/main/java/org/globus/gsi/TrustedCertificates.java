@@ -15,9 +15,16 @@
 package org.globus.gsi;
 
 import org.globus.security.util.CertificateUtil;
-
-import org.globus.security.util.CertificateLoadUtil;
-
+import javax.security.auth.x500.X500Principal;
+import org.globus.security.stores.ResourceSigningPolicyStoreParameters;
+import org.globus.security.stores.ResourceSigningPolicyStore;
+import java.security.cert.Certificate;
+import org.globus.security.util.KeyStoreUtil;
+import java.security.cert.X509CertSelector;
+import org.globus.security.provider.KeyStoreParametersFactory;
+import org.globus.security.provider.GlobusProvider;
+import java.security.KeyStore;
+import org.globus.security.ProviderLoader;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -27,42 +34,41 @@ import java.util.StringTokenizer;
 import java.util.Collection;
 import java.util.Iterator;
 import java.io.File;
-import java.io.IOException;
 import java.io.FilenameFilter;
-
 import org.globus.common.CoGProperties;
-import org.globus.util.TimestampEntry;
-import org.globus.gsi.ptls.PureTLSUtil;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import java.io.Serializable;
 
+// COMMENT: What is the replacement for this?
+// COMMENT: We lost the refresh functionality: Currently an entirely new store is loaded upon load()
 /**
  * Class that reads in and maintains trusted certificates and signing
  * policy associated with the CAs.
+ * @deprecated
  */
 public class TrustedCertificates implements Serializable {
     
     private static Log logger =
         LogFactory.getLog(TrustedCertificates.class.getName());
 
+    static {
+        new ProviderLoader();
+    }
+    
     public static final CertFilter certFileFilter = new CertFilter();
-
     private static TrustedCertificates trustedCertificates = null;
 
     // DN is in the format in certificates
     private Map certSubjectDNMap;
-    private Map certFileMap;
-    private boolean changed;
 
     // DN is in Globus format here, without any reversal.
     private Map policyDNMap;
-    private Map policyFileMap;
 
     // Vector of X.509 Certificate objects
     private Vector certList;
+
+    private boolean changed;
 
     /**
      * Default signing policy suffix. The files are expected to be
@@ -91,27 +97,21 @@ public class TrustedCertificates implements Serializable {
             this.policyDNMap = new HashMap();        
             for (int i=0; i<policies.length; i++) {
                 if (policies[i] != null) {
-                    this.policyDNMap.put(policies[i].getCaSubject(), 
-                                         policies[i]);
+                    this.policyDNMap.put(CertificateUtil.toGlobusID(policies[i].getCASubjectDN()), policies[i]);
                 }
             }
         }
     }
 
-    // COMMENT: Removed getX509CertList() to get rid of PureTLS functionality
+    // COMMENT: BCB: removed getX509CertList() which used PureTLS. Needed by GlobusGSSContextImpl
+    // so moved some things over to there
 
     public X509Certificate[] getCertificates() {
         if (this.certSubjectDNMap == null) {
             return null;
         }
         Collection certs = this.certSubjectDNMap.values();
-        X509Certificate [] retCerts = new X509Certificate[certs.size()];
-        Iterator iterator = certs.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            retCerts[i++] = (X509Certificate)iterator.next();
-        }
-        return retCerts;
+        return (X509Certificate[]) certs.toArray(new X509Certificate[certs.size()]);
     }
     
     public X509Certificate getCertificate(String subject) {
@@ -125,19 +125,11 @@ public class TrustedCertificates implements Serializable {
      * Returns all signing policies 
      */
     public SigningPolicy[] getSigningPolicies() {
-
         if (this.policyDNMap == null) {
             return null;
         }
-
         Collection values = this.policyDNMap.values();
-        SigningPolicy[] policies = new SigningPolicy[values.size()];
-        Iterator iterator = values.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            policies[i++] = (SigningPolicy)iterator.next();
-        }
-        return policies;
+        return (SigningPolicy[]) this.policyDNMap.values().toArray(new SigningPolicy[values.size()]);
     }
 
     /**
@@ -158,7 +150,6 @@ public class TrustedCertificates implements Serializable {
         if (this.policyDNMap == null) {
             return null;
         }
-
         return (SigningPolicy) this.policyDNMap.get(subject);
     }
 
@@ -218,202 +209,72 @@ public class TrustedCertificates implements Serializable {
         this.changed = false;
 
         StringTokenizer tokens = new StringTokenizer(locations, ",");
-        File caFile            = null;
+        File caDir            = null;
 
-        Map newCertFileMap = new HashMap();
         Map newCertSubjectDNMap = new HashMap();
-        Map newSigningFileMap = new HashMap();
         Map newSigningDNMap = new HashMap();
 
         while(tokens.hasMoreTokens()) {
-            caFile = new File(tokens.nextToken().toString().trim());
+            caDir = new File(tokens.nextToken().toString().trim());
 
-            if (!caFile.canRead()) {
-                logger.debug("Cannot read: " + caFile.getAbsolutePath());
+            if (!caDir.canRead()) {
+                logger.debug("Cannot read: " + caDir.getAbsolutePath());
                 continue;
             }
-            
-            if (caFile.isDirectory()) {
-                String[] caCertFiles = caFile.list(getCertFilter());
-                if (caCertFiles == null) {
-                    logger.debug("Cannot load certificates from " + 
-                                 caFile.getAbsolutePath() + " directory.");
-                } else {
-                    logger.debug("Loading certificates from " + 
-                                 caFile.getAbsolutePath() + " directory.");
-                    for (int i = 0; i < caCertFiles.length; i++) {
-                        String caFilename = caFile.getPath() + 
-                            File.separatorChar + caCertFiles[i];
-                        File caFilenameFile = new File(caFilename);
-                        String policyFilename = 
-                            getPolicyFileName(caFilename);
-                        File policyFile = new File(policyFilename);
-                        if (caFilenameFile.canRead()) {
-                            loadCert(caFilename,
-                                     caFilenameFile.lastModified(),
-                                     newCertFileMap, newCertSubjectDNMap,
-                                     policyFilename, 
-                                     policyFile.lastModified(),
-                                     newSigningFileMap, newSigningDNMap);
-                        } else {
-                            logger.debug("Cannot read: " + 
-                                         caFilenameFile.getAbsolutePath());
-                        }
+
+            String caCertLocation = "file:" + caDir.getAbsolutePath();
+            String sigPolPattern = caCertLocation + "/*.signing_policy";
+            if (!caDir.isDirectory()) {
+                sigPolPattern = getPolicyFileName(caCertLocation);
+            }
+
+            KeyStore keyStore = null;
+            try {
+                keyStore = KeyStore.getInstance(GlobusProvider.KEYSTORE_TYPE, GlobusProvider.PROVIDER_NAME);
+                keyStore.load(KeyStoreParametersFactory.createTrustStoreParameters(caCertLocation));
+                Collection<? extends Certificate> caCerts = KeyStoreUtil.getTrustedCertificates(keyStore, new X509CertSelector());
+                Iterator iter = caCerts.iterator();
+                while (iter.hasNext()) {
+                    X509Certificate cert = (X509Certificate) iter.next();
+                    newCertSubjectDNMap.put(cert.getSubjectDN().toString(), cert);
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to create trust store",e);
+            }
+                
+            try {
+                ResourceSigningPolicyStore sigPolStore = new ResourceSigningPolicyStore(new ResourceSigningPolicyStoreParameters(sigPolPattern));
+                Collection<? extends Certificate> caCerts = KeyStoreUtil.getTrustedCertificates(keyStore, new X509CertSelector());
+                Iterator iter = caCerts.iterator();
+                while (iter.hasNext()) {
+                    X509Certificate cert = (X509Certificate) iter.next();
+                    X500Principal principal = cert.getSubjectX500Principal();
+                    SigningPolicy policy = sigPolStore.getSigningPolicy(principal);
+                    if (policy != null) {
+                        newSigningDNMap.put(CertificateUtil.toGlobusID(policy.getCASubjectDN()), policy);
+                    } else {
+                        logger.warn("no signing policy for ca cert " + cert.getSubjectDN());
                     }
                 }
-            } else {
-                String caFilename = caFile.getAbsolutePath();
-                String policyFilename = 
-                    getPolicyFileName(caFilename);
-                File policyFile = new File(policyFilename);
-                loadCert(caFilename,
-                         caFile.lastModified(),
-                         newCertFileMap, newCertSubjectDNMap,
-                         policyFilename, 
-                         policyFile.lastModified(),
-                         newSigningFileMap, newSigningDNMap);
+            } catch (Exception e) {
+                logger.warn("Failed to create signing policy store",e);
             }
         }
         
-        // in case certificates were removed
-        if (!this.changed && 
-            this.certFileMap != null && 
-            this.certFileMap.size() != newCertFileMap.size()) {
-            this.changed = true;
-        }
-
-        this.certFileMap = newCertFileMap;
+        this.changed = true;
         this.certSubjectDNMap = newCertSubjectDNMap;
-
-        this.policyFileMap = newSigningFileMap;
         this.policyDNMap = newSigningDNMap;
 
-	if (this.changed) {
-	    this.certList = null;
-	}
+    if (this.changed) {
+        this.certList = null;
     }
-
-    /**
-     * Method loads a certificate/signing policy provided a mapping
-     * for it is<br>
-     * a) Not already in the HashMap
-     * b) In the HashMap, but
-     *    - mapped to null object
-     *    - the CertEntry has a modified time that is older that latest time
-     */
-    private void loadCert(String certPath, long latestLastModified, 
-                          Map newCertFileMap, Map newCertSubjectDNMap, 
-                          String policyPath, long policyModified, 
-                          Map newPolicyFileMap, Map newPolicyDNMap) {
-
-        X509Certificate cert = null;
-        
-        if (this.certFileMap == null) {
-            this.certFileMap = new HashMap();
-        }
-
-        if (this.policyFileMap == null) {
-            this.policyFileMap = new HashMap();
-        }
-
-        TimestampEntry certEntry = 
-            (TimestampEntry)this.certFileMap.get(certPath);
-        TimestampEntry policyEntry =
-            (TimestampEntry)this.policyFileMap.get(policyPath);
-        try {
-            if (certEntry == null) {
-                logger.debug("Loading " + certPath + " certificate.");
-                cert = CertificateLoadUtil.loadCertificate(certPath);
-                String caDN = cert.getSubjectDN().getName();
-                certEntry = new TimestampEntry();
-                certEntry.setValue(cert);
-                certEntry.setLastModified(latestLastModified);
-                certEntry.setDescription(caDN);
-                this.changed = true;
-                // load signing policy file
-                logger.debug("Loading " + policyPath + " signing policy.");
-                policyEntry = getPolicyEntry(policyPath, policyModified, caDN);
-            } else if (latestLastModified > certEntry.getLastModified()) {
-                logger.debug("Reloading " + certPath + " certificate.");
-                cert = CertificateLoadUtil.loadCertificate(certPath);
-                String caDN = cert.getSubjectDN().getName();
-                certEntry.setValue(cert);
-                certEntry.setLastModified(latestLastModified);
-                certEntry.setDescription(caDN);
-                this.changed = true;
-                if (policyModified > policyEntry.getLastModified()) {
-                    logger.debug("Reloading " + policyPath 
-                                 + " signing policy.");
-                    policyEntry = getPolicyEntry(policyPath, policyModified, 
-                                                 caDN);
-                }
-            } else {
-                logger.debug("Certificate " + certPath + " is up-to-date.");
-                cert = (X509Certificate)certEntry.getValue();
-                String caDN = cert.getSubjectDN().getName();
-                if (policyModified > policyEntry.getLastModified()) {
-                    logger.debug("Reloading " + policyPath 
-                                 + " signing policy.");
-                    policyEntry = getPolicyEntry(policyPath, policyModified, 
-                                                 caDN);
-                }
-            }
-            newCertFileMap.put(certPath, certEntry);
-            newCertSubjectDNMap.put(certEntry.getDescription(), cert);
-            newPolicyFileMap.put(policyPath, policyEntry);
-            newPolicyDNMap.put(policyEntry.getDescription(), 
-                               policyEntry.getValue());
-        } catch (SigningPolicyParserException e) {
-            logger.warn("Signing policy " + policyPath + " failed to load. "
-                        + e.getMessage());
-            logger.debug("Signing policy load error", e);
-        } catch (IOException e) {
-            logger.warn("Certificate " + certPath + " failed to load." 
-                        + e.getMessage());
-            logger.debug("Certificate load error", e);
-        } catch (Exception e) {
-            logger.warn("Certificate " + certPath + " or Signing policy "
-                        + policyPath + " failed to load. " + e.getMessage());
-            logger.debug("Certificate/Signing policy load error.", e);
-        }
-    }
-    
-    /**
-     * The signing policy file is parsed and an entry to store in a
-     * map is created here.
-     */
-    private TimestampEntry getPolicyEntry(String policyPath, 
-                                          long policyModified, String caDN) 
-        throws SigningPolicyParserException {
-
-        logger.debug("Policy path " + policyPath);
-        logger.debug("caDN as is " + caDN);
-
-        // CA DN in signing policy files are in Globus format. There
-        // is no reason to reverse it, but the format needs to use
-        // slashes rather than comma.
-        String globusDN = CertificateUtil.toGlobusID(caDN, true);
-
-        SigningPolicy policy = null;
-        File policyFile = new File(policyPath);
-        if (policyFile.exists()) {
-            policy = SigningPolicyParser.getPolicy(policyPath, globusDN);
-        }
-        
-        TimestampEntry policyEntry = new TimestampEntry();
-        policyEntry.setValue(policy);
-        policyEntry.setLastModified(policyModified);
-        policyEntry.setDescription(globusDN);
-        return policyEntry;
     }
 
     /**
      * Signing policy name is created as <hashcode>.signing_policy.
      */
     private String getPolicyFileName(String caFileName) {
-        return caFileName.substring(0, caFileName
-                                    .lastIndexOf(".")) + 
-            SIGNING_POLICY_FILE_SUFFIX ;
+        return caFileName.substring(0, caFileName.lastIndexOf(".")) + SIGNING_POLICY_FILE_SUFFIX ;
     }
 
     /**

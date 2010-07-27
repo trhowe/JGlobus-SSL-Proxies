@@ -14,125 +14,119 @@
  */
 package org.globus.gsi;
 
+
+import java.util.List;
 import java.util.Vector;
-
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
-import org.globus.util.I18n;
+import java.util.regex.Pattern;
+import javax.security.auth.x500.X500Principal;
+import org.globus.security.util.CertificateUtil;
+import org.globus.gsi.SigningPolicyParser;
 
 /**
- * Class that holds signing policy information. It contains the CA
- * subject DN for which the signing policy is stored, an optional name
- * of the file from which the policy was read in and if available a
- * vector of Pattern that contain the DN pattern. The Pattern should
- * use the grammar described in java.util.Pattern, see 
- * SigningPolicyParser#getPattern().
+ * Represents a signing policy associated with a particular CA. The signing policy defines a list of distinguished
+ * names which are allowed to sign certificates for a particular Certificate Authority subject distinguished name.
  *
- * Note: All subject DNs should be in Globus format (with slashes) and in
- * order (that is NOT reversed)
+ * @version ${version}
+ * @since 1.0
  */
+// COMMENT: BCB: new method signatures
 public class SigningPolicy {
 
-    private Vector patterns;
-    private String caDN;
-    private String fileName;
+    private X500Principal caSubject;
+    private List<Pattern> allowedDNs;
 
     /**
-     * Creates a signing policy for the given CA DN
+     * Create a signing policy for the supplied subject which allows the supplied list of DNs to sign certificates.
      *
-     * @param caDN_
-     *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertificateUtil#toGlobusID()
+     * @param caSubjectDN The DN for the subject to which this policy applies.
+     * @param allowedDNs  The list of DNs which can sign certs for this subject.
      */
-    public SigningPolicy(String caDN_) {
+    public SigningPolicy(X500Principal caSubjectDN, String[] allowedDNs) {
 
-        this(caDN_, null);
-    }
-
-    /**
-     * Creates a signing policy for the given CA DN and vector of
-     * policies. The policies are stored as java.util.Pattern, where
-     * each Pattern provdes a regexp format of the signing policy. 
-     * See SigningPolicyParser#getPattern().
-     *
-     * @param caDN_
-     *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertificateUtil.toGlobusID()
-     * @param patterns_
-     *       Vector of java.util.Pattern, each representing an allowed
-     *       subject DN policy.
-     */
-    public SigningPolicy(String caDN_, Vector patterns_) {
-        this(caDN_, patterns_, null);
-    }
-
-    /**
-     * Creates a signing policy for the given CA DN and vector of
-     * policies. The policies are stored as java.util.Pattern, where
-     * each Pattern provdes a regexp format of the signing policy. 
-     * See SigningPolicyParser#getPattern(). The optional filename
-     * stores the file from which the signing policy was read in.
-     *
-     * @param caDN_
-     *       Distinguished Name of the CA, in Globus format (with
-     *       slashes) and not reversed. See CertificateUtil.toGlobusID()
-     * @param patterns_
-     *       Vector of java.util.Pattern, each representing an allowed
-     *       subject DN policy.
-     * @param fileName_
-     *       name of the signing policy file.
-     */
-    public SigningPolicy(String caDN_, Vector patterns_, String fileName_) {
-
-        if ((caDN_ == null) || (caDN_.trim().equals(""))) {
+        if ((caSubjectDN == null) || (allowedDNs == null)) {
             throw new IllegalArgumentException();
         }
-        
-        this.caDN = caDN_;
-        this.patterns = patterns_;
-        this.fileName = fileName_;
+
+        this.caSubject = caSubjectDN;
+        int numberOfDNs = allowedDNs.length;
+        this.allowedDNs = new Vector<Pattern>(numberOfDNs);
+        for (String anAllowedDNs : allowedDNs) {
+            this.allowedDNs.add(SigningPolicyParser.getPattern(anAllowedDNs));
+
+        }
     }
 
     /**
-     * Returns the allowed subject DN patterns. 
+     * Create a signing policy for the supplied subject which allows subjects whose DNs match one of the supplied
+     * patterns to sign certificates.
      *
-     * @return Vector of patterns, each representing an allowed
-     *        subject DN policy. Can be null or vector of size zero.
+     * @param caSubjectDN The DN for the subject to which this policy applies.
+     * @param allowedDNs  A list of patterns to which to compare signing entity DNs.
      */
-    public Vector getPatterns() {
-        return patterns;
+    // COMMENT: allowedDNs != null is new, and causes the test to fail
+    public SigningPolicy(X500Principal caSubjectDN, List<Pattern> allowedDNs) {
+
+        if ((caSubjectDN == null) || (allowedDNs == null)) {
+            throw new IllegalArgumentException();
+        }
+
+        this.caSubject = caSubjectDN;
+        this.allowedDNs = allowedDNs;
     }
 
     /**
-     * Returns the CA subject DN
+     * Get CA subject DN for which this signing policy is defined.
      *
-     *@return CA's DN
+     * @return returns the CA subject
      */
-    public String getCaSubject() {
-        return this.caDN;
+    public X500Principal getCASubjectDN() {
+        return this.caSubject;
     }
 
     /**
-     * Returns file name
+     * Ascertains if the subjectDN is valid against this policy.
      *
-     * @return name of file from which the signing policy was read. Can
-     *        be null.
+     * @param subject Subject DN to be validated
+     * @return true if the DN is valid under this policy and false if it is not
      */
-    public String getFileName() {
-        return this.fileName;
+    public boolean isValidSubject(X500Principal subject) {
+
+        if (subject == null) {
+            throw new IllegalArgumentException();
+        }
+
+        String subjectDN = CertificateUtil.toGlobusID(subject);
+
+        // no policy
+        // FIXME: probably should be false?
+        if ((this.allowedDNs == null) || (this.allowedDNs.size() < 1)) {
+            return true;
+        }
+
+        int size = this.allowedDNs.size();
+        for (int i = 0; i < size; i++) {
+            Pattern pattern = allowedDNs.get(i);
+            Matcher matcher = pattern.matcher(subjectDN);
+            boolean valid = matcher.matches();
+            if (valid) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * Sets file name from which the signing policy was read.
+     * Return the patterns which identify the valid signing entities.  If this signing policy has been created with a
+     * set of DNs then the patterns will simply match the DNs.
      *
-     * @param fileName_
-     *        File name.
+     * @return The patterns matching allowed signing entities.
      */
-    public void setFileName(String fileName_) {
-        this.fileName = fileName_;
+    public List<Pattern> getAllowedDNs() {
+        return this.allowedDNs;
     }
-
+    
     /**
      * Method to determine if a signing policy is available for a
      * given DN. 
@@ -142,50 +136,11 @@ public class SigningPolicy {
      */
     public boolean isPolicyAvailable() {
         
-        if ((this.patterns == null) || 
-            (this.patterns.size() < 1)) {
+        if ((this.allowedDNs == null) || 
+            (this.allowedDNs.size() < 1)) {
             return false;
         }
-
         return true;
     }
 
-    /**
-     * Method to determine if the subject DN matches one of the
-     * patterns in the signing policy. Returns true if no policy is
-     * available, use isPolicyAvailable() to check presence of policy.
-     *
-     * @param subjectDN
-     *        Subject DN to match
-     * @return
-     *        Returns true of the subject DN matches one of the
-     *        patterns in the policy or if no policy is available. Returns
-     *        false otherwise.
-     */
-    public boolean isValidSubject(String subjectDN) {
-
-        if (subjectDN == null) {
-            throw new IllegalArgumentException();
-        }
-        
-        // no policy
-        if ((this.patterns == null) || 
-            (this.patterns.size() < 1)) {
-            return true;
-        }
-
-        subjectDN = SigningPolicyParser.normalizeDN(subjectDN);
-
-        int size = this.patterns.size();
-        for (int i=0; i<size; i++) {
-            Pattern pattern = (Pattern)patterns.get(i);
-            Matcher matcher = pattern.matcher(subjectDN);
-            boolean valid = matcher.matches();
-            if (valid) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
 }

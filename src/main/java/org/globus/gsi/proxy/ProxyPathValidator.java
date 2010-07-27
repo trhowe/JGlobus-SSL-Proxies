@@ -952,13 +952,13 @@ public class ProxyPathValidator {
          String certDN = certificate.getSubjectDN().toString();
          String certDNGlobus = CertificateUtil.toGlobusID(certDN, true);
          if (policy.isPolicyAvailable()) {
-             boolean isValidDN = policy.isValidSubject(certDNGlobus);
+             boolean isValidDN = policy.isValidSubject(CertificateUtil.toPrincipal(certDNGlobus));
              if (!isValidDN) {
                  String err = 
                      i18n.getMessage("proxyErr34", 
                                      new Object[] { certDNGlobus, 
                                                     issuerGlobusId,
-                                                    policy.getFileName() });
+                                                    policy.getCASubjectDN().getName() });
                  throw new 
                      ProxyPathValidatorException(ProxyPathValidatorException
                                                  .SIGNING_POLICY_VIOLATION, err,
@@ -968,7 +968,7 @@ public class ProxyPathValidator {
              String err = 
                  i18n.getMessage("proxyErr35", 
                                  new Object[] { issuerGlobusId,
-                                                policy.getFileName() });
+                     policy.getCASubjectDN().getName() });
              throw new 
                  ProxyPathValidatorException(ProxyPathValidatorException
                                              .NO_SIGNING_POLICY, err,
