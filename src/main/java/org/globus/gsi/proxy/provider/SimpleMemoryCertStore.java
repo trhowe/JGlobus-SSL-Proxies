@@ -16,6 +16,9 @@ import java.security.cert.CertStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertStoreSpi;
 
+/**
+ * @deprecated
+ */
 public class SimpleMemoryCertStore extends CertStoreSpi {
 
     private List<X509CRL> crlStore;

@@ -6,6 +6,9 @@ import java.security.AccessController;
 
 import java.security.Provider;
 
+/**
+ * @deprecated
+ */
 public final class SimpleMemoryProvider extends Provider {
 
     public static final String PROVIDER_NAME = "Simple";

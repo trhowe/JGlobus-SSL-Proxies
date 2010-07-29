@@ -6,6 +6,9 @@ import java.security.cert.X509Certificate;
 
 import java.security.cert.CertStoreParameters;
 
+/**
+ * @deprecated
+ */
 public class SimpleMemoryCertStoreParams implements CertStoreParameters {
 
     private X509Certificate[] certs;

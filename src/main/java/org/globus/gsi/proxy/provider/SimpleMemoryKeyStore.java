@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.security.KeyStoreSpi;
 
+/**
+ * @deprecated
+ */
 public class SimpleMemoryKeyStore extends KeyStoreSpi {
 
     private Log logger = LogFactory.getLog(SimpleMemoryKeyStore.class);

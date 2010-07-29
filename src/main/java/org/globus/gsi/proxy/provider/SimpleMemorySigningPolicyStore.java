@@ -9,6 +9,9 @@ import org.globus.security.provider.SigningPolicyStoreException;
 
 import org.globus.security.provider.SigningPolicyStore;
 
+/**
+ * @deprecated
+ */
 public class SimpleMemorySigningPolicyStore implements SigningPolicyStore {
 
     private Map<String, SigningPolicy> store;

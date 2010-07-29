@@ -6,6 +6,9 @@ import java.security.KeyStore.ProtectionParameter;
 
 import java.security.KeyStore.LoadStoreParameter;
 
+/**
+ * @deprecated
+ */
 public class SimpleMemoryKeyStoreLoadStoreParameter implements LoadStoreParameter {
 
     private X509Certificate[] certs;
