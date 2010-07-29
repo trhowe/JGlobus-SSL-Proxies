@@ -195,13 +195,20 @@ public class X509Credential {
             }
             CertificateIOUtil.writeCertificate(out, this.certChain[i]);
         }
-
         out.flush();
     }
 
     public void save(OutputStream out) throws IOException, CertificateEncodingException {
+        CertificateIOUtil.writeCertificate(out, this.certChain[0]);
         saveKey(out);
-        saveCertificateChain(out);
+        for (int i = 1; i < this.certChain.length; i++) {
+            // This will skip the self-signed certificates?
+            if (this.certChain[i].getSubjectDN().equals(certChain[i].getIssuerDN())) {
+                continue;
+            }
+            CertificateIOUtil.writeCertificate(out, this.certChain[i]);
+        }
+        out.flush();
     }
 
     public void writeToFile(File file) throws IOException, CertificateEncodingException {
