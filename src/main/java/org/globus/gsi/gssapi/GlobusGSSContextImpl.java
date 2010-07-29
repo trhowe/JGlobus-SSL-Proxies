@@ -729,6 +729,7 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
         try {
             validator.validate(peerChain, this.tc, certRevList);
         } catch (ProxyPathValidatorException e) {
+            // COMMENT FIXME we don't have an error code
             if (e.getErrorCode() == 
                 ProxyPathValidatorException.LIMITED_PROXY_ERROR) {
                 throw new GlobusGSSException(GSSException.UNAUTHORIZED, 
