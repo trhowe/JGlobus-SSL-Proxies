@@ -31,7 +31,7 @@ public class SimpleMemoryKeyStore extends KeyStoreSpi {
     @Override
     public void engineLoad(LoadStoreParameter params) throws IOException, NoSuchAlgorithmException,
         CertificateException {
-        logger.warn("----- creating cert store.");
+        logger.debug("creating cert store.");
         if (params == null) {
             throw new IllegalArgumentException("parameter null");
         } else if (!(params instanceof SimpleMemoryKeyStoreLoadStoreParameter)) {
@@ -42,13 +42,11 @@ public class SimpleMemoryKeyStore extends KeyStoreSpi {
         if (certs != null) {
             for (X509Certificate cert : certs) {
                 if (cert != null) {
-                    logger.warn("----- adding cert " + cert.getSubjectDN().getName());
+                    logger.debug("adding cert " + cert.getSubjectDN().getName());
                     certMap.put(cert.getSubjectDN().getName(), cert);
                 }
             }
         }
-        logger.warn("----- done creating cert store.");
-
     }
     
     @Override

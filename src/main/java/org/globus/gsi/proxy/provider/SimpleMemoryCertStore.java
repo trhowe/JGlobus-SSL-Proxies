@@ -38,8 +38,6 @@ public class SimpleMemoryCertStore extends CertStoreSpi {
         if (certs != null) {
             for (X509Certificate cert : certs) {
                 if(cert != null) {
-                    System.err.println("------------ adding cert with subject dn " + cert.getSubjectDN());
-                    System.err.println("------------ cert class: " + cert.getClass().getCanonicalName());
                     certStore.add(cert);
                 }
             }
@@ -70,10 +68,8 @@ public class SimpleMemoryCertStore extends CertStoreSpi {
         List<X509Certificate> l = new LinkedList<X509Certificate>();
         X509CertSelector select = (X509CertSelector) selector;
         for (X509Certificate cert : certStore) {
-            System.err.println("---------- store: try to match " + cert.getSubjectDN() + " with " + select.getSubject());
             if (selector.match(cert)) {
                 l.add(cert);
-                System.err.println("----------- MATCH");
             }
         }
         return l;

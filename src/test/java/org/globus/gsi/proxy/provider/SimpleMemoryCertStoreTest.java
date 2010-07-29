@@ -24,9 +24,9 @@ public class SimpleMemoryCertStoreTest {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory factory = CertificateFactory.getInstance("X.509", "BC");
         cert = (X509Certificate) factory.generateCertificate(
-            new ClassPathResource("org/globus/gsi/proxy/test/usercert.pem").getInputStream());
+            new ClassPathResource("validatorTest/usercert.pem").getInputStream());
         crl = (X509CRL) factory.generateCRL(
-            new ClassPathResource("org/globus/gsi/proxy/test/ca2crl.r0").getInputStream());
+            new ClassPathResource("validatorTest/ca2crl.r0").getInputStream());
     }
 
     @Test
