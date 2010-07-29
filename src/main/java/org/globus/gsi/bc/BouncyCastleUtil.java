@@ -14,6 +14,14 @@
  */
 package org.globus.gsi.bc;
 
+import org.globus.gsi.TrustedCertificatesUtil;
+
+import java.util.Collection;
+
+import java.security.cert.X509CertSelector;
+
+import java.security.cert.CertStore;
+
 import org.bouncycastle.asn1.ASN1InputStream;
 
 import org.globus.security.util.ProxyCertificateUtil;
@@ -52,6 +60,7 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
+// COMMENT: removed methods createCertificateType(...) that took a TBSCertificateStructure as parameter
 /**
  * A collection of various utility functions.
  */
@@ -149,18 +158,41 @@ public class BouncyCastleUtil {
      *             {@link #getCertificateType(TBSCertificateStructure, 
      *              TrustedCertificates) getCertificateType}.
      * @exception CertificateException if something goes wrong.
+     * @deprecated
      */
     public static int getCertificateType(X509Certificate cert,
 					 TrustedCertificates trustedCerts)
 	throws CertificateException {
-	try {
-	    return getCertificateType(getTBSCertificateStructure(cert), 
-				      trustedCerts);
-	} catch (IOException e) {
-	    // but this should not happen
+        try {
+            return getCertType(cert, TrustedCertificatesUtil.createCertStore(trustedCerts));
+	} catch (Exception e) {
 	    throw new CertificateException("", e);
 	}
     }
+
+    public static int getCertType(X509Certificate cert, CertStore trustedCerts)
+    throws CertificateException {
+        try {
+            TBSCertificateStructure crt = getTBSCertificateStructure(cert);
+            int type = getCertificateType(crt);
+
+            // check subject of the cert in trusted cert list
+            // to make sure the cert is not a ca cert
+            if (type == GSIConstants.EEC) {
+                X509CertSelector selector = new X509CertSelector();
+                selector.setSubject(cert.getSubjectX500Principal());
+                Collection c = trustedCerts.getCertificates(selector);
+                if (c != null && c.size() > 0) {
+                    type = GSIConstants.CA;
+                }
+            }
+            return type;
+        } catch (Exception e) {
+            // but this should not happen
+            throw new CertificateException("", e);
+        }
+    }
+    
     
     /**
      * Returns certificate type of the given certificate. 
@@ -176,61 +208,12 @@ public class BouncyCastleUtil {
     public static int getCertificateType(X509Certificate cert) 
 	throws CertificateException {
 	try {
-	    return getCertificateType(getTBSCertificateStructure(cert));
+	    TBSCertificateStructure crt = getTBSCertificateStructure(cert);
+	    return getCertificateType(crt);
 	} catch (IOException e) {
 	    // but this should not happen
 	    throw new CertificateException("", e);
 	}
-    }
-
-    /**
-     * Returns certificate type of the given certificate. 
-     * This function calls {@link #getCertificateType(TBSCertificateStructure) 
-     * getCertificateType} to get the certificate type. In case
-     * the certificate type was initially determined as 
-     * {@link GSIConstants#EEC GSIConstants.EEC} it is checked
-     * against the trusted certificate list to see if it really
-     * is a CA certificate. If the certificate is present in the
-     * trusted certificate list the certificate type is changed
-     * to {@link GSIConstants#CA GSIConstants.CA}. Otherwise, it is
-     * left as it is (This is useful in cases where a valid CA
-     * certificate does not have a BasicConstraints extension)
-     *
-     * @param crt the certificate to get the type of.
-     * @param trustedCerts the trusted certificates to double check the 
-     *                     {@link GSIConstants#EEC GSIConstants.EEC} 
-     *                     certificate against. If null, a default
-     *                     set of trusted certificate will be loaded
-     *                     from a standard location.
-     * @return the certificate type. The certificate type is determined
-     *         by rules described above.
-     * @exception IOException if something goes wrong.
-     * @exception CertificateException for proxy certificates, if 
-     *            the issuer DN of the certificate does not match
-     *            the subject DN of the certificate without the
-     *            last <I>CN</I> component. Also, for GSI-3 proxies
-     *            when the <code>ProxyCertInfo</code> extension is 
-     *            not marked as critical.
-     */
-    public static int getCertificateType(TBSCertificateStructure crt,
-					 TrustedCertificates trustedCerts) 
-	throws CertificateException, IOException {
-	int type = getCertificateType(crt);
-
-	// check subject of the cert in trusted cert list
-	// to make sure the cert is not a ca cert
-	if (type == GSIConstants.EEC) {
-	    if (trustedCerts == null) {
-		trustedCerts = 
-		    TrustedCertificates.getDefaultTrustedCertificates();
-	    } 
-	    if (trustedCerts != null && 
-		trustedCerts.getCertificate(crt.getSubject().toString()) != null) {
-		type = GSIConstants.CA;
-	    }
-	}
-
-	return type;
     }
 
     /**
@@ -280,7 +263,7 @@ public class BouncyCastleUtil {
      *            when the <code>ProxyCertInfo</code> extension is 
      *            not marked as critical.
      */
-    public static int getCertificateType(TBSCertificateStructure crt)
+    private static int getCertificateType(TBSCertificateStructure crt)
 	throws CertificateException, IOException {
 	X509Extensions extensions = crt.getExtensions();
 	X509Extension ext = null;

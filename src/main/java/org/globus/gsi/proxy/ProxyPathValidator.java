@@ -409,8 +409,7 @@ public class ProxyPathValidator {
 
 	    cert = certPath[0];
 	    tbsCert  = BouncyCastleUtil.getTBSCertificateStructure(cert);
-	    certType = BouncyCastleUtil.getCertificateType(tbsCert, 
-                                                           trustedCerts);
+	    certType = BouncyCastleUtil.getCertificateType(cert, trustedCerts);
 
 	    if (logger.isDebugEnabled()) {
 		logger.debug("Found cert: " + certType);
@@ -436,8 +435,7 @@ public class ProxyPathValidator {
 		issuerCert = certPath[i];
 		issuerTbsCert = BouncyCastleUtil
                     .getTBSCertificateStructure(issuerCert);
-		issuerCertType = BouncyCastleUtil
-                    .getCertificateType(issuerTbsCert, trustedCerts);
+		issuerCertType = BouncyCastleUtil.getCertificateType(issuerCert, trustedCerts);
 		
 		if (logger.isDebugEnabled()) {
 		    logger.debug("Found cert: " + issuerCertType);

@@ -1,0 +1,82 @@
+package org.globus.gsi.proxy.provider;
+
+import java.security.cert.X509CertSelector;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.security.cert.X509CRL;
+import java.security.cert.X509Certificate;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.cert.CertStoreParameters;
+import java.security.cert.CRL;
+import java.security.cert.CRLSelector;
+import java.security.cert.CertSelector;
+import java.security.cert.CertStoreException;
+import java.security.cert.Certificate;
+import java.security.cert.CertStoreSpi;
+
+public class SimpleMemoryCertStore extends CertStoreSpi {
+
+    private List<X509CRL> crlStore;
+    private List<X509Certificate> certStore;
+    
+    public SimpleMemoryCertStore(CertStoreParameters params) throws InvalidAlgorithmParameterException {
+        
+        super(params);
+        if (params == null) {
+            throw new InvalidAlgorithmParameterException();
+        }
+        crlStore = new LinkedList<X509CRL>();
+        certStore = new LinkedList<X509Certificate>();
+        if (! (params instanceof SimpleMemoryCertStoreParams)) {
+            throw new IllegalArgumentException("wrong parameter type");
+        }
+        SimpleMemoryCertStoreParams pms = (SimpleMemoryCertStoreParams) params;
+        X509Certificate[] certs = pms.getCerts();
+        X509CRL[] crls = pms.getCrls();
+        if (certs != null) {
+            for (X509Certificate cert : certs) {
+                if(cert != null) {
+                    System.err.println("------------ adding cert with subject dn " + cert.getSubjectDN());
+                    System.err.println("------------ cert class: " + cert.getClass().getCanonicalName());
+                    certStore.add(cert);
+                }
+            }
+        }
+        if (crls != null) {
+            for (X509CRL crl : crls) {
+                if(crl != null) {
+                    crlStore.add(crl);
+                }
+            }
+        }
+    }
+    
+
+    @Override
+    public Collection<? extends CRL> engineGetCRLs(CRLSelector selector) throws CertStoreException {
+       List<X509CRL> l = new LinkedList<X509CRL>();
+       for (X509CRL crl : crlStore) {
+           if (selector.match(crl)) {
+               l.add(crl);
+           }
+       }
+       return l;
+    }
+
+    @Override
+    public Collection<? extends Certificate> engineGetCertificates(CertSelector selector) throws CertStoreException {
+        List<X509Certificate> l = new LinkedList<X509Certificate>();
+        X509CertSelector select = (X509CertSelector) selector;
+        for (X509Certificate cert : certStore) {
+            System.err.println("---------- store: try to match " + cert.getSubjectDN() + " with " + select.getSubject());
+            if (selector.match(cert)) {
+                l.add(cert);
+                System.err.println("----------- MATCH");
+            }
+        }
+        return l;
+    }
+
+}
