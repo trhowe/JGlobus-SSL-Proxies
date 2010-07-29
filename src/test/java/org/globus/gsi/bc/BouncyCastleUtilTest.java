@@ -15,21 +15,13 @@
 package org.globus.gsi.bc;
 
 import org.globus.gsi.Certificates;
-
 import org.globus.security.util.CertificateLoadUtil;
-
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
-
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.bc.BouncyCastleUtil;
-
-// to load the certs from
-import org.globus.gsi.proxy.ProxyPathValidatorTest;
-
 import junit.framework.TestCase;
 
 public class BouncyCastleUtilTest extends TestCase {
