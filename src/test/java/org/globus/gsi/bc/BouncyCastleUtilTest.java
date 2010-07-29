@@ -14,6 +14,8 @@
  */
 package org.globus.gsi.bc;
 
+import org.globus.gsi.Certificates;
+
 import org.globus.security.util.CertificateLoadUtil;
 
 import java.io.ByteArrayInputStream;
@@ -32,22 +34,12 @@ import junit.framework.TestCase;
 
 public class BouncyCastleUtilTest extends TestCase {
 
-    static String [] badCerts = ProxyPathValidatorTest.badCerts;
-
-    private X509Certificate getCertificate(int i) throws Exception {
-	ClassLoader loader = ProxyPathValidatorTest.class.getClassLoader();
-	String name = ProxyPathValidatorTest.BASE + ProxyPathValidatorTest.certs[i][1];
-	InputStream in = loader.getResourceAsStream(name);
-	if (in == null) {
-	    throw new Exception("Unable to load: " + name);
-	}
-	return CertificateLoadUtil.loadCertificate(in);
-    }
+    static String [] badCerts = Certificates.badCerts;
 
     public void testGetCertificateType() throws Exception {
-	for (int i=0;i<ProxyPathValidatorTest.certs.length;i++) {
-	    X509Certificate cert = getCertificate(i);
-	    int type = Integer.parseInt(ProxyPathValidatorTest.certs[i][0]);
+	for (int i=0;i<Certificates.certs.length;i++) {
+	    X509Certificate cert = Certificates.getCertificate(i);
+	    int type = Integer.parseInt(Certificates.certs[i][0]);
 	    assertEquals(type, BouncyCastleUtil.getCertificateType(cert));
 	}
     }
@@ -65,8 +57,8 @@ public class BouncyCastleUtilTest extends TestCase {
      }
 
     public void testGetCertificateType3() throws Exception {
-	X509Certificate cert = getCertificate(1);
-	Integer.parseInt(ProxyPathValidatorTest.certs[1][0]);
+	X509Certificate cert = Certificates.getCertificate(1);
+	Integer.parseInt(Certificates.certs[1][0]);
 	assertEquals(GSIConstants.EEC, BouncyCastleUtil.getCertificateType(cert));
 
 	TrustedCertificates trustedCerts =
@@ -75,7 +67,7 @@ public class BouncyCastleUtilTest extends TestCase {
     }
 
     public void testGetGsi2IdentityCertificate() throws Exception {
-	X509Certificate [] goodCertsArr = ProxyPathValidatorTest.initCerts();
+	X509Certificate [] goodCertsArr = Certificates.initCerts();
 
 	X509Certificate [] chain = null;
 
@@ -98,7 +90,7 @@ public class BouncyCastleUtilTest extends TestCase {
     }
 
     public void testValidateGsi3PathGood() throws Exception {
-	X509Certificate [] goodCertsArr = ProxyPathValidatorTest.initCerts();
+	X509Certificate [] goodCertsArr = Certificates.initCerts();
 
 	X509Certificate [] chain = null;
 
