@@ -204,7 +204,7 @@ public class CertUtil {
      *         otherwise.
      */
     public static boolean isProxy(int certType) {
-        return ProxyCertificateUtil.isProxy(certType);
+        return ProxyCertificateUtil.isProxy(GSIConstants.CertificateType.get(certType));
     }
     
     /**
@@ -216,7 +216,7 @@ public class CertUtil {
      *         otherwise.
      */
     public static boolean isGsi4Proxy(int certType) {
-        return ProxyCertificateUtil.isGsi4Proxy(certType);
+        return ProxyCertificateUtil.isGsi4Proxy(GSIConstants.CertificateType.get(certType));
     }
 
     /**
@@ -228,7 +228,7 @@ public class CertUtil {
      *         otherwise.
      */
     public static boolean isGsi3Proxy(int certType) {
-        return ProxyCertificateUtil.isGsi3Proxy(certType);
+        return ProxyCertificateUtil.isGsi3Proxy(GSIConstants.CertificateType.get(certType));
     }
 
     /**
@@ -240,7 +240,7 @@ public class CertUtil {
      *         otherwise.
      */
     public static boolean isGsi2Proxy(int certType) {
-        return ProxyCertificateUtil.isGsi2Proxy(certType);
+        return ProxyCertificateUtil.isGsi2Proxy(GSIConstants.CertificateType.get(certType));
     }
 
     /**
@@ -252,7 +252,7 @@ public class CertUtil {
      *         false otherwise.
      */
     public static boolean isLimitedProxy(int certType) {
-        return ProxyCertificateUtil.isLimitedProxy(certType);
+        return ProxyCertificateUtil.isLimitedProxy(GSIConstants.CertificateType.get(certType));
     }
 
     /**
@@ -264,7 +264,7 @@ public class CertUtil {
      *         false otherwise.
      */
     public static boolean isIndependentProxy(int certType) {
-        return ProxyCertificateUtil.isIndependentProxy(certType);
+        return ProxyCertificateUtil.isIndependentProxy(GSIConstants.CertificateType.get(certType));
     }
 
     /**
@@ -276,7 +276,7 @@ public class CertUtil {
      *         impersonation proxy, false otherwise.
      */
     public static boolean isImpersonationProxy(int certType) {
-        return ProxyCertificateUtil.isImpersonationProxy(certType);
+        return ProxyCertificateUtil.isImpersonationProxy(GSIConstants.CertificateType.get(certType));
     }
     
     /**
@@ -288,7 +288,7 @@ public class CertUtil {
      * @return the string description of the proxy type.
      */
     public static String getProxyTypeAsString(int proxyType) {
-        return ProxyCertificateUtil.getProxyTypeAsString(proxyType);
+        return ProxyCertificateUtil.getProxyTypeAsString(GSIConstants.CertificateType.get(proxyType));
     }
 
     /**

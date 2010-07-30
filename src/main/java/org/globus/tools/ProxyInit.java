@@ -183,8 +183,8 @@ public abstract class ProxyInit {
     }
 
     /**
-     * @deprecated
      * @param proxyType
+     * @deprecated
      */
     public void setProxyType(int proxyType) {
     this.proxyType = GSIConstants.CertificateType.get(proxyType);
@@ -411,7 +411,6 @@ public abstract class ProxyInit {
     
     boolean restricted = (policyFile != null || policyLanguage != null);
 
-    //  if (proxyType == GSIConstants.GSI_3_INDEPENDENT_PROXY) {
     if (independent) {
         if (oid == 0) {
         error("-old and -independent are exclusive");

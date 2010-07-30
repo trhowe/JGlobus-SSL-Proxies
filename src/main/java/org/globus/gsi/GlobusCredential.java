@@ -272,7 +272,7 @@ public class GlobusCredential implements Serializable {
      * @return the type of first certificate in the chain. -1 if unable to determine the certificate type.
      */
     public int getProxyType() {
-        return cred.getProxyType();
+        return cred.getProxyType().getCode();
     }
 
     /**

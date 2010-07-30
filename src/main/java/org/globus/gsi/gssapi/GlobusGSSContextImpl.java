@@ -14,6 +14,10 @@
  */
 package org.globus.gsi.gssapi;
 
+import org.globus.security.util.ProxyCertificateUtil;
+
+import org.globus.security.util.CertificateUtil;
+
 import org.ietf.jgss.GSSCredential;
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.GSSContext;
@@ -1300,14 +1304,14 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
     protected int getDelegationType(X509Certificate issuer) 
         throws GeneralSecurityException, GSSException {
 
-        int certType = BouncyCastleUtil.getCertificateType(issuer, this.tc);
+        GSIConstants.CertificateType certType = BouncyCastleUtil.getCertificateType(issuer, this.tc);
         int dType = this.delegationType.intValue();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Issuer type: " + certType + " delg. type requested: " + dType);
         }
 
-        if (certType == GSIConstants.EEC) {
+        if (certType == GSIConstants.CertificateType.EEC) {
             if (dType == GSIConstants.DELEGATION_LIMITED) {
                 if (CertUtil.isGsi2Enabled()) {
                     return GSIConstants.GSI_2_LIMITED_PROXY;
@@ -1327,7 +1331,7 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
             } else if (CertUtil.isProxy(dType)) {
                 return dType;
             }
-        } else if (CertUtil.isGsi2Proxy(certType)) {
+        } else if (ProxyCertificateUtil.isGsi2Proxy(certType)) {
             if (dType == GSIConstants.DELEGATION_LIMITED) {
                 return GSIConstants.GSI_2_LIMITED_PROXY;
             } else if (dType == GSIConstants.DELEGATION_FULL) {
@@ -1335,7 +1339,7 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
             } else if (CertUtil.isGsi2Proxy(dType)) {
                 return dType;
             }
-        } else if (CertUtil.isGsi3Proxy(certType)) {
+        } else if (ProxyCertificateUtil.isGsi3Proxy(certType)) {
             if (dType == GSIConstants.DELEGATION_LIMITED) {
                 return GSIConstants.GSI_3_LIMITED_PROXY;
             } else if (dType == GSIConstants.DELEGATION_FULL) {
@@ -1343,7 +1347,7 @@ public class GlobusGSSContextImpl implements ExtendedGSSContext {
             } else if (CertUtil.isGsi3Proxy(dType)) {
                 return dType;
             }
-        } else if (CertUtil.isGsi4Proxy(certType)) {
+        } else if (ProxyCertificateUtil.isGsi4Proxy(certType)) {
             if (dType == GSIConstants.DELEGATION_LIMITED) {
                 return GSIConstants.GSI_4_LIMITED_PROXY;
             } else if (dType == GSIConstants.DELEGATION_FULL) {

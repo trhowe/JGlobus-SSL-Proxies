@@ -42,8 +42,8 @@ public class BouncyCastleUtilTest extends TestCase {
     public void testGetCertificateType() throws Exception {
 	for (int i=0;i<ProxyPathValidatorTest.certs.length;i++) {
 	    X509Certificate cert = getCertificate(i);
-	    int type = Integer.parseInt(ProxyPathValidatorTest.certs[i][0]);
-	    assertEquals(type, BouncyCastleUtil.getCertificateType(cert));
+	    String type = ProxyPathValidatorTest.certs[i][0];
+	    assertEquals(type, BouncyCastleUtil.getCertificateType(cert).name());
 	}
     }
 
@@ -61,12 +61,11 @@ public class BouncyCastleUtilTest extends TestCase {
 
     public void testGetCertificateType3() throws Exception {
 	X509Certificate cert = getCertificate(1);
-	Integer.parseInt(ProxyPathValidatorTest.certs[1][0]);
-	assertEquals(GSIConstants.EEC, BouncyCastleUtil.getCertificateType(cert));
+	assertEquals(GSIConstants.CertificateType.EEC, BouncyCastleUtil.getCertificateType(cert));
 
 	TrustedCertificates trustedCerts =
 	    new TrustedCertificates(new X509Certificate[] {cert});
-	assertEquals(GSIConstants.CA, BouncyCastleUtil.getCertificateType(cert, trustedCerts));
+	assertEquals(GSIConstants.CertificateType.CA, BouncyCastleUtil.getCertificateType(cert, trustedCerts));
     }
 
     public void testGetGsi2IdentityCertificate() throws Exception {

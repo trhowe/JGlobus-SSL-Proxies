@@ -57,95 +57,95 @@ public class ProxyPathValidatorTest extends TestCase {
     public static String[] crlNames = { "ca2crl.r0", "testca3.r0" };
 
     public static String[][] certs = {
-        {String.valueOf(GSIConstants.CA), "TestCA1.pem"},
-        {String.valueOf(GSIConstants.EEC), "eecFromTestCA1.pem"},
-        {String.valueOf(GSIConstants.GSI_2_PROXY), "gsi2fullproxy.pem"},
-        {String.valueOf(GSIConstants.GSI_2_LIMITED_PROXY), "gsi2limitedproxy.pem"},
+        {GSIConstants.CertificateType.CA.name(), "TestCA1.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "eecFromTestCA1.pem"},
+        {GSIConstants.CertificateType.GSI_2_PROXY.name(), "gsi2fullproxy.pem"},
+        {GSIConstants.CertificateType.GSI_2_LIMITED_PROXY.name(), "gsi2limitedproxy.pem"},
             // 4, double GSIConstants.CertificateType.GSI_2_LIMITED_PROXY), gsi2limited2xproxy.pem (issued by
             // 3)
-        {String.valueOf(GSIConstants.GSI_2_LIMITED_PROXY), "gsi2limited2xproxy.pem"},
+        {GSIConstants.CertificateType.GSI_2_LIMITED_PROXY.name(), "gsi2limited2xproxy.pem"},
             // 5, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonationproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3impersonationproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3impersonationproxy.pem"},
             // 6, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi3independentproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_INDEPENDENT_PROXY), "gsi3independentproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY.name(), "gsi3independentproxy.pem"},
             // 7, GSIConstants.CertificateType.GSI_3_LIMITED_PROXY), gsi3limitedproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_LIMITED_PROXY), "gsi3limitedproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_LIMITED_PROXY.name(), "gsi3limitedproxy.pem"},
             // 8, GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY), gsi3restrictedproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_RESTRICTED_PROXY), "gsi3restrictedproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY.name(), "gsi3restrictedproxy.pem"},
             // double
             // 9, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonation2xproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3impersonation2xproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3impersonation2xproxy.pem"},
             // 10, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi3independent2xproxy.pem
-        {String.valueOf(GSIConstants.GSI_3_INDEPENDENT_PROXY), "gsi3independent2xproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY.name(), "gsi3independent2xproxy.pem"},
             // pathLen = 0
             // 11, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY), gsi3impersonationp0proxy.pem
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3impersonationp0proxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3impersonationp0proxy.pem"},
             // pathLen = 1
             // 12, GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY), gsi2independentp1proxy.pem
-        {String.valueOf(GSIConstants.GSI_3_INDEPENDENT_PROXY), "gsi3independentp1proxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY.name(), "gsi3independentp1proxy.pem"},
             // pathLen = 2
             // 13, GSIConstants.CertificateType.CA),
-        {String.valueOf(GSIConstants.CA), "testca.pem"},
+        {GSIConstants.CertificateType.CA.name(), "testca.pem"},
             // 14, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "testeec1.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "testeec1.pem"},
             // 15, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "testeec2.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "testeec2.pem"},
             // pathLen = 1
             // 16, GSIConstants.CertificateType.CA)
-        {String.valueOf(GSIConstants.CA), "testca2.pem"}, // crl for this, 16
+        {GSIConstants.CertificateType.CA.name(), "testca2.pem"}, // crl for this, 16
             // 17, GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY),
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "testgsi3proxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "testgsi3proxy.pem"},
             // for CRL test
             // 18, GSIConstants.CertificateType.CA),
-        {String.valueOf(GSIConstants.CA), "testca3.pem"},
+        {GSIConstants.CertificateType.CA.name(), "testca3.pem"},
             // 19, GSIConstants.CertificateType.EEC),
-        {String.valueOf(GSIConstants.EEC), "crl_usercert.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "crl_usercert.pem"},
             // 20, GSIConstants.CertificateType.GSI_2_PROXY),
-        {String.valueOf(GSIConstants.GSI_2_PROXY), "crl_proxy.pem"},
+        {GSIConstants.CertificateType.GSI_2_PROXY.name(), "crl_proxy.pem"},
             // 21 (all good)
             // GSIConstants.CertificateType.CA)
-        {String.valueOf(GSIConstants.CA), "ca1cert.pem"},
+        {GSIConstants.CertificateType.CA.name(), "ca1cert.pem"},
             // 22, GSIConstants.CertificateType.EEC
-        {String.valueOf(GSIConstants.EEC), "user1ca1.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user1ca1.pem"},
             // 23, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "user2ca1.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user2ca1.pem"},
             // 24, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "user3ca1.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user3ca1.pem"},
             // 25
             // GSIConstants.CertificateType.CA)
-        {String.valueOf(GSIConstants.CA), "ca2cert.pem"}, // crl 25
+        {GSIConstants.CertificateType.CA.name(), "ca2cert.pem"}, // crl 25
             // must be revoked (in ca2crl.r0)
             // 26, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "user1ca2.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user1ca2.pem"},
             // must be revoked (in ca2crl.r0)
             // 27, GSIConstants.CertificateType.EEC),
-        {String.valueOf(GSIConstants.EEC), "user2ca2.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user2ca2.pem"},
             // 28, GSIConstants.CertificateType.EEC)
-        {String.valueOf(GSIConstants.EEC), "user3ca2.pem"},
+        {GSIConstants.CertificateType.EEC.name(), "user3ca2.pem"},
             // 29
             // gsi3 limited impersonation signs a gsi3 independent
-        {String.valueOf(GSIConstants.GSI_3_INDEPENDENT_PROXY), "gsi3independentFromLimitedProxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY.name(), "gsi3independentFromLimitedProxy.pem"},
             // 30
             // gsi3 limited impersonation signs a gsi3 impersonation
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3limitedimpersonation2xproxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3limitedimpersonation2xproxy.pem"},
             // 31
             // gsi3 independent signs a gsi3 impersonation
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3impersonationFromIndependentProxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3impersonationFromIndependentProxy.pem"},
             // 32
             // gsi3 pathlength 0 impersonatipon proxy signs proxy
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3FromPathZeroProxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3FromPathZeroProxy.pem"},
             // 33
             // gsi3 path length 1 independent proxy signs proxy
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3FromPathOneProxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3FromPathOneProxy.pem"},
             // 34
             // gsi3FrompathOneProxy signs proxy
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3FromPathOneIssuedProxy.pem"},
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3FromPathOneIssuedProxy.pem"},
             // 35
             // gsi2 proxy generated from gsi3impersonationProxy
-        {String.valueOf(GSIConstants.GSI_2_PROXY), "gsi2proxyFromgsi3.pem"},
+        {GSIConstants.CertificateType.GSI_2_PROXY.name(), "gsi2proxyFromgsi3.pem"},
             // 36
             // gsi3 proxy generated from gsi2fullproxy
-        {String.valueOf(GSIConstants.GSI_3_IMPERSONATION_PROXY), "gsi3proxyFromgsi2.pem" }};
+        {GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY.name(), "gsi3proxyFromgsi2.pem" }};
 
     public static String[] badCerts = {
             "-----BEGIN CERTIFICATE-----\n" + "MIICFTCCAX6gAwIBAgIDClb3MA0GCSqGSIb3DQEBBAUAMGIxCzAJBgNVBAYTAlVT\n"

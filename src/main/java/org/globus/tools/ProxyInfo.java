@@ -14,6 +14,8 @@
  */
 package org.globus.tools;
 
+import org.globus.gsi.GSIConstants;
+
 import org.globus.security.util.ProxyCertificateUtil;
 
 import org.globus.security.util.CertificateUtil;
@@ -226,8 +228,8 @@ public class ProxyInfo {
 	}
     
 	if ((options & TYPE) != 0) {
-	    int type = proxy.getProxyType();
-            String typeStr = (type == -1) ?
+	    GSIConstants.CertificateType type = GSIConstants.CertificateType.get(proxy.getProxyType());
+            String typeStr = (type == GSIConstants.CertificateType.UNDEFINED) ?
                 "failed to determine certificate type" :
                 ProxyCertificateUtil.getProxyTypeAsString(type);
             System.out.println("type       : " + typeStr);

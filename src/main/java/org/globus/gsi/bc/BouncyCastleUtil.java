@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 package org.globus.gsi.bc;
-
 import org.globus.gsi.TrustedCertificatesUtil;
-
 import java.util.Collection;
-
 import java.security.cert.X509CertSelector;
-
 import java.security.cert.CertStore;
-
 import org.bouncycastle.asn1.ASN1InputStream;
-
 import org.globus.security.util.ProxyCertificateUtil;
-
 import org.globus.util.I18n;
-
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,12 +27,10 @@ import java.security.cert.X509Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.Security;
-
 import org.globus.gsi.GSIConstants;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 import org.globus.gsi.proxy.ext.ProxyCertInfo;
-
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Set;
@@ -160,30 +150,45 @@ public class BouncyCastleUtil {
      * @exception CertificateException if something goes wrong.
      * @deprecated
      */
-    public static int getCertificateType(X509Certificate cert,
+    public static GSIConstants.CertificateType getCertificateType(X509Certificate cert,
 					 TrustedCertificates trustedCerts)
 	throws CertificateException {
         try {
-            return getCertType(cert, TrustedCertificatesUtil.createCertStore(trustedCerts));
+            return getCertificateType(cert, TrustedCertificatesUtil.createCertStore(trustedCerts));
 	} catch (Exception e) {
 	    throw new CertificateException("", e);
 	}
     }
 
-    public static int getCertType(X509Certificate cert, CertStore trustedCerts)
+    /**
+     * Returns the certificate type of the given certificate. 
+     * Please see {@link #getCertificateType(TBSCertificateStructure,
+     * TrustedCertificates) getCertificateType} for details for 
+     * determining the certificate type.
+     *
+     * @param cert the certificate to get the type of.
+     * @param trustedCerts the trusted certificates to double check the 
+     *                     {@link GSIConstants#EEC GSIConstants.EEC} 
+     *                     certificate against.
+     * @return the certificate type as determined by 
+     *             {@link #getCertificateType(TBSCertificateStructure, 
+     *              TrustedCertificates) getCertificateType}.
+     * @exception CertificateException if something goes wrong.
+     */
+    public static GSIConstants.CertificateType getCertificateType(X509Certificate cert, CertStore trustedCerts)
     throws CertificateException {
         try {
             TBSCertificateStructure crt = getTBSCertificateStructure(cert);
-            int type = getCertificateType(crt);
+            GSIConstants.CertificateType type = getCertificateType(crt);
 
             // check subject of the cert in trusted cert list
             // to make sure the cert is not a ca cert
-            if (type == GSIConstants.EEC) {
+            if (type == GSIConstants.CertificateType.EEC) {
                 X509CertSelector selector = new X509CertSelector();
                 selector.setSubject(cert.getSubjectX500Principal());
                 Collection c = trustedCerts.getCertificates(selector);
                 if (c != null && c.size() > 0) {
-                    type = GSIConstants.CA;
+                    type = GSIConstants.CertificateType.CA;
                 }
             }
             return type;
@@ -192,7 +197,6 @@ public class BouncyCastleUtil {
             throw new CertificateException("", e);
         }
     }
-    
     
     /**
      * Returns certificate type of the given certificate. 
@@ -205,17 +209,18 @@ public class BouncyCastleUtil {
      *              getCertificateType}.
      * @exception CertificateException if something goes wrong.
      */
-    public static int getCertificateType(X509Certificate cert) 
-	throws CertificateException {
-	try {
-	    TBSCertificateStructure crt = getTBSCertificateStructure(cert);
-	    return getCertificateType(crt);
-	} catch (IOException e) {
-	    // but this should not happen
-	    throw new CertificateException("", e);
-	}
+    public static GSIConstants.CertificateType getCertificateType(X509Certificate cert) 
+    throws CertificateException {
+    try {
+        TBSCertificateStructure crt = getTBSCertificateStructure(cert);
+        return getCertificateType(crt);
+    } catch (IOException e) {
+        // but this should not happen
+        throw new CertificateException("", e);
+    }
     }
 
+    
     /**
      * Returns certificate type of the given TBS certificate. <BR>
      * The certificate type is {@link GSIConstants#CA GSIConstants.CA}
@@ -263,7 +268,7 @@ public class BouncyCastleUtil {
      *            when the <code>ProxyCertInfo</code> extension is 
      *            not marked as critical.
      */
-    private static int getCertificateType(TBSCertificateStructure crt)
+    private static GSIConstants.CertificateType getCertificateType(TBSCertificateStructure crt)
 	throws CertificateException, IOException {
 	X509Extensions extensions = crt.getExtensions();
 	X509Extension ext = null;
@@ -273,12 +278,12 @@ public class BouncyCastleUtil {
 	    if (ext != null) {
 		BasicConstraints basicExt = getBasicConstraints(ext);
 		if (basicExt.isCA()) {
-		    return GSIConstants.CA;
+		    return GSIConstants.CertificateType.CA;
 		}
 	    }
 	}
 	
-	int type = GSIConstants.EEC;
+	GSIConstants.CertificateType type = GSIConstants.CertificateType.EEC;
 	
 	// does not handle multiple AVAs
 	X509Name subject = crt.getSubject();
@@ -288,9 +293,9 @@ public class BouncyCastleUtil {
 	if (X509Name.CN.equals(ava.getObjectAt(0))) {
 	    String value = ((DERString)ava.getObjectAt(1)).getString();
 	    if (value.equalsIgnoreCase("proxy")) {
-		type = GSIConstants.GSI_2_PROXY;
+		type = GSIConstants.CertificateType.GSI_2_PROXY;
 	    } else if (value.equalsIgnoreCase("limited proxy")) {
-		type = GSIConstants.GSI_2_LIMITED_PROXY;
+		type = GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
 	    } else if (extensions != null) {
                 boolean gsi4 = true;
                 // GSI_4
@@ -309,27 +314,27 @@ public class BouncyCastleUtil {
                             proxyPolicy.getPolicyLanguage();
 			if (ProxyPolicy.IMPERSONATION.equals(oid)) {
                             if (gsi4) {
-                                type = GSIConstants.GSI_4_IMPERSONATION_PROXY;
+                                type = GSIConstants.CertificateType.GSI_4_IMPERSONATION_PROXY;
                             } else {
-                                type = GSIConstants.GSI_3_IMPERSONATION_PROXY;
+                                type = GSIConstants.CertificateType.GSI_3_IMPERSONATION_PROXY;
                             }
 			} else if (ProxyPolicy.INDEPENDENT.equals(oid)) {
                             if (gsi4) {
-                                type = GSIConstants.GSI_4_INDEPENDENT_PROXY;
+                                type = GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY;
                             } else {
-                                type = GSIConstants.GSI_3_INDEPENDENT_PROXY;
+                                type = GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY;
                             }
 			} else if (ProxyPolicy.LIMITED.equals(oid)) {
                             if (gsi4) {
-                                type = GSIConstants.GSI_4_LIMITED_PROXY;
+                                type = GSIConstants.CertificateType.GSI_4_LIMITED_PROXY;
                             } else {
-                                type = GSIConstants.GSI_3_LIMITED_PROXY;
+                                type = GSIConstants.CertificateType.GSI_3_LIMITED_PROXY;
                             }
 			} else {
                             if (gsi4) {
-                                type = GSIConstants.GSI_4_RESTRICTED_PROXY;
+                                type = GSIConstants.CertificateType.GSI_4_RESTRICTED_PROXY;
                             } else {
-                                type = GSIConstants.GSI_3_RESTRICTED_PROXY;
+                                type = GSIConstants.CertificateType.GSI_3_RESTRICTED_PROXY;
                             }
 			}
                         
@@ -468,10 +473,9 @@ public class BouncyCastleUtil {
     public static X509Certificate getIdentityCertificate(X509Certificate [] chain) 
 	throws CertificateException {
 	if (chain == null) {
-	    throw new IllegalArgumentException(i18n
-                                               .getMessage("certChainNull"));
+	    throw new IllegalArgumentException(i18n.getMessage("certChainNull"));
 	}
-	int certType;
+	GSIConstants.CertificateType certType;
 	for (int i=0;i<chain.length;i++) {
 	    certType = getCertificateType(chain[i]);
 	    if (!ProxyCertificateUtil.isImpersonationProxy(certType)) {

@@ -46,20 +46,6 @@ public final class ProxyCertificateUtil {
     }
 
     /**
-     * Determines if a specified certificate type indicates a GSI-2,
-     * GSI-3 or GSI-4proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-2 or GSI-3 or GSI-4 proxy, false 
-     *         otherwise.
-     */
-    public static boolean isProxy(int certType) {
-        return (isGsi2Proxy(certType) ||
-                isGsi3Proxy(certType) ||
-                isGsi4Proxy(certType));
-    }
-
-    /**
      * Determines if a specified certificate type indicates a GSI-4 proxy
      * certificate.
      *
@@ -71,21 +57,6 @@ public final class ProxyCertificateUtil {
                 || certType == GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY
                 || certType == GSIConstants.CertificateType.GSI_4_RESTRICTED_PROXY
                 || certType == GSIConstants.CertificateType.GSI_4_LIMITED_PROXY;
-    }
-
-    /**
-     * Determines if a specified certificate type indicates a 
-     * GSI-4 proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-4 proxy, false 
-     *         otherwise.
-     */
-    public static boolean isGsi4Proxy(int certType) {
-        return (certType == GSIConstants.GSI_4_IMPERSONATION_PROXY ||
-                certType == GSIConstants.GSI_4_INDEPENDENT_PROXY ||
-                certType == GSIConstants.GSI_4_RESTRICTED_PROXY ||
-                certType == GSIConstants.GSI_4_LIMITED_PROXY);
     }
 
     /**
@@ -103,21 +74,6 @@ public final class ProxyCertificateUtil {
     }
 
     /**
-     * Determines if a specified certificate type indicates a 
-     * GSI-3 proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-3 proxy, false 
-     *         otherwise.
-     */
-    public static boolean isGsi3Proxy(int certType) {
-        return (certType == GSIConstants.GSI_3_IMPERSONATION_PROXY ||
-                certType == GSIConstants.GSI_3_INDEPENDENT_PROXY ||
-                certType == GSIConstants.GSI_3_RESTRICTED_PROXY ||
-                certType == GSIConstants.GSI_3_LIMITED_PROXY);
-    }
-
-    /**
      * Determines if a specified certificate type indicates a GSI-2 proxy
      * certificate.
      *
@@ -127,19 +83,6 @@ public final class ProxyCertificateUtil {
     public static boolean isGsi2Proxy(GSIConstants.CertificateType certType) {
         return certType == GSIConstants.CertificateType.GSI_2_PROXY
                 || certType == GSIConstants.CertificateType.GSI_2_LIMITED_PROXY;
-    }
-
-    /**
-     * Determines if a specified certificate type indicates a 
-     * GSI-2 proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-2 proxy, false 
-     *         otherwise.
-     */
-    public static boolean isGsi2Proxy(int certType) {
-        return (certType == GSIConstants.GSI_2_PROXY ||
-                certType == GSIConstants.GSI_2_LIMITED_PROXY);
     }
 
     /**
@@ -157,20 +100,6 @@ public final class ProxyCertificateUtil {
     }
 
     /**
-     * Determines if a specified certificate type indicates a 
-     * GSI-2 or GSI-3 or GSI=4 limited proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-2 or GSI-3 or GSI-4 limited proxy, 
-     *         false otherwise.
-     */
-    public static boolean isLimitedProxy(int certType) {
-        return (certType == GSIConstants.GSI_3_LIMITED_PROXY ||
-                certType == GSIConstants.GSI_2_LIMITED_PROXY ||
-                certType == GSIConstants.GSI_4_LIMITED_PROXY);
-    }
-
-    /**
      * Determines if a specified certificate type indicates a GSI-3 or GS-4
      * limited proxy certificate.
      *
@@ -183,20 +112,6 @@ public final class ProxyCertificateUtil {
         return certType == GSIConstants.CertificateType.GSI_3_INDEPENDENT_PROXY
                 || certType == GSIConstants.CertificateType.GSI_4_INDEPENDENT_PROXY;
     }
-
-    /**
-     * Determines if a specified certificate type indicates a 
-     *  GSI-3 or GS-4 limited proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-3 or GSI-4 independent proxy, 
-     *         false otherwise.
-     */
-    public static boolean isIndependentProxy(int certType) {
-        return (certType == GSIConstants.GSI_3_INDEPENDENT_PROXY ||
-                certType == GSIConstants.GSI_4_INDEPENDENT_PROXY);
-    }
-
 
     /**
      * Determines if a specified certificate type indicates a GSI-2 or GSI-3 or
@@ -214,23 +129,6 @@ public final class ProxyCertificateUtil {
                 || certType == GSIConstants.CertificateType.GSI_2_LIMITED_PROXY
                 || certType == GSIConstants.CertificateType.GSI_2_PROXY;
 
-    }
-
-    /**
-     * Determines if a specified certificate type indicates a 
-     * GSI-2 or GSI-3 or GSI-4 impersonation proxy certificate.
-     *
-     * @param certType the certificate type to check.
-     * @return true if certType is a GSI-2 or GSI-3 or GSI-4
-     *         impersonation proxy, false otherwise.
-     */
-    public static boolean isImpersonationProxy(int certType) {
-        return (certType == GSIConstants.GSI_3_IMPERSONATION_PROXY ||
-                certType == GSIConstants.GSI_3_LIMITED_PROXY ||
-                certType == GSIConstants.GSI_4_IMPERSONATION_PROXY ||
-                certType == GSIConstants.GSI_4_LIMITED_PROXY ||
-                certType == GSIConstants.GSI_2_LIMITED_PROXY ||
-                certType == GSIConstants.GSI_2_PROXY);
     }
 
     public static int getProxyPathConstraint(TBSCertificateStructure crt)
@@ -269,27 +167,27 @@ public final class ProxyCertificateUtil {
      *        description of.
      * @return the string description of the proxy type.
      */
-    public static String getProxyTypeAsString(int proxyType) {
+    public static String getProxyTypeAsString(GSIConstants.CertificateType proxyType) {
         switch(proxyType) {
-        case GSIConstants.GSI_4_IMPERSONATION_PROXY:
+        case GSI_4_IMPERSONATION_PROXY:
             return "RFC 3820 compliant impersonation proxy";
-        case GSIConstants.GSI_4_INDEPENDENT_PROXY:
+        case GSI_4_INDEPENDENT_PROXY:
             return "RFC 3820 compliant independent proxy";
-        case GSIConstants.GSI_4_LIMITED_PROXY:
+        case GSI_4_LIMITED_PROXY:
             return "RFC 3820 compliant limited proxy";
-        case GSIConstants.GSI_4_RESTRICTED_PROXY:
+        case GSI_4_RESTRICTED_PROXY:
             return "RFC 3820 compliant restricted proxy";
-        case GSIConstants.GSI_3_IMPERSONATION_PROXY:
+        case GSI_3_IMPERSONATION_PROXY:
             return "Proxy draft compliant impersonation proxy";
-        case GSIConstants.GSI_3_INDEPENDENT_PROXY:
+        case GSI_3_INDEPENDENT_PROXY:
             return "Proxy draft compliant independent proxy";
-        case GSIConstants.GSI_3_LIMITED_PROXY:
+        case GSI_3_LIMITED_PROXY:
             return "Proxy draft compliant limited proxy";
-        case GSIConstants.GSI_3_RESTRICTED_PROXY:
+        case GSI_3_RESTRICTED_PROXY:
             return "Proxy draft compliant restricted proxy";
-        case GSIConstants.GSI_2_PROXY:
+        case GSI_2_PROXY:
             return "full legacy globus proxy";
-        case GSIConstants.GSI_2_LIMITED_PROXY:
+        case GSI_2_LIMITED_PROXY:
             return "limited legacy globus proxy";
         default:
             return "not a proxy";

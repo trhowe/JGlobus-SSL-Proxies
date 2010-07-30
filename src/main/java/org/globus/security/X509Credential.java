@@ -14,6 +14,8 @@
  */
 package org.globus.security;
 
+import org.globus.gsi.GSIConstants;
+
 import org.globus.security.stores.ResourceSigningPolicyStoreParameters;
 import org.globus.security.stores.ResourceCertStoreParameters;
 import org.globus.security.util.CertificateUtil;
@@ -325,12 +327,12 @@ public class X509Credential {
      * 
      * @return the type of first certificate in the chain. -1 if unable to determine the certificate type.
      */
-    public int getProxyType() {
+    public GSIConstants.CertificateType getProxyType() {
         try {
             return BouncyCastleUtil.getCertificateType(this.certChain[0]);
         } catch (CertificateException e) {
             logger.fine("Error getting certificate type: " + e.getMessage());
-            return -1;
+            return GSIConstants.CertificateType.UNDEFINED;
         }
     }
 
