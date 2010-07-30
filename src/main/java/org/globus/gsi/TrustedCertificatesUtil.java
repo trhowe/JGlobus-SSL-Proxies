@@ -25,6 +25,7 @@ import java.security.Security;
 import java.security.KeyStore;
 
 /**
+ * This is a helper class to create convert TrustCertificates
  * @deprecated
  */
 public class TrustedCertificatesUtil {
@@ -34,8 +35,9 @@ public class TrustedCertificatesUtil {
         Security.addProvider(new SimpleMemoryProvider());
     }
     
-    /*
-     * Created store only loasd trusted certificates, no CRLs or signing policies
+    /**
+     * Create a CertStore object from TrustedCertificates.
+     * The store only loads  trusted certificates, no signing policies
      */
     public static CertStore createCertStore(TrustedCertificates tc) throws Exception {
         
