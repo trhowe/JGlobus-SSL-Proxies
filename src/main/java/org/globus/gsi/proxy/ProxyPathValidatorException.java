@@ -23,6 +23,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
 /**
+ * @deprecated
  */
 public class ProxyPathValidatorException 
     extends GeneralSecurityException {

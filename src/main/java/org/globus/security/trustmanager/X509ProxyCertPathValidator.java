@@ -427,6 +427,7 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
     }
 
 
+    // COMMENT enable the checkers again when ProxyPathValidator starts working!
     protected List<CertificateChecker> getCertificateCheckers() {
         List<CertificateChecker> checkers = new ArrayList<CertificateChecker>();
         checkers.add(new DateValidityChecker());
@@ -548,6 +549,11 @@ public class X509ProxyCertPathValidator extends CertPathValidatorSpi {
 
     public void setLimited(boolean limited) {
         this.limited = limited;
+    }
+
+    // COMMENT: added a way to get 'limited'
+    public boolean isLimited() {
+        return this.limited;
     }
 
     public void setIdentityCert(X509Certificate identityCert) {

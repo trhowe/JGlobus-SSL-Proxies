@@ -184,12 +184,13 @@ public class X509Credential {
         out.flush();
     }
 
+    // COMMENT Used to be "key cert cert cert ...", which is wrong afaik. must be "cert key cert cert ..."
     public void saveCertificateChain(OutputStream out) throws IOException, CertificateEncodingException {
 
         CertificateIOUtil.writeCertificate(out, this.certChain[0]);
 
         for (int i = 1; i < this.certChain.length; i++) {
-            // FIXME: should we skip the self-signed certificates?
+            // skip the self-signed certificates
             if (this.certChain[i].getSubjectDN().equals(certChain[i].getIssuerDN())) {
                 continue;
             }

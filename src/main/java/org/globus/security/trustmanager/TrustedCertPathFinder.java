@@ -15,6 +15,8 @@
 
 package org.globus.security.trustmanager;
 
+import java.util.Iterator;
+
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;

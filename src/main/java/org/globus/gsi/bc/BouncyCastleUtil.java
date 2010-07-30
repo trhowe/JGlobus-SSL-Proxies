@@ -60,7 +60,7 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-// COMMENT: removed methods createCertificateType(...) that took a TBSCertificateStructure as parameter
+// COMMENT: BCB: removed methods createCertificateType(...) that took a TBSCertificateStructure as parameter
 /**
  * A collection of various utility functions.
  */

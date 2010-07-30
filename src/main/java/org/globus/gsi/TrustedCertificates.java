@@ -89,8 +89,10 @@ public class TrustedCertificates implements Serializable {
         // FIXME: this could cause NPE
         this.certSubjectDNMap = new HashMap();
         for (int i=0;i<certs.length;i++) {
-            String dn = certs[i].getSubjectDN().toString();
-            this.certSubjectDNMap.put(dn,certs[i]);
+            if (certs[i] != null) {
+                String dn = certs[i].getSubjectDN().toString();
+                this.certSubjectDNMap.put(dn,certs[i]);
+            }
         }
         
         if (policies != null) {
